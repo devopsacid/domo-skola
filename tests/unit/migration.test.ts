@@ -105,10 +105,16 @@ describe('0001_init.sql', () => {
       'source',
     ]) {
       expect(checks[col], col).toBeDefined();
-      expect([...(checks[col] ?? [])].sort(), col).toEqual([...(ENUMS[col] ?? [])].map(String).sort());
+      expect([...(checks[col] ?? [])].sort(), col).toEqual(
+        [...(ENUMS[col] ?? [])].map(String).sort(),
+      );
     }
     // `status` and `kind` appear in several tables; assert by table text.
-    const section = (t: string) => sql.slice(sql.indexOf(`CREATE TABLE ${t}`), sql.indexOf(');', sql.indexOf(`CREATE TABLE ${t}`)));
+    const section = (t: string) =>
+      sql.slice(
+        sql.indexOf(`CREATE TABLE ${t}`),
+        sql.indexOf(');', sql.indexOf(`CREATE TABLE ${t}`)),
+      );
     const list = (t: string, col: string) => extractSqlChecks(section(t))[col]?.slice().sort();
     expect(list('contact_inquiries', 'status')).toEqual([...INQUIRY_STATUSES].sort());
     expect(list('applications', 'status')).toEqual([...APPLICATION_STATUSES].sort());
@@ -160,7 +166,12 @@ describe('0001_init.sql', () => {
   });
 
   it('allows null optional application fields and valid enums', () => {
-    application({ current_arrangement: null, motivation: null, questions: null, intended_grade: 4 });
+    application({
+      current_arrangement: null,
+      motivation: null,
+      questions: null,
+      intended_grade: 4,
+    });
     application({ id: 'a2', current_arrangement: 'prefer_not_say', status: 'waitlisted' });
   });
 
@@ -205,7 +216,9 @@ describe('0001_init.sql', () => {
     ).run(NOW);
     db.prepare('DELETE FROM contact_inquiries WHERE id=?').run('i1');
     expect(db.prepare('SELECT count(*) c FROM email_deliveries').get()).toEqual({ c: 0 });
-    expect(db.prepare('SELECT inquiry_id FROM marketing_consents').get()).toEqual({ inquiry_id: null });
+    expect(db.prepare('SELECT inquiry_id FROM marketing_consents').get()).toEqual({
+      inquiry_id: null,
+    });
   });
 
   it('email deliveries default attempts to 0 and hold no recipient or body columns', () => {
@@ -220,7 +233,7 @@ describe('0001_init.sql', () => {
 
   it('audit_log is append-only for updates, validates enums, and has no PII columns', () => {
     const ins = db.prepare(
-      "INSERT INTO audit_log(at, actor_email, actor_role, action, subject_type, subject_id, details, request_id) VALUES(?,?,?,?,?,?,?,?)",
+      'INSERT INTO audit_log(at, actor_email, actor_role, action, subject_type, subject_id, details, request_id) VALUES(?,?,?,?,?,?,?,?)',
     );
     ins.run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', 'i1', null, 'r1');
     expect(() => ins.run(NOW, 'a@x.sk', 'admin', 'hack', 'inquiry', 'i1', null, 'r1')).toThrow();
@@ -231,16 +244,26 @@ describe('0001_init.sql', () => {
   });
 
   it('admin_users and rate_limits enforce their shape', () => {
-    db.prepare("INSERT INTO admin_users(email, role, created_at) VALUES('a@x.sk','admin',?)").run(NOW);
+    db.prepare("INSERT INTO admin_users(email, role, created_at) VALUES('a@x.sk','admin',?)").run(
+      NOW,
+    );
     expect(() =>
-      db.prepare("INSERT INTO admin_users(email, role, created_at) VALUES('b@x.sk','root',?)").run(NOW),
+      db
+        .prepare("INSERT INTO admin_users(email, role, created_at) VALUES('b@x.sk','root',?)")
+        .run(NOW),
     ).toThrow();
     expect(() =>
-      db.prepare("INSERT INTO admin_users(email, role, created_at) VALUES('a@x.sk','admin',?)").run(NOW),
+      db
+        .prepare("INSERT INTO admin_users(email, role, created_at) VALUES('a@x.sk','admin',?)")
+        .run(NOW),
     ).toThrow();
-    db.prepare("INSERT INTO rate_limits(key, count, window_start, expires_at) VALUES('k',1,?,?)").run(NOW, LATER);
+    db.prepare(
+      "INSERT INTO rate_limits(key, count, window_start, expires_at) VALUES('k',1,?,?)",
+    ).run(NOW, LATER);
     expect(() =>
-      db.prepare("INSERT INTO rate_limits(key, count, window_start, expires_at) VALUES('k',1,?,?)").run(NOW, LATER),
+      db
+        .prepare("INSERT INTO rate_limits(key, count, window_start, expires_at) VALUES('k',1,?,?)")
+        .run(NOW, LATER),
     ).toThrow();
   });
 
