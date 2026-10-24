@@ -49,15 +49,29 @@ describe('admin notification', () => {
   };
   it('links to the admin record and carries enum data only', () => {
     const i = renderAdminNotification('sk', { ...base, type: 'inquiry', subject: 'visit' });
-    expect(i.text).toContain('https://skola.example/admin/#/inquiries/11111111-2222-3333-4444-555555555555');
+    expect(i.text).toContain(
+      'https://skola.example/admin/#/inquiries/11111111-2222-3333-4444-555555555555',
+    );
     expect(i.text).toContain('visit');
-    const a = renderAdminNotification('en', { ...base, type: 'application', grade: 2, nextStep: 'call' });
-    expect(a.text).toContain('https://skola.example/admin/#/applications/11111111-2222-3333-4444-555555555555');
+    const a = renderAdminNotification('en', {
+      ...base,
+      type: 'application',
+      grade: 2,
+      nextStep: 'call',
+    });
+    expect(a.text).toContain(
+      'https://skola.example/admin/#/applications/11111111-2222-3333-4444-555555555555',
+    );
     expect(a.text).toMatch(/2/);
     expect(a.text).toContain('call');
   });
   it('flags suspected spam', () => {
-    const s = renderAdminNotification('en', { ...base, type: 'inquiry', subject: 'general', suspectedSpam: true });
+    const s = renderAdminNotification('en', {
+      ...base,
+      type: 'inquiry',
+      subject: 'general',
+      suspectedSpam: true,
+    });
     expect(s.subject.toLowerCase()).toContain('spam');
   });
   it('renders in every admin locale', () => {

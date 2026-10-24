@@ -85,9 +85,16 @@ export async function startDevAccessProxy({
     headers['cf-access-jwt-assertion'] = await sign(email);
     headers.host = targetUrl.host;
     if (headers.origin) headers.origin = targetUrl.origin; // the edge would present the site origin
-    if (headers.referer) headers.referer = `${targetUrl.origin}${new URL(headers.referer, targetUrl.origin).pathname}`;
+    if (headers.referer)
+      headers.referer = `${targetUrl.origin}${new URL(headers.referer, targetUrl.origin).pathname}`;
     const up = http.request(
-      { host: targetUrl.hostname, port: targetUrl.port || 80, method: req.method, path: `${url.pathname}${url.search}`, headers },
+      {
+        host: targetUrl.hostname,
+        port: targetUrl.port || 80,
+        method: req.method,
+        path: `${url.pathname}${url.search}`,
+        headers,
+      },
       (upRes) => {
         res.writeHead(upRes.statusCode ?? 502, upRes.headers);
         upRes.pipe(res);

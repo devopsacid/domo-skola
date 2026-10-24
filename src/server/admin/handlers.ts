@@ -56,7 +56,10 @@ export interface AdminCtx {
 const DAY_MS = 86_400_000;
 
 export function adminError(error: AdminErrorCode, fields?: Record<string, string>): Response {
-  return jsonResponse(fields ? { ok: false, error, fields } : { ok: false, error }, ADMIN_ERROR_STATUS[error]);
+  return jsonResponse(
+    fields ? { ok: false, error, fields } : { ok: false, error },
+    ADMIN_ERROR_STATUS[error],
+  );
 }
 const ok = (data: unknown, status = 200) => jsonResponse({ ok: true, data }, status);
 
@@ -65,7 +68,10 @@ export async function lookupAdmin(db: D1Like, email: string): Promise<AdminRole 
   return row?.role === 'admin' || row?.role === 'coordinator' ? row.role : null;
 }
 
-function audit(c: AdminCtx, e: Pick<AuditEntry, 'action' | 'subjectType' | 'subjectId' | 'details'>) {
+function audit(
+  c: AdminCtx,
+  e: Pick<AuditEntry, 'action' | 'subjectType' | 'subjectId' | 'details'>,
+) {
   return auditStatement(c.db, {
     at: c.deps.now().toISOString(),
     actorEmail: c.admin.email,
@@ -80,32 +86,49 @@ async function jsonBody(request: Request): Promise<Record<string, unknown> | nul
     const text = await request.text();
     if (text.length > 64 * 1024) return null;
     const v: unknown = JSON.parse(text);
-    return typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
+    return typeof v === 'object' && v !== null && !Array.isArray(v)
+      ? (v as Record<string, unknown>)
+      : null;
   } catch {
     return null;
   }
 }
 
-const STATUSES: Record<RecordType, readonly string[]> = { inquiry: INQUIRY_STATUSES, application: APPLICATION_STATUSES };
+const STATUSES: Record<RecordType, readonly string[]> = {
+  inquiry: INQUIRY_STATUSES,
+  application: APPLICATION_STATUSES,
+};
 
-type FilterInput = { type?: unknown; status?: unknown; region?: unknown; grade?: unknown; q?: unknown; include_spam?: unknown };
+type FilterInput = {
+  type?: unknown;
+  status?: unknown;
+  region?: unknown;
+  grade?: unknown;
+  q?: unknown;
+  include_spam?: unknown;
+};
 
 /** Shared filter validation for list and export. */
 function parseFilter(raw: FilterInput): RecordFilter | null {
   const type = raw.type;
   if (type !== 'inquiry' && type !== 'application') return null;
-  const f: RecordFilter = { type, includeSpam: raw.include_spam === true || raw.include_spam === '1' };
+  const f: RecordFilter = {
+    type,
+    includeSpam: raw.include_spam === true || raw.include_spam === '1',
+  };
   if (raw.status !== undefined && raw.status !== '') {
     if (typeof raw.status !== 'string' || !STATUSES[type].includes(raw.status)) return null;
     f.status = raw.status;
   }
   if (raw.region !== undefined && raw.region !== '') {
-    if (typeof raw.region !== 'string' || !(REGIONS as readonly string[]).includes(raw.region)) return null;
+    if (typeof raw.region !== 'string' || !(REGIONS as readonly string[]).includes(raw.region))
+      return null;
     f.region = raw.region;
   }
   if (raw.grade !== undefined && raw.grade !== '') {
     if (type !== 'application') return null;
-    const g = typeof raw.grade === 'string' && /^\d$/.test(raw.grade) ? Number(raw.grade) : raw.grade;
+    const g =
+      typeof raw.grade === 'string' && /^\d$/.test(raw.grade) ? Number(raw.grade) : raw.grade;
     if (!(GRADES as readonly unknown[]).includes(g)) return null;
     f.grade = g as number;
   }
@@ -122,26 +145,50 @@ export function me(c: AdminCtx): Response {
   return ok({ email: c.admin.email, role: c.admin.role });
 }
 
-export async function listRecords(c: AdminCtx): Promise<Response> {
+type Getter = (key: string) => string | undefined;
+
+/** GET /api/admin/records: parameters from the query string. */
+export function listRecords(c: AdminCtx): Promise<Response> {
   const p = c.url.searchParams;
+  return listFrom(c, (k) => p.get(k) ?? undefined);
+}
+
+/**
+ * POST /api/admin/records/search: the same listing with parameters in a JSON body, so a search term
+ * (a name or an email address) never appears in a URL, browser history or edge log.
+ */
+export async function searchRecords(c: AdminCtx): Promise<Response> {
+  const body = await jsonBody(c.request);
+  if (!body) return adminError('bad_request');
+  return listFrom(c, (k) => {
+    const v = body[k];
+    if (v === undefined || v === null) return undefined;
+    if (typeof v === 'string') return v;
+    if (typeof v === 'number') return String(v);
+    if (typeof v === 'boolean') return v ? '1' : '0';
+    return '\u0000'; // any other shape fails validation below
+  });
+}
+
+async function listFrom(c: AdminCtx, get: Getter): Promise<Response> {
   const f = parseFilter({
-    type: p.get('type') ?? undefined,
-    status: p.get('status') ?? undefined,
-    region: p.get('region') ?? undefined,
-    grade: p.get('grade') ?? undefined,
-    q: p.get('q') ?? undefined,
-    include_spam: p.get('include_spam') ?? undefined,
+    type: get('type'),
+    status: get('status'),
+    region: get('region'),
+    grade: get('grade'),
+    q: get('q'),
+    include_spam: get('include_spam'),
   });
   if (!f) return adminError('bad_request');
-  const cursorRaw = p.get('cursor');
+  const cursorRaw = get('cursor');
   if (cursorRaw) {
     const cur = decodeCursor(cursorRaw);
     if (!cur) return adminError('bad_request');
     f.cursor = cur;
   }
-  const limitRaw = p.get('limit');
+  const limitRaw = get('limit');
   let limit = 25;
-  if (limitRaw !== null) {
+  if (limitRaw !== undefined) {
     if (!/^\d{1,3}$/.test(limitRaw)) return adminError('bad_request');
     limit = Number(limitRaw);
     if (limit < 1 || limit > 100) return adminError('bad_request');
@@ -160,7 +207,10 @@ export async function listRecords(c: AdminCtx): Promise<Response> {
     ...(f.type === 'inquiry' ? { subject: r.subject } : { intended_grade: r.intended_grade }),
   }));
   const last = page[page.length - 1];
-  const next = rows.length > limit && last ? encodeCursor({ c: String(last.created_at), i: String(last.id) }) : null;
+  const next =
+    rows.length > limit && last
+      ? encodeCursor({ c: String(last.created_at), i: String(last.id) })
+      : null;
   return ok({ items, next_cursor: next });
 }
 
@@ -191,9 +241,14 @@ export async function changeStatus(c: AdminCtx, type: RecordType, id: string): P
   if (!body) return adminError('bad_request');
   const status = body.status;
   if (typeof status !== 'string' || !STATUSES[type].includes(status)) {
-    return adminError('validation', { status: typeof status === 'string' && status ? 'invalid_option' : 'required' });
+    return adminError('validation', {
+      status: typeof status === 'string' && status ? 'invalid_option' : 'required',
+    });
   }
-  const current = await c.db.prepare(`SELECT status FROM ${TABLE[type]} WHERE id = ?`).bind(id).first<{ status: string }>();
+  const current = await c.db
+    .prepare(`SELECT status FROM ${TABLE[type]} WHERE id = ?`)
+    .bind(id)
+    .first<{ status: string }>();
   if (!current) return adminError('not_found');
   if (current.status === status) return ok({ status, changed: false });
 
@@ -212,9 +267,17 @@ export async function changeStatus(c: AdminCtx, type: RecordType, id: string): P
       now: now.toISOString(),
       closing,
       reopening,
-      retainUntil: closing || reopening ? new Date(now.getTime() + retainDays * DAY_MS).toISOString() : undefined,
+      retainUntil:
+        closing || reopening
+          ? new Date(now.getTime() + retainDays * DAY_MS).toISOString()
+          : undefined,
     }),
-    audit(c, { action: 'status_change', subjectType: type, subjectId: id, details: { from: current.status, to: status } }),
+    audit(c, {
+      action: 'status_change',
+      subjectType: type,
+      subjectId: id,
+      details: { from: current.status, to: status },
+    }),
   ]);
   return ok({ status, changed: true });
 }
@@ -223,15 +286,27 @@ export async function addNote(c: AdminCtx, type: RecordType, id: string): Promis
   const body = await jsonBody(c.request);
   if (!body) return adminError('bad_request');
   const text = typeof body.body === 'string' ? normalizeText(body.body) : '';
-  if (typeof body.body !== 'string' || text.length === 0) return adminError('validation', { body: 'required' });
+  if (typeof body.body !== 'string' || text.length === 0)
+    return adminError('validation', { body: 'required' });
   if (text.length > LIMITS.message) return adminError('validation', { body: 'too_long' });
   const exists = await c.db.prepare(`SELECT id FROM ${TABLE[type]} WHERE id = ?`).bind(id).first();
   if (!exists) return adminError('not_found');
   const noteId = c.deps.uuid();
   const now = c.deps.now().toISOString();
   await c.db.batch([
-    insertNoteStatement(c.db, type, { id: noteId, now, author: c.admin.email, body: text, recordId: id }),
-    audit(c, { action: 'note_add', subjectType: type, subjectId: id, details: { note_id: noteId } }),
+    insertNoteStatement(c.db, type, {
+      id: noteId,
+      now,
+      author: c.admin.email,
+      body: text,
+      recordId: id,
+    }),
+    audit(c, {
+      action: 'note_add',
+      subjectType: type,
+      subjectId: id,
+      details: { note_id: noteId },
+    }),
   ]);
   return ok({ id: noteId, created_at: now, author_email: c.admin.email, body: text }, 201);
 }
@@ -240,13 +315,19 @@ export async function resendEmail(c: AdminCtx, type: RecordType, id: string): Pr
   const body = await jsonBody(c.request);
   if (!body) return adminError('bad_request');
   const kind = body.kind;
-  if (kind !== 'sender_confirmation' && kind !== 'admin_notification') return adminError('validation', { kind: 'invalid_option' });
+  if (kind !== 'sender_confirmation' && kind !== 'admin_notification')
+    return adminError('validation', { kind: 'invalid_option' });
   const rec = (await getRecordStatement(c.db, type, id).first<Record<string, unknown>>()) ?? null;
   if (!rec) return adminError('not_found');
   const failed = await failedDeliveryStatement(c.db, type, id, kind).first<{ id: string }>();
   if (!failed) return adminError('conflict');
   // Audit first: no resend without a trail.
-  await audit(c, { action: 'email_resend', subjectType: type, subjectId: id, details: { kind } }).run();
+  await audit(c, {
+    action: 'email_resend',
+    subjectType: type,
+    subjectId: id,
+    details: { kind },
+  }).run();
   const emails = composeEmails(c.cfg, c.deps, {
     type,
     id,
@@ -260,7 +341,14 @@ export async function resendEmail(c: AdminCtx, type: RecordType, id: string): Pr
     suspectedSpam: rec.suspected_spam === 1,
   });
   const message = kind === 'sender_confirmation' ? emails.confirmation : emails.admin;
-  const r = await sendAndRecord(c.db, buildTransport(c.cfg, c.deps), failed.id, message, c.deps.now, c.requestId);
+  const r = await sendAndRecord(
+    c.db,
+    buildTransport(c.cfg, c.deps),
+    failed.id,
+    message,
+    c.deps.now,
+    c.requestId,
+  );
   return ok({ status: r.status, last_error_code: r.code });
 }
 
@@ -295,7 +383,13 @@ export async function exportCsv(c: AdminCtx): Promise<Response> {
     details: {
       type: f.type,
       count: rows.length,
-      filters: { status: f.status, region: f.region, grade: f.grade, q: f.q ? true : undefined, include_spam: f.includeSpam },
+      filters: {
+        status: f.status,
+        region: f.region,
+        grade: f.grade,
+        q: f.q ? true : undefined,
+        include_spam: f.includeSpam,
+      },
     },
   }).run();
   const csv = toCsv(columns, rows, { bom: true });
@@ -351,7 +445,8 @@ export async function auditList(c: AdminCtx): Promise<Response> {
   let limit = 50;
   const lim = p.get('limit');
   if (lim !== null) {
-    if (!/^\d{1,3}$/.test(lim) || Number(lim) < 1 || Number(lim) > 200) return adminError('bad_request');
+    if (!/^\d{1,3}$/.test(lim) || Number(lim) < 1 || Number(lim) > 200)
+      return adminError('bad_request');
     limit = Number(lim);
   }
   const res = await listAuditStatement(c.db, before, limit + 1).all<{ id: number }>();

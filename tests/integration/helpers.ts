@@ -34,7 +34,10 @@ export interface SignOptions {
 export async function openFixture(): Promise<Fixture> {
   const dir = process.env.D1_PERSIST_DIR;
   if (!dir) throw new Error('D1_PERSIST_DIR missing: global setup did not run');
-  const proxy = await getPlatformProxy({ configPath: resolve('wrangler.jsonc'), persist: { path: join(dir, 'v3') } });
+  const proxy = await getPlatformProxy({
+    configPath: resolve('wrangler.jsonc'),
+    persist: { path: join(dir, 'v3') },
+  });
   const db = proxy.env.DB as unknown as D1Like;
 
   const mail = await startMockMail({ port: 0 });
@@ -117,15 +120,29 @@ export async function resetDb(db: D1Like) {
   ]);
 }
 
-export async function addAdmin(db: D1Like, email: string, role: 'admin' | 'coordinator', disabled = false) {
+export async function addAdmin(
+  db: D1Like,
+  email: string,
+  role: 'admin' | 'coordinator',
+  disabled = false,
+) {
   await db
     .prepare('INSERT INTO admin_users(email, role, created_at, disabled_at) VALUES(?,?,?,?)')
     .bind(email, role, NOW.toISOString(), disabled ? NOW.toISOString() : null)
     .run();
 }
 
-export const rows = async <T = Record<string, unknown>>(db: D1Like, sql: string, ...binds: unknown[]) =>
-  (await db.prepare(sql).bind(...binds).all<T>()).results ?? [];
+export const rows = async <T = Record<string, unknown>>(
+  db: D1Like,
+  sql: string,
+  ...binds: unknown[]
+) =>
+  (
+    await db
+      .prepare(sql)
+      .bind(...binds)
+      .all<T>()
+  ).results ?? [];
 
 /** Handler context that collects waitUntil promises so tests can await the email phase. */
 export function makeCtx() {
@@ -176,7 +193,11 @@ export function post(path: string, body: unknown, headers: Record<string, string
     body: typeof body === 'string' ? body : JSON.stringify(body),
   });
 }
-export function formPost(path: string, params: Record<string, string> | string[][], headers: Record<string, string> = {}) {
+export function formPost(
+  path: string,
+  params: Record<string, string> | string[][],
+  headers: Record<string, string> = {},
+) {
   return new Request(`${SITE}${path}`, {
     method: 'POST',
     headers: {
@@ -249,7 +270,9 @@ export async function seedInquiry(db: D1Like, o: Record<string, unknown> = {}) {
   };
   const cols = Object.keys(r);
   await db
-    .prepare(`INSERT INTO contact_inquiries(${cols.join(',')}) VALUES(${cols.map(() => '?').join(',')})`)
+    .prepare(
+      `INSERT INTO contact_inquiries(${cols.join(',')}) VALUES(${cols.map(() => '?').join(',')})`,
+    )
     .bind(...Object.values(r))
     .run();
   return r as { id: string } & Record<string, unknown>;

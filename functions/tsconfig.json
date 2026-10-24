@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./**/*.ts", "../src/server", "../src/shared", "../src/i18n", "../src/content"],
+  "compilerOptions": { "noEmit": true, "types": [] }
+}

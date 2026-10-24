@@ -31,7 +31,11 @@ export function createBrevoTransport(opts: {
       try {
         const res = await opts.fetch(`${base}/v3/smtp/email`, {
           method: 'POST',
-          headers: { 'api-key': opts.apiKey, 'content-type': 'application/json', accept: 'application/json' },
+          headers: {
+            'api-key': opts.apiKey,
+            'content-type': 'application/json',
+            accept: 'application/json',
+          },
           body: JSON.stringify(payload),
           signal: AbortSignal.timeout(TIMEOUT_MS),
         });

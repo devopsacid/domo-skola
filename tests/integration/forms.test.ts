@@ -34,18 +34,27 @@ beforeEach(async () => {
 
 const contact = async (req: Request, env = f.env, over = {}) => {
   const ctx = makeCtx();
-  const res = await handleContact(req, env, ctx, { ...fixedClock(), settings: testSettings(), ...over });
+  const res = await handleContact(req, env, ctx, {
+    ...fixedClock(),
+    settings: testSettings(),
+    ...over,
+  });
   await ctx.flush();
   return res;
 };
 const apply = async (req: Request, env = f.env, over = {}) => {
   const ctx = makeCtx();
-  const res = await handleApplication(req, env, ctx, { ...fixedClock(), settings: testSettings(), ...over });
+  const res = await handleApplication(req, env, ctx, {
+    ...fixedClock(),
+    settings: testSettings(),
+    ...over,
+  });
   await ctx.flush();
   return res;
 };
 const mails = async () =>
-  ((await (await fetch(`${f.mail.url}/messages`)).json()) as { messages: Record<string, string>[] }).messages;
+  ((await (await fetch(`${f.mail.url}/messages`)).json()) as { messages: Record<string, string>[] })
+    .messages;
 const inquiries = () => rows(f.db, 'SELECT * FROM contact_inquiries');
 const applications = () => rows(f.db, 'SELECT * FROM applications');
 
@@ -69,10 +78,25 @@ describe('POST /api/contact', () => {
       created_at: NOW.toISOString(),
     });
     expect(r?.retain_until).toBe(new Date(NOW.getTime() + 100 * 86400000).toISOString());
-    const del = await rows(f.db, 'SELECT kind, status, attempts, last_error_code, provider_message_id FROM email_deliveries ORDER BY kind');
+    const del = await rows(
+      f.db,
+      'SELECT kind, status, attempts, last_error_code, provider_message_id FROM email_deliveries ORDER BY kind',
+    );
     expect(del).toEqual([
-      { kind: 'admin_notification', status: 'sent', attempts: 1, last_error_code: null, provider_message_id: expect.any(String) },
-      { kind: 'sender_confirmation', status: 'sent', attempts: 1, last_error_code: null, provider_message_id: expect.any(String) },
+      {
+        kind: 'admin_notification',
+        status: 'sent',
+        attempts: 1,
+        last_error_code: null,
+        provider_message_id: expect.any(String),
+      },
+      {
+        kind: 'sender_confirmation',
+        status: 'sent',
+        attempts: 1,
+        last_error_code: null,
+        provider_message_id: expect.any(String),
+      },
     ]);
     const m = await mails();
     expect(m).toHaveLength(2);
@@ -87,19 +111,27 @@ describe('POST /api/contact', () => {
   });
 
   it('binds optional values as NULL', async () => {
-    const { phone: _p, ...noPhone } = contactFields();
+    const noPhone: Record<string, unknown> = { ...contactFields() };
+    delete noPhone.phone;
     await contact(post('/api/contact', contactBody({ fields: noPhone })));
     expect((await inquiries())[0]?.phone).toBeNull();
   });
 
   it('ignores a client-supplied source_page', async () => {
-    await contact(post('/api/contact', contactBody({ fields: { ...contactFields(), source_page: 'evil' } })));
+    await contact(
+      post('/api/contact', contactBody({ fields: { ...contactFields(), source_page: 'evil' } })),
+    );
     expect((await inquiries())[0]?.source_page).toBe('contact');
   });
 
   it('answers 422 with field codes and stores nothing', async () => {
     const res = await contact(
-      post('/api/contact', contactBody({ fields: { ...contactFields(), email: 'nope', message: '', privacy_ack: false } })),
+      post(
+        '/api/contact',
+        contactBody({
+          fields: { ...contactFields(), email: 'nope', message: '', privacy_ack: false },
+        }),
+      ),
     );
     expect(res.status).toBe(422);
     expect(await res.json()).toEqual({
@@ -114,7 +146,9 @@ describe('POST /api/contact', () => {
   it('answers 400 for non-JSON, wrong content type, oversized bodies and non-objects', async () => {
     expect((await contact(post('/api/contact', '{not json'))).status).toBe(400);
     expect((await contact(post('/api/contact', '[]'))).status).toBe(400);
-    expect((await contact(post('/api/contact', 'x', { 'Content-Type': 'text/plain' }))).status).toBe(400);
+    expect(
+      (await contact(post('/api/contact', 'x', { 'Content-Type': 'text/plain' }))).status,
+    ).toBe(400);
     const big = contactBody({ fields: { ...contactFields(), message: 'x'.repeat(40_000) } });
     const res = await contact(post('/api/contact', big));
     expect(res.status).toBe(400);
@@ -124,7 +158,11 @@ describe('POST /api/contact', () => {
   });
 
   it('rejects a foreign, missing or cross-site origin with 403 and stores nothing', async () => {
-    const bad: Record<string, string>[] = [{ Origin: 'https://evil.example' }, { Origin: 'null' }, { 'Sec-Fetch-Site': 'cross-site' }];
+    const bad: Record<string, string>[] = [
+      { Origin: 'https://evil.example' },
+      { Origin: 'null' },
+      { 'Sec-Fetch-Site': 'cross-site' },
+    ];
     for (const h of bad) {
       const res = await contact(post('/api/contact', contactBody(), h));
       expect(res.status).toBe(403);
@@ -161,19 +199,22 @@ describe('POST /api/contact', () => {
     ['non-numeric', { elapsedMs: 'fast' }],
     ['negative', { elapsedMs: -5 }],
     ['fractional', { elapsedMs: 4000.5 }],
-  ])('elapsedMs %s: stored as suspected_spam, no confirmation, never rejected', async (_n, patch) => {
-    const res = await contact(post('/api/contact', contactBody(patch)));
-    expect(res.status).toBe(201);
-    expect((await inquiries())[0]?.suspected_spam).toBe(1);
-    const del = await rows(f.db, 'SELECT kind, status FROM email_deliveries ORDER BY kind');
-    expect(del).toEqual([
-      { kind: 'admin_notification', status: 'sent' },
-      { kind: 'sender_confirmation', status: 'skipped' },
-    ]);
-    const m = await mails();
-    expect(m.map((x) => x.tag)).toEqual(['admin_notification']);
-    expect(m[0]?.subject.toLowerCase()).toContain('spam');
-  });
+  ])(
+    'elapsedMs %s: stored as suspected_spam, no confirmation, never rejected',
+    async (_n, patch) => {
+      const res = await contact(post('/api/contact', contactBody(patch)));
+      expect(res.status).toBe(201);
+      expect((await inquiries())[0]?.suspected_spam).toBe(1);
+      const del = await rows(f.db, 'SELECT kind, status FROM email_deliveries ORDER BY kind');
+      expect(del).toEqual([
+        { kind: 'admin_notification', status: 'sent' },
+        { kind: 'sender_confirmation', status: 'skipped' },
+      ]);
+      const m = await mails();
+      expect(m.map((x) => x.tag)).toEqual(['admin_notification']);
+      expect(m[0]?.subject.toLowerCase()).toContain('spam');
+    },
+  );
 
   it('elapsedMs at the minimum is not suspected', async () => {
     await contact(post('/api/contact', contactBody({ elapsedMs: 3000 })));
@@ -182,10 +223,22 @@ describe('POST /api/contact', () => {
 
   it('flags more than 3 URLs in the text as suspected', async () => {
     const msg = 'a https://a.example b http://b.example c www.c.example d https://d.example';
-    await contact(post('/api/contact', contactBody({ fields: { ...contactFields(), message: msg } })));
+    await contact(
+      post('/api/contact', contactBody({ fields: { ...contactFields(), message: msg } })),
+    );
     expect((await inquiries())[0]?.suspected_spam).toBe(1);
     await resetDb(f.db);
-    await contact(post('/api/contact', contactBody({ fields: { ...contactFields(), message: 'https://a.example https://b.example https://c.example' } })));
+    await contact(
+      post(
+        '/api/contact',
+        contactBody({
+          fields: {
+            ...contactFields(),
+            message: 'https://a.example https://b.example https://c.example',
+          },
+        }),
+      ),
+    );
     expect((await inquiries())[0]?.suspected_spam).toBe(0);
   });
 
@@ -195,17 +248,34 @@ describe('POST /api/contact', () => {
       const res = await contact(post('/api/contact', contactBody()));
       expect(res.status).toBe(201);
       expect(await inquiries()).toHaveLength(1);
-      const del = await rows(f.db, 'SELECT status, attempts, last_error_code, provider_message_id FROM email_deliveries');
+      const del = await rows(
+        f.db,
+        'SELECT status, attempts, last_error_code, provider_message_id FROM email_deliveries',
+      );
       expect(del).toHaveLength(2);
       for (const d of del) {
-        expect(d).toEqual({ status: 'failed', attempts: 1, last_error_code: 'mock_failure', provider_message_id: null });
+        expect(d).toEqual({
+          status: 'failed',
+          attempts: 1,
+          last_error_code: 'mock_failure',
+          provider_message_id: null,
+        });
       }
     });
     it('marks deliveries failed when the transport throws or is unconfigured, without leaking details', async () => {
-      const throwing = { send: async () => { throw new Error('boom jana@example.sk'); } };
-      const res = await contact(post('/api/contact', contactBody()), f.env, { transport: throwing });
+      const throwing = {
+        send: async () => {
+          throw new Error('boom jana@example.sk');
+        },
+      };
+      const res = await contact(post('/api/contact', contactBody()), f.env, {
+        transport: throwing,
+      });
       expect(res.status).toBe(201);
-      const del = await rows<{ status: string; last_error_code: string }>(f.db, 'SELECT status, last_error_code FROM email_deliveries');
+      const del = await rows<{ status: string; last_error_code: string }>(
+        f.db,
+        'SELECT status, last_error_code FROM email_deliveries',
+      );
       expect(del.map((d) => d.status)).toEqual(['failed', 'failed']);
       for (const d of del) expect(d.last_error_code).toMatch(/^[a-z0-9_.-]{1,64}$/);
       await resetDb(f.db);
@@ -219,20 +289,38 @@ describe('POST /api/contact', () => {
     it('uses an injected transport', async () => {
       const t = new CapturingTransport();
       await contact(post('/api/contact', contactBody({ locale: 'en' })), f.env, { transport: t });
-      expect(t.sent.map((m) => m.tag).sort()).toEqual(['admin_notification', 'sender_confirmation']);
-      expect(t.sent.find((m) => m.tag === 'sender_confirmation')?.subject).toBe('Thank you for your message');
+      expect(t.sent.map((m) => m.tag).sort()).toEqual([
+        'admin_notification',
+        'sender_confirmation',
+      ]);
+      expect(t.sent.find((m) => m.tag === 'sender_confirmation')?.subject).toBe(
+        'Thank you for your message',
+      );
     });
   });
 
   describe('marketing consent', () => {
     const withConsent = (extra: Record<string, unknown> = {}) =>
-      contactBody({ fields: { ...contactFields(), marketing_consent: true, marketing_consent_text_version: 'm1', ...extra } });
+      contactBody({
+        fields: {
+          ...contactFields(),
+          marketing_consent: true,
+          marketing_consent_text_version: 'm1',
+          ...extra,
+        },
+      });
 
     it('is ignored unless MARKETING_CONSENT_ENABLED=true', async () => {
       expect((await contact(post('/api/contact', withConsent()))).status).toBe(201);
       expect(await rows(f.db, 'SELECT * FROM marketing_consents')).toHaveLength(0);
       // even a stale version is ignored while disabled
-      expect((await contact(post('/api/contact', withConsent({ marketing_consent_text_version: 'old' })))).status).toBe(201);
+      expect(
+        (
+          await contact(
+            post('/api/contact', withConsent({ marketing_consent_text_version: 'old' })),
+          )
+        ).status,
+      ).toBe(201);
     });
     it('stores a server-stamped consent when enabled and the version matches', async () => {
       const env = { ...f.env, MARKETING_CONSENT_ENABLED: 'true' };
@@ -252,9 +340,16 @@ describe('POST /api/contact', () => {
     });
     it('rejects a stale version with 422 and stores nothing', async () => {
       const env = { ...f.env, MARKETING_CONSENT_ENABLED: 'true' };
-      const res = await contact(post('/api/contact', withConsent({ marketing_consent_text_version: 'old' })), env);
+      const res = await contact(
+        post('/api/contact', withConsent({ marketing_consent_text_version: 'old' })),
+        env,
+      );
       expect(res.status).toBe(422);
-      expect(await res.json()).toEqual({ ok: false, error: 'validation', fields: { marketing_consent: 'consent_version_stale' } });
+      expect(await res.json()).toEqual({
+        ok: false,
+        error: 'validation',
+        fields: { marketing_consent: 'consent_version_stale' },
+      });
       expect(await inquiries()).toHaveLength(0);
       expect(await rows(f.db, 'SELECT * FROM marketing_consents')).toHaveLength(0);
     });
@@ -284,7 +379,10 @@ describe('POST /api/contact', () => {
       const [r] = await inquiries();
       expect(r?.suspected_spam).toBe(0);
       expect(r?.locale).toBe('cs');
-      expect((await mails()).map((m) => m.tag).sort()).toEqual(['admin_notification', 'sender_confirmation']);
+      expect((await mails()).map((m) => m.tag).sort()).toEqual([
+        'admin_notification',
+        'sender_confirmation',
+      ]);
     });
     it('303s to the form with ?error=1 on validation failure', async () => {
       const res = await contact(formPost('/api/contact', form({ email: 'bad' })));
@@ -297,7 +395,13 @@ describe('POST /api/contact', () => {
       expect(res.headers.get('Location')).toBe('/cs/kontakt/?error=1');
     });
     it('treats a repeated key as bad request', async () => {
-      const res = await contact(formPost('/api/contact', [['locale', 'sk'], ['email', 'a@b.sk'], ['email', 'c@d.sk']]));
+      const res = await contact(
+        formPost('/api/contact', [
+          ['locale', 'sk'],
+          ['email', 'a@b.sk'],
+          ['email', 'c@d.sk'],
+        ]),
+      );
       expect(res.status).toBe(303);
       expect(res.headers.get('Location')).toBe('/sk/kontakt/?error=1');
     });
@@ -311,13 +415,18 @@ describe('POST /api/contact', () => {
       expect(await inquiries()).toHaveLength(0);
     });
     it('still enforces the origin check', async () => {
-      const res = await contact(formPost('/api/contact', form(), { Origin: 'https://evil.example' }));
+      const res = await contact(
+        formPost('/api/contact', form(), { Origin: 'https://evil.example' }),
+      );
       expect(res.status).toBe(403);
     });
   });
 
   it('answers 500 {ok:false,error:server} without details when config is invalid', async () => {
-    const res = await contact(post('/api/contact', contactBody()), { ...f.env, IP_HASH_SECRET: '' });
+    const res = await contact(post('/api/contact', contactBody()), {
+      ...f.env,
+      IP_HASH_SECRET: '',
+    });
     expect(res.status).toBe(500);
     expect(await res.json()).toEqual({ ok: false, error: 'server' });
   });
@@ -354,14 +463,27 @@ describe('POST /api/applications', () => {
   });
 
   it('sends the confirmation in preferred_language, not the page locale', async () => {
-    await apply(post('/api/applications', applicationBody({ locale: 'sk', fields: { ...applicationFields(), preferred_language: 'en' } })));
+    await apply(
+      post(
+        '/api/applications',
+        applicationBody({
+          locale: 'sk',
+          fields: { ...applicationFields(), preferred_language: 'en' },
+        }),
+      ),
+    );
     const conf = (await mails()).find((x) => x.tag === 'sender_confirmation');
     expect(conf?.subject).toBe('Thank you for your interest');
   });
 
   it('returns 422 with codes', async () => {
     const res = await apply(
-      post('/api/applications', applicationBody({ fields: { ...applicationFields(), child_name: 'Adam 2', intended_grade: 9, phone: '' } })),
+      post(
+        '/api/applications',
+        applicationBody({
+          fields: { ...applicationFields(), child_name: 'Adam 2', intended_grade: 9, phone: '' },
+        }),
+      ),
     );
     expect(res.status).toBe(422);
     expect(await res.json()).toEqual({
@@ -373,24 +495,48 @@ describe('POST /api/applications', () => {
   });
 
   it('returns 409 closed when availability is closed, before anything is stored', async () => {
-    const res = await apply(post('/api/applications', applicationBody()), f.env, { settings: testSettings({ availability: 'closed' }) });
+    const res = await apply(post('/api/applications', applicationBody()), f.env, {
+      settings: testSettings({ availability: 'closed' }),
+    });
     expect(res.status).toBe(409);
     expect(await res.json()).toEqual({ ok: false, error: 'closed' });
     expect(await applications()).toHaveLength(0);
     for (const availability of ['open', 'waitlist', null] as const) {
-      expect((await apply(post('/api/applications', applicationBody()), f.env, { settings: testSettings({ availability }) })).status).toBe(201);
+      expect(
+        (
+          await apply(post('/api/applications', applicationBody()), f.env, {
+            settings: testSettings({ availability }),
+          })
+        ).status,
+      ).toBe(201);
       await resetDb(f.db);
     }
   });
 
   it('requires intended_school_year to be in applicationYears', async () => {
-    const res = await apply(post('/api/applications', applicationBody({ fields: { ...applicationFields(), intended_school_year: '2030/2031' } })));
+    const res = await apply(
+      post(
+        '/api/applications',
+        applicationBody({ fields: { ...applicationFields(), intended_school_year: '2030/2031' } }),
+      ),
+    );
     expect(res.status).toBe(422);
-    expect(await res.json()).toEqual({ ok: false, error: 'validation', fields: { intended_school_year: 'school_year_invalid' } });
-    // unset list: no restriction can be asserted
-    const open = await apply(post('/api/applications', applicationBody({ fields: { ...applicationFields(), intended_school_year: '2030/2031' } })), f.env, {
-      settings: testSettings({ applicationYears: null }),
+    expect(await res.json()).toEqual({
+      ok: false,
+      error: 'validation',
+      fields: { intended_school_year: 'school_year_invalid' },
     });
+    // unset list: no restriction can be asserted
+    const open = await apply(
+      post(
+        '/api/applications',
+        applicationBody({ fields: { ...applicationFields(), intended_school_year: '2030/2031' } }),
+      ),
+      f.env,
+      {
+        settings: testSettings({ applicationYears: null }),
+      },
+    );
     expect(open.status).toBe(201);
   });
 
@@ -408,18 +554,33 @@ describe('POST /api/applications', () => {
   });
 
   it('rejects a foreign origin', async () => {
-    expect((await apply(post('/api/applications', applicationBody(), { Origin: 'https://evil.example' }))).status).toBe(403);
+    expect(
+      (
+        await apply(
+          post('/api/applications', applicationBody(), { Origin: 'https://evil.example' }),
+        )
+      ).status,
+    ).toBe(403);
   });
 
   it('stores marketing consent only when enabled and current; stale version gives 422 and nothing stored', async () => {
     const env = { ...f.env, MARKETING_CONSENT_ENABLED: 'true' };
     const body = (v: string) =>
-      applicationBody({ fields: { ...applicationFields(), marketing_consent: true, marketing_consent_text_version: v } });
+      applicationBody({
+        fields: {
+          ...applicationFields(),
+          marketing_consent: true,
+          marketing_consent_text_version: v,
+        },
+      });
     const stale = await apply(post('/api/applications', body('old')), env);
     expect(stale.status).toBe(422);
     expect(await applications()).toHaveLength(0);
     expect((await apply(post('/api/applications', body('m1')), env)).status).toBe(201);
-    const [c] = await rows(f.db, 'SELECT source, application_id, inquiry_id FROM marketing_consents');
+    const [c] = await rows(
+      f.db,
+      'SELECT source, application_id, inquiry_id FROM marketing_consents',
+    );
     expect(c).toMatchObject({ source: 'application', inquiry_id: null });
     expect(c?.application_id).toBe((await applications())[0]?.id);
   });

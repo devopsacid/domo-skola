@@ -18,7 +18,14 @@ beforeAll(async () => {
 });
 
 const sign = (
-  o: { key?: CryptoKey; iss?: string; aud?: string | string[]; exp?: number | string; email?: unknown; kid?: string } = {},
+  o: {
+    key?: CryptoKey;
+    iss?: string;
+    aud?: string | string[];
+    exp?: number | string;
+    email?: unknown;
+    kid?: string;
+  } = {},
 ) => {
   const b = new SignJWT({ ...(o.email === null ? {} : { email: o.email ?? 'Staff@Example.SK' }) })
     .setProtectedHeader({ alg: 'RS256', kid: o.kid ?? 'k1' })
@@ -32,7 +39,10 @@ const opts = () => ({ issuer: ISS, audience: AUD, getKey });
 
 describe('verifyAccessJwt', () => {
   it('accepts a valid token and lower-cases the email claim', async () => {
-    expect(await verifyAccessJwt(await sign(), opts())).toEqual({ ok: true, email: 'staff@example.sk' });
+    expect(await verifyAccessJwt(await sign(), opts())).toEqual({
+      ok: true,
+      email: 'staff@example.sk',
+    });
   });
   it('fails closed on missing or empty tokens', async () => {
     for (const t of [undefined, null, '', 'abc', 'a.b.c']) {
@@ -46,7 +56,10 @@ describe('verifyAccessJwt', () => {
     expect((await verifyAccessJwt(await sign({ aud: ['x', AUD] }), opts())).ok).toBe(true);
   });
   it('rejects a wrong issuer', async () => {
-    const r = await verifyAccessJwt(await sign({ iss: 'https://evil.cloudflareaccess.com' }), opts());
+    const r = await verifyAccessJwt(
+      await sign({ iss: 'https://evil.cloudflareaccess.com' }),
+      opts(),
+    );
     expect(r.ok).toBe(false);
   });
   it('rejects an expired token', async () => {

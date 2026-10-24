@@ -14,5 +14,9 @@ const p = await startDevAccessProxy({
   certsPort: Number(process.env.DEV_ACCESS_CERTS_PORT ?? 8790),
   defaultEmail: process.env.DEV_ACCESS_EMAIL ?? 'admin@example.test',
 });
-console.log(`dev-access-proxy: ${p.url} -> ${process.env.DEV_ACCESS_TARGET ?? 'http://localhost:8788'}; certs at ${p.certsUrl}`);
-console.log('Identity: ?dev_user=<email> (remembered in a cookie). The email must exist in admin_users.');
+console.log(
+  `dev-access-proxy: ${p.url} -> ${process.env.DEV_ACCESS_TARGET ?? 'http://localhost:8788'}; certs at ${p.certsUrl}`,
+);
+console.log(
+  'Identity: ?dev_user=<email> (remembered in a cookie). The email must exist in admin_users.',
+);

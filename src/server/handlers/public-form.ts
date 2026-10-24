@@ -8,11 +8,23 @@
 import { LOCALES, type Locale } from '../../shared/enums';
 import type { ErrorCode } from '../../shared/errors';
 import { validateApplication } from '../../shared/schemas/application';
-import { MAX_URLS, MIN_FILL_MS, countUrls, isHoneypotHit, isTooFast } from '../../shared/schemas/common';
+import {
+  MAX_URLS,
+  MIN_FILL_MS,
+  countUrls,
+  isHoneypotHit,
+  isTooFast,
+} from '../../shared/schemas/common';
 import { validateContact } from '../../shared/schemas/contact';
 import { localePath, type PageKey } from '../../i18n/routes';
 import { parseConfig, type Config } from '../config';
-import { insertApplication, insertConsent, insertDelivery, insertInquiry, type SubmissionMeta } from '../db/submissions';
+import {
+  insertApplication,
+  insertConsent,
+  insertDelivery,
+  insertInquiry,
+  type SubmissionMeta,
+} from '../db/submissions';
 import { resolveDeps, type Deps } from '../deps';
 import { buildTransport, composeEmails, sendAndRecord, type EmailSubject } from '../email/dispatch';
 import type { Env, HandlerContext } from '../env';
@@ -33,8 +45,10 @@ const KINDS: Record<Kind, { route: string; formPage: PageKey; sentPage: PageKey 
 const DAY_MS = 86_400_000;
 const TEN_MIN_MS = 600_000;
 
-const isLocale = (v: unknown): v is Locale => typeof v === 'string' && (LOCALES as readonly string[]).includes(v);
-const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+const isLocale = (v: unknown): v is Locale =>
+  typeof v === 'string' && (LOCALES as readonly string[]).includes(v);
+const isObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
 
 export async function handleSubmission(
   kind: Kind,
@@ -46,7 +60,13 @@ export async function handleSubmission(
   const started = Date.now();
   const route = KINDS[kind].route;
   const finish = (res: Response, outcome: string) => {
-    logRequest({ request_id: ctx.requestId, route, outcome, status: res.status, duration_ms: Date.now() - started });
+    logRequest({
+      request_id: ctx.requestId,
+      route,
+      outcome,
+      status: res.status,
+      duration_ms: Date.now() - started,
+    });
     return res;
   };
   try {
@@ -75,7 +95,8 @@ async function run(
     );
   }
   const ct = (request.headers.get('Content-Type') ?? '').split(';')[0]?.trim().toLowerCase();
-  const mode: 'json' | 'form' | null = ct === 'application/json' ? 'json' : ct === 'application/x-www-form-urlencoded' ? 'form' : null;
+  const mode: 'json' | 'form' | null =
+    ct === 'application/json' ? 'json' : ct === 'application/x-www-form-urlencoded' ? 'form' : null;
   if (!mode) return finish(publicError('bad_request'), 'content_type');
 
   let cfg: Config;
@@ -88,15 +109,22 @@ async function run(
 
   // Responses depend on the mode: the no-JS form is answered with a 303 to a localized page.
   let pageLocale: Locale = 'sk';
-  const failure = (error: ErrorCode, extra: Record<string, unknown> = {}, headers: Record<string, string> = {}) =>
+  const failure = (
+    error: ErrorCode,
+    extra: Record<string, unknown> = {},
+    headers: Record<string, string> = {},
+  ) =>
     mode === 'form' && error !== 'origin'
       ? redirect(`${localePath(meta.formPage, pageLocale)}?error=1`)
       : publicError(error, extra, headers);
   const success = () =>
-    mode === 'form' ? redirect(localePath(meta.sentPage, pageLocale)) : jsonResponse({ ok: true }, 201);
+    mode === 'form'
+      ? redirect(localePath(meta.sentPage, pageLocale))
+      : jsonResponse({ ok: true }, 201);
 
   const declared = Number(request.headers.get('Content-Length'));
-  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) return finish(failure('bad_request'), 'too_large');
+  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES)
+    return finish(failure('bad_request'), 'too_large');
 
   // 2. origin and fetch metadata
   if (!publicRequestAllowed(request, cfg)) return finish(failure('origin'), 'origin');
@@ -108,13 +136,21 @@ async function run(
   const limited = await checkRateLimit(env.DB, {
     now: nowMs,
     checks: [
-      { key: `ip:${ipHash}:${meta.route}:10m`, limit: cfg.rateLimit.per10min, windowMs: TEN_MIN_MS },
+      {
+        key: `ip:${ipHash}:${meta.route}:10m`,
+        limit: cfg.rateLimit.per10min,
+        windowMs: TEN_MIN_MS,
+      },
       { key: `ip:${ipHash}:${meta.route}:day`, limit: cfg.rateLimit.perDay, windowMs: DAY_MS },
     ],
   });
   if (!limited.allowed) {
     return finish(
-      failure('rate_limited', { retry_after: limited.retryAfter }, { 'Retry-After': String(limited.retryAfter) }),
+      failure(
+        'rate_limited',
+        { retry_after: limited.retryAfter },
+        { 'Retry-After': String(limited.retryAfter) },
+      ),
       'rate_limited',
     );
   }
@@ -147,7 +183,11 @@ async function run(
     }
     hp = decoded.value.hp;
     rawLocale = decoded.value.locale;
-    input = { locale: decoded.value.locale, fields: { ...decoded.value.fields }, hp: decoded.value.hp };
+    input = {
+      locale: decoded.value.locale,
+      fields: { ...decoded.value.fields },
+      hp: decoded.value.hp,
+    };
   }
   if (isLocale(rawLocale)) pageLocale = rawLocale;
 
@@ -155,18 +195,23 @@ async function run(
   if (isHoneypotHit(hp)) return finish(success(), 'honeypot');
 
   // 6. enrolment availability
-  if (kind === 'application' && deps.settings.availability === 'closed') return finish(failure('closed'), 'closed');
+  if (kind === 'application' && deps.settings.availability === 'closed')
+    return finish(failure('closed'), 'closed');
 
   // 7. validation and normalisation
   const validated = kind === 'contact' ? validateContact(input) : validateApplication(input);
-  if (!validated.ok) return finish(failure('validation', { fields: validated.fields }), 'validation');
+  if (!validated.ok)
+    return finish(failure('validation', { fields: validated.fields }), 'validation');
   const data = validated.data as { locale: Locale; fields: Record<string, unknown> };
   const fields = data.fields as Record<string, unknown> & { email: string; region: string };
   const locale = data.locale;
 
   if (kind === 'application' && deps.settings.applicationYears) {
     if (!deps.settings.applicationYears.includes(String(fields.intended_school_year))) {
-      return finish(failure('validation', { fields: { intended_school_year: 'school_year_invalid' } }), 'school_year');
+      return finish(
+        failure('validation', { fields: { intended_school_year: 'school_year_invalid' } }),
+        'school_year',
+      );
     }
   }
 
@@ -175,7 +220,10 @@ async function run(
   if (wantsConsent) {
     const current = deps.settings.marketing.textVersion;
     if (!current || fields.marketing_consent_text_version !== current) {
-      return finish(failure('validation', { fields: { marketing_consent: 'consent_version_stale' } }), 'consent_stale');
+      return finish(
+        failure('validation', { fields: { marketing_consent: 'consent_version_stale' } }),
+        'consent_stale',
+      );
     }
   }
 
@@ -186,12 +234,24 @@ async function run(
     checks: [{ key: `rcpt:${rcptHash}:day`, limit: cfg.rateLimit.emailPerDay, windowMs: DAY_MS }],
   });
   if (!rcpt.allowed) {
-    return finish(failure('rate_limited', { retry_after: rcpt.retryAfter }, { 'Retry-After': String(rcpt.retryAfter) }), 'rate_limited');
+    return finish(
+      failure(
+        'rate_limited',
+        { retry_after: rcpt.retryAfter },
+        { 'Retry-After': String(rcpt.retryAfter) },
+      ),
+      'rate_limited',
+    );
   }
 
   // 10. heuristics: stored as suspected, never rejected
-  const urlCount = countUrls(Object.values(fields).filter((v): v is string => typeof v === 'string').join(' \n '));
-  const suspectedTiming = mode === 'json' && (elapsed === undefined || elapsed <= 0 || isTooFast(elapsed, MIN_FILL_MS));
+  const urlCount = countUrls(
+    Object.values(fields)
+      .filter((v): v is string => typeof v === 'string')
+      .join(' \n '),
+  );
+  const suspectedTiming =
+    mode === 'json' && (elapsed === undefined || elapsed <= 0 || isTooFast(elapsed, MIN_FILL_MS));
   const suspected = suspectedTiming || urlCount > MAX_URLS;
 
   // 11. write
@@ -214,8 +274,22 @@ async function run(
     kind === 'contact'
       ? insertInquiry(env.DB, sub, fields as never)
       : insertApplication(env.DB, sub, fields as never),
-    insertDelivery(env.DB, { id: senderDeliveryId, kind: 'sender_confirmation', type, recordId, status: suspected ? 'skipped' : 'queued', now: nowIso }),
-    insertDelivery(env.DB, { id: adminDeliveryId, kind: 'admin_notification', type, recordId, status: 'queued', now: nowIso }),
+    insertDelivery(env.DB, {
+      id: senderDeliveryId,
+      kind: 'sender_confirmation',
+      type,
+      recordId,
+      status: suspected ? 'skipped' : 'queued',
+      now: nowIso,
+    }),
+    insertDelivery(env.DB, {
+      id: adminDeliveryId,
+      kind: 'admin_notification',
+      type,
+      recordId,
+      status: 'queued',
+      now: nowIso,
+    }),
   ];
   if (wantsConsent) {
     statements.push(
@@ -251,8 +325,20 @@ async function run(
     (async () => {
       const emails = composeEmails(cfg, deps, subject);
       const transport = buildTransport(cfg, deps);
-      const jobs = [sendAndRecord(env.DB, transport, adminDeliveryId, emails.admin, deps.now, ctx.requestId)];
-      if (!suspected) jobs.push(sendAndRecord(env.DB, transport, senderDeliveryId, emails.confirmation, deps.now, ctx.requestId));
+      const jobs = [
+        sendAndRecord(env.DB, transport, adminDeliveryId, emails.admin, deps.now, ctx.requestId),
+      ];
+      if (!suspected)
+        jobs.push(
+          sendAndRecord(
+            env.DB,
+            transport,
+            senderDeliveryId,
+            emails.confirmation,
+            deps.now,
+            ctx.requestId,
+          ),
+        );
       await Promise.all(jobs);
     })(),
   );

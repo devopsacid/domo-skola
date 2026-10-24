@@ -2,7 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { PERMISSIONS, can } from '../../../src/server/auth/roles';
 
 describe('role matrix (docs/architecture.md section 6)', () => {
-  const both = ['records.list', 'records.view', 'records.status', 'records.note', 'records.resend', 'retention.view'] as const;
+  const both = [
+    'records.list',
+    'records.view',
+    'records.status',
+    'records.note',
+    'records.resend',
+    'retention.view',
+  ] as const;
   const adminOnly = ['export', 'records.delete', 'retention.purge', 'audit.view'] as const;
 
   it.each(both)('%s is allowed for coordinator and admin', (p) => {

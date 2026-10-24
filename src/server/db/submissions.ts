@@ -13,7 +13,11 @@ export interface SubmissionMeta {
   retainUntil: string;
 }
 
-export function insertInquiry(db: D1Like, m: SubmissionMeta, f: ContactFieldsData): D1StatementLike {
+export function insertInquiry(
+  db: D1Like,
+  m: SubmissionMeta,
+  f: ContactFieldsData,
+): D1StatementLike {
   return stmt(
     db,
     'INSERT INTO contact_inquiries(id, created_at, updated_at, locale, parent_name, email, phone, region, subject, message, ' +
@@ -37,12 +41,16 @@ export function insertInquiry(db: D1Like, m: SubmissionMeta, f: ContactFieldsDat
   );
 }
 
-export function insertApplication(db: D1Like, m: SubmissionMeta, f: ApplicationFieldsData): D1StatementLike {
+export function insertApplication(
+  db: D1Like,
+  m: SubmissionMeta,
+  f: ApplicationFieldsData,
+): D1StatementLike {
   return stmt(
     db,
     'INSERT INTO applications(id, created_at, updated_at, locale, parent_name, email, phone, municipality, region, preferred_language, ' +
       'child_name, intended_grade, intended_school_year, current_arrangement, motivation, environment_priorities, questions, ' +
-      "preferred_next_step, status, status_changed_at, privacy_notice_version, privacy_ack_at, suspected_spam, retain_until) " +
+      'preferred_next_step, status, status_changed_at, privacy_notice_version, privacy_ack_at, suspected_spam, retain_until) ' +
       "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'new', ?, ?, ?, ?, ?)",
     m.id,
     m.now,
@@ -72,7 +80,14 @@ export function insertApplication(db: D1Like, m: SubmissionMeta, f: ApplicationF
 
 export function insertDelivery(
   db: D1Like,
-  d: { id: string; kind: 'sender_confirmation' | 'admin_notification'; type: 'inquiry' | 'application'; recordId: string; status: 'queued' | 'skipped'; now: string },
+  d: {
+    id: string;
+    kind: 'sender_confirmation' | 'admin_notification';
+    type: 'inquiry' | 'application';
+    recordId: string;
+    status: 'queued' | 'skipped';
+    now: string;
+  },
 ): D1StatementLike {
   return stmt(
     db,

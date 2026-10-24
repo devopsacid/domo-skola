@@ -22,6 +22,7 @@ import {
   lookupAdmin,
   me,
   recordDetail,
+  searchRecords,
   resendEmail,
   retentionPurge,
   retentionStatus,
@@ -77,16 +78,72 @@ interface Route {
 const REC = '/api/admin/records/(inquiry|application)/([A-Za-z0-9_-]{1,64})';
 const ROUTES: Route[] = [
   { method: 'GET', pattern: /^\/api\/admin\/me$/, permission: null, run: (c) => me(c) },
-  { method: 'GET', pattern: /^\/api\/admin\/records$/, permission: 'records.list', run: (c) => listRecords(c) },
-  { method: 'GET', pattern: new RegExp(`^${REC}$`), permission: 'records.view', run: (c, p) => recordDetail(c, p.type, p.id) },
-  { method: 'DELETE', pattern: new RegExp(`^${REC}$`), permission: 'records.delete', run: (c, p) => deleteRecord(c, p.type, p.id) },
-  { method: 'PATCH', pattern: new RegExp(`^${REC}/status$`), permission: 'records.status', run: (c, p) => changeStatus(c, p.type, p.id) },
-  { method: 'POST', pattern: new RegExp(`^${REC}/notes$`), permission: 'records.note', run: (c, p) => addNote(c, p.type, p.id) },
-  { method: 'POST', pattern: new RegExp(`^${REC}/resend$`), permission: 'records.resend', run: (c, p) => resendEmail(c, p.type, p.id) },
-  { method: 'POST', pattern: /^\/api\/admin\/export$/, permission: 'export', run: (c) => exportCsv(c) },
-  { method: 'GET', pattern: /^\/api\/admin\/retention$/, permission: 'retention.view', run: (c) => retentionStatus(c) },
-  { method: 'POST', pattern: /^\/api\/admin\/retention\/purge$/, permission: 'retention.purge', run: (c) => retentionPurge(c) },
-  { method: 'GET', pattern: /^\/api\/admin\/audit$/, permission: 'audit.view', run: (c) => auditList(c) },
+  {
+    method: 'GET',
+    pattern: /^\/api\/admin\/records$/,
+    permission: 'records.list',
+    run: (c) => listRecords(c),
+  },
+  {
+    method: 'POST',
+    pattern: /^\/api\/admin\/records\/search$/,
+    permission: 'records.list',
+    run: (c) => searchRecords(c),
+  },
+  {
+    method: 'GET',
+    pattern: new RegExp(`^${REC}$`),
+    permission: 'records.view',
+    run: (c, p) => recordDetail(c, p.type, p.id),
+  },
+  {
+    method: 'DELETE',
+    pattern: new RegExp(`^${REC}$`),
+    permission: 'records.delete',
+    run: (c, p) => deleteRecord(c, p.type, p.id),
+  },
+  {
+    method: 'PATCH',
+    pattern: new RegExp(`^${REC}/status$`),
+    permission: 'records.status',
+    run: (c, p) => changeStatus(c, p.type, p.id),
+  },
+  {
+    method: 'POST',
+    pattern: new RegExp(`^${REC}/notes$`),
+    permission: 'records.note',
+    run: (c, p) => addNote(c, p.type, p.id),
+  },
+  {
+    method: 'POST',
+    pattern: new RegExp(`^${REC}/resend$`),
+    permission: 'records.resend',
+    run: (c, p) => resendEmail(c, p.type, p.id),
+  },
+  {
+    method: 'POST',
+    pattern: /^\/api\/admin\/export$/,
+    permission: 'export',
+    run: (c) => exportCsv(c),
+  },
+  {
+    method: 'GET',
+    pattern: /^\/api\/admin\/retention$/,
+    permission: 'retention.view',
+    run: (c) => retentionStatus(c),
+  },
+  {
+    method: 'POST',
+    pattern: /^\/api\/admin\/retention\/purge$/,
+    permission: 'retention.purge',
+    run: (c) => retentionPurge(c),
+  },
+  {
+    method: 'GET',
+    pattern: /^\/api\/admin\/audit$/,
+    permission: 'audit.view',
+    run: (c) => auditList(c),
+  },
 ];
 
 export async function routeAdmin(
@@ -107,7 +164,12 @@ export async function routeAdmin(
       const m = route.pattern.exec(path);
       if (!m) continue;
       if (route.permission && !can(admin.role, route.permission)) {
-        logRequest({ request_id: ctx.requestId, route: 'admin', outcome: 'forbidden', status: 403 });
+        logRequest({
+          request_id: ctx.requestId,
+          route: 'admin',
+          outcome: 'forbidden',
+          status: 403,
+        });
         return adminError('forbidden');
       }
       const cfg = parseConfig(env);
@@ -121,7 +183,13 @@ export async function routeAdmin(
         url,
       };
       const res = await route.run(c, { type: m[1] as RecordType, id: m[2] as string });
-      logRequest({ request_id: ctx.requestId, route: 'admin', outcome: res.ok ? 'ok' : 'error', status: res.status, duration_ms: Date.now() - started });
+      logRequest({
+        request_id: ctx.requestId,
+        route: 'admin',
+        outcome: res.ok ? 'ok' : 'error',
+        status: res.status,
+        duration_ms: Date.now() - started,
+      });
       return res;
     }
     return adminError('not_found');

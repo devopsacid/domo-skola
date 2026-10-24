@@ -2,12 +2,23 @@ import { ERROR_STATUS, type ErrorCode } from '../shared/errors';
 
 export const JSON_TYPE = 'application/json; charset=utf-8';
 
-export function jsonResponse(body: unknown, status = 200, headers: Record<string, string> = {}): Response {
-  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': JSON_TYPE, 'Cache-Control': 'no-store', ...headers } });
+export function jsonResponse(
+  body: unknown,
+  status = 200,
+  headers: Record<string, string> = {},
+): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': JSON_TYPE, 'Cache-Control': 'no-store', ...headers },
+  });
 }
 
 /** Public error envelope `{ok:false,error,...}` with the status from the shared contract. */
-export function publicError(error: ErrorCode, extra: Record<string, unknown> = {}, headers: Record<string, string> = {}): Response {
+export function publicError(
+  error: ErrorCode,
+  extra: Record<string, unknown> = {},
+  headers: Record<string, string> = {},
+): Response {
   return jsonResponse({ ok: false, error, ...extra }, ERROR_STATUS[error], headers);
 }
 

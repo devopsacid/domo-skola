@@ -12,12 +12,16 @@ export interface ServerSettings {
   availability: (typeof ENROLLMENT_AVAILABILITY)[number] | null;
   /** null: not configured, so no restriction can be asserted. */
   applicationYears: string[] | null;
-  marketing: { textVersion: string | undefined; purpose: Partial<Record<Locale, string>> | undefined };
+  marketing: {
+    textVersion: string | undefined;
+    purpose: Partial<Record<Locale, string>> | undefined;
+  };
 }
 
 const obj = (v: unknown): Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
-const str = (v: unknown): string | undefined => (typeof v === 'string' && v.trim() ? v.trim() : undefined);
+const str = (v: unknown): string | undefined =>
+  typeof v === 'string' && v.trim() ? v.trim() : undefined;
 
 export function readSettings(raw: unknown): ServerSettings {
   const s = obj(raw);

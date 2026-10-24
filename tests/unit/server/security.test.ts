@@ -5,7 +5,10 @@ import {
   publicRequestAllowed,
 } from '../../../src/server/security';
 
-const cfg = { siteUrl: 'https://skola.example', allowedOrigins: ['https://skola.example', 'http://localhost:4321'] };
+const cfg = {
+  siteUrl: 'https://skola.example',
+  allowedOrigins: ['https://skola.example', 'http://localhost:4321'],
+};
 const req = (headers: Record<string, string>, method = 'POST') =>
   new Request('https://skola.example/api/contact', { method, headers });
 
@@ -16,7 +19,12 @@ describe('publicRequestAllowed', () => {
   });
   it('rejects a missing, null, foreign or look-alike Origin', () => {
     expect(publicRequestAllowed(req({}), cfg)).toBe(false);
-    for (const o of ['null', 'https://evil.example', 'https://skola.example.evil.example', 'http://skola.example']) {
+    for (const o of [
+      'null',
+      'https://evil.example',
+      'https://skola.example.evil.example',
+      'http://skola.example',
+    ]) {
       expect(publicRequestAllowed(req({ Origin: o }), cfg)).toBe(false);
     }
   });
@@ -33,13 +41,30 @@ describe('adminRequestAllowed', () => {
   const json = { 'Content-Type': 'application/json' };
   it('mutations need Origin == SITE_URL, JSON content type and same-origin fetch metadata', () => {
     const ok = { ...json, Origin: 'https://skola.example', 'Sec-Fetch-Site': 'same-origin' };
-    for (const m of ['POST', 'PATCH', 'DELETE']) expect(adminRequestAllowed(req(ok, m), cfg)).toBe(true);
-    expect(adminRequestAllowed(req({ ...ok, Origin: 'http://localhost:4321' }, 'POST'), cfg)).toBe(false);
-    expect(adminRequestAllowed(req({ ...ok, 'Content-Type': 'text/plain' }, 'POST'), cfg)).toBe(false);
-    expect(adminRequestAllowed(req({ ...ok, 'Content-Type': 'application/x-www-form-urlencoded' }, 'POST'), cfg)).toBe(false);
-    expect(adminRequestAllowed(req({ ...ok, 'Sec-Fetch-Site': 'cross-site' }, 'POST'), cfg)).toBe(false);
+    for (const m of ['POST', 'PATCH', 'DELETE'])
+      expect(adminRequestAllowed(req(ok, m), cfg)).toBe(true);
+    expect(adminRequestAllowed(req({ ...ok, Origin: 'http://localhost:4321' }, 'POST'), cfg)).toBe(
+      false,
+    );
+    expect(adminRequestAllowed(req({ ...ok, 'Content-Type': 'text/plain' }, 'POST'), cfg)).toBe(
+      false,
+    );
+    expect(
+      adminRequestAllowed(
+        req({ ...ok, 'Content-Type': 'application/x-www-form-urlencoded' }, 'POST'),
+        cfg,
+      ),
+    ).toBe(false);
+    expect(adminRequestAllowed(req({ ...ok, 'Sec-Fetch-Site': 'cross-site' }, 'POST'), cfg)).toBe(
+      false,
+    );
     expect(adminRequestAllowed(req({ ...json }, 'POST'), cfg)).toBe(false);
-    expect(adminRequestAllowed(req({ ...ok, 'Content-Type': 'application/json; charset=utf-8' }, 'POST'), cfg)).toBe(true);
+    expect(
+      adminRequestAllowed(
+        req({ ...ok, 'Content-Type': 'application/json; charset=utf-8' }, 'POST'),
+        cfg,
+      ),
+    ).toBe(true);
   });
   it('GET passes unless fetch metadata says cross-site', () => {
     expect(adminRequestAllowed(req({}, 'GET'), cfg)).toBe(true);
@@ -48,7 +73,9 @@ describe('adminRequestAllowed', () => {
     expect(adminRequestAllowed(req({ 'Sec-Fetch-Site': 'cross-site' }, 'GET'), cfg)).toBe(false);
   });
   it('rejects unsafe methods outside POST/PATCH/DELETE', () => {
-    expect(adminRequestAllowed(req({ ...json, Origin: 'https://skola.example' }, 'PUT'), cfg)).toBe(false);
+    expect(adminRequestAllowed(req({ ...json, Origin: 'https://skola.example' }, 'PUT'), cfg)).toBe(
+      false,
+    );
   });
 });
 
@@ -76,7 +103,9 @@ describe('applySecurityHeaders', () => {
     expect(h.get('X-Robots-Tag')).toBe('noindex, nofollow');
   });
   it('cms-auth uses COOP same-origin-allow-popups', () => {
-    expect(get('/api/cms-auth/auth').get('Cross-Origin-Opener-Policy')).toBe('same-origin-allow-popups');
+    expect(get('/api/cms-auth/auth').get('Cross-Origin-Opener-Policy')).toBe(
+      'same-origin-allow-popups',
+    );
     expect(get('/api/cms-authx').get('Cross-Origin-Opener-Policy')).toBe('same-origin');
   });
   it('does not overwrite a CSP the handler already set', () => {

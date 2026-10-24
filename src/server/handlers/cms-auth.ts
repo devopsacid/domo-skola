@@ -17,10 +17,14 @@ const DEFAULT_SCOPE = 'repo,user';
 type RawEnv = Record<string, unknown>;
 
 const text = (status: number, body: string, extra: Record<string, string> = {}) =>
-  new Response(body, { status, headers: { 'Content-Type': 'text/plain; charset=utf-8', ...extra } });
+  new Response(body, {
+    status,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', ...extra },
+  });
 
 function oauthConfig(env: RawEnv) {
-  const id = typeof env.GITHUB_OAUTH_CLIENT_ID === 'string' ? env.GITHUB_OAUTH_CLIENT_ID.trim() : '';
+  const id =
+    typeof env.GITHUB_OAUTH_CLIENT_ID === 'string' ? env.GITHUB_OAUTH_CLIENT_ID.trim() : '';
   const secret =
     typeof env.GITHUB_OAUTH_CLIENT_SECRET === 'string' ? env.GITHUB_OAUTH_CLIENT_SECRET.trim() : '';
   let origin = '';
@@ -137,7 +141,11 @@ export async function handleCmsCallback(
   try {
     const res = await (deps.fetch ?? fetch)(TOKEN_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'User-Agent': 'domo-skola-cms-auth' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'User-Agent': 'domo-skola-cms-auth',
+      },
       body: JSON.stringify({
         client_id: cfg.id,
         client_secret: cfg.secret,
@@ -147,7 +155,8 @@ export async function handleCmsCallback(
       signal: AbortSignal.timeout(8000),
     });
     const body = (await res.json()) as { access_token?: unknown };
-    if (res.ok && typeof body.access_token === 'string' && body.access_token) token = body.access_token;
+    if (res.ok && typeof body.access_token === 'string' && body.access_token)
+      token = body.access_token;
   } catch {
     /* falls through to the generic failure */
   }

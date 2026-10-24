@@ -9,7 +9,12 @@ export interface RenderedEmail {
 }
 
 const esc = (s: string) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
 const page = (lang: Locale, title: string, paragraphs: string[]) =>
   `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><title>${esc(title)}</title></head>` +

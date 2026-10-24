@@ -3,12 +3,26 @@ import { parseAnalyticsEvent } from '../../../src/server/analytics';
 
 describe('parseAnalyticsEvent', () => {
   it('accepts fixed events with enum properties only', () => {
-    expect(parseAnalyticsEvent({ name: 'cta_click', props: { cta: 'enrol', location: 'hero' }, path: '/sk/' })).toEqual({
+    expect(
+      parseAnalyticsEvent({
+        name: 'cta_click',
+        props: { cta: 'enrol', location: 'hero' },
+        path: '/sk/',
+      }),
+    ).toEqual({
       ok: true,
       event: { name: 'cta_click', props: { cta: 'enrol', location: 'hero' }, path: '/sk/' },
     });
-    expect(parseAnalyticsEvent({ name: 'enroll_step', props: { step: 2 }, path: '/sk/prihlaska/' }).ok).toBe(true);
-    expect(parseAnalyticsEvent({ name: 'contact_submit', props: { subject: 'visit' }, path: '/en/contact/' }).ok).toBe(true);
+    expect(
+      parseAnalyticsEvent({ name: 'enroll_step', props: { step: 2 }, path: '/sk/prihlaska/' }).ok,
+    ).toBe(true);
+    expect(
+      parseAnalyticsEvent({
+        name: 'contact_submit',
+        props: { subject: 'visit' },
+        path: '/en/contact/',
+      }).ok,
+    ).toBe(true);
     expect(parseAnalyticsEvent({ name: 'enroll_submit', path: '/sk/' }).ok).toBe(true);
   });
   it('rejects unknown events, free text, extra props and bad values', () => {

@@ -38,8 +38,18 @@ export function composeEmails(cfg: Config, deps: Deps, s: EmailSubject): Compose
   let confirmation: EmailMessage | null = null;
   let admin: EmailMessage | null = null;
   if (from) {
-    const c = renderSenderConfirmation(s.confirmationLocale, s.type === 'inquiry' ? 'contact' : 'application', brand);
-    confirmation = { to: s.email, from, replyTo: cfg.email.replyTo, tag: 'sender_confirmation', ...c };
+    const c = renderSenderConfirmation(
+      s.confirmationLocale,
+      s.type === 'inquiry' ? 'contact' : 'application',
+      brand,
+    );
+    confirmation = {
+      to: s.email,
+      from,
+      replyTo: cfg.email.replyTo,
+      tag: 'sender_confirmation',
+      ...c,
+    };
     if (cfg.email.adminNotifyTo) {
       const a = renderAdminNotification(cfg.adminEmailLocale, {
         type: s.type,

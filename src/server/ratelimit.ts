@@ -22,7 +22,12 @@ export async function checkRateLimit(
   const windows = checks.map((c) => {
     const index = Math.floor(now / c.windowMs);
     const start = index * c.windowMs;
-    return { ...c, fullKey: `${c.key}:${index}`, startIso: new Date(start).toISOString(), end: start + c.windowMs };
+    return {
+      ...c,
+      fullKey: `${c.key}:${index}`,
+      startIso: new Date(start).toISOString(),
+      end: start + c.windowMs,
+    };
   });
   const statements = [
     stmt(db, 'DELETE FROM rate_limits WHERE expires_at < ?', nowIso),
@@ -41,7 +46,8 @@ export async function checkRateLimit(
   let retryAfter = 0;
   windows.forEach((w, i) => {
     const row = (results[i + 1]?.results?.[0] ?? {}) as { count?: number };
-    if ((row.count ?? 0) > w.limit) retryAfter = Math.max(retryAfter, Math.ceil((w.end - now) / 1000));
+    if ((row.count ?? 0) > w.limit)
+      retryAfter = Math.max(retryAfter, Math.ceil((w.end - now) / 1000));
   });
   return retryAfter > 0 ? { allowed: false, retryAfter } : { allowed: true };
 }

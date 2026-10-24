@@ -1,6 +1,15 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { handleAdminRequest } from '../../src/server/admin/router';
-import { SITE, addAdmin, fixedClock, makeCtx, openFixture, resetDb, rows, type Fixture } from './helpers';
+import {
+  SITE,
+  addAdmin,
+  fixedClock,
+  makeCtx,
+  openFixture,
+  resetDb,
+  rows,
+  type Fixture,
+} from './helpers';
 
 let f: Fixture;
 beforeAll(async () => {
@@ -15,17 +24,33 @@ beforeEach(async () => {
   await addAdmin(f.db, 'coord@example.test', 'coordinator');
 });
 
-const call = (headers: Record<string, string>, env = f.env, method = 'GET', path = '/api/admin/me') =>
-  handleAdminRequest(new Request(`${SITE}${path}`, { method, headers }), env, makeCtx(), fixedClock());
+const call = (
+  headers: Record<string, string>,
+  env = f.env,
+  method = 'GET',
+  path = '/api/admin/me',
+) =>
+  handleAdminRequest(
+    new Request(`${SITE}${path}`, { method, headers }),
+    env,
+    makeCtx(),
+    fixedClock(),
+  );
 const asToken = (t: string) => ({ 'Cf-Access-Jwt-Assertion': t });
 
 describe('Access JWT middleware', () => {
   it('accepts a valid token and returns the D1 role', async () => {
     const res = await call(asToken(await f.sign()));
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ ok: true, data: { email: 'admin@example.test', role: 'admin' } });
+    expect(await res.json()).toEqual({
+      ok: true,
+      data: { email: 'admin@example.test', role: 'admin' },
+    });
     const c = await call(asToken(await f.sign({ email: 'Coord@Example.Test' })));
-    expect(await c.json()).toEqual({ ok: true, data: { email: 'coord@example.test', role: 'coordinator' } });
+    expect(await c.json()).toEqual({
+      ok: true,
+      data: { email: 'coord@example.test', role: 'coordinator' },
+    });
   });
 
   it('401 when the header is missing', async () => {
@@ -53,7 +78,10 @@ describe('Access JWT middleware', () => {
   });
 
   it('ignores a spoofed identity header or cookie without a signature', async () => {
-    const res = await call({ 'Cf-Access-Authenticated-User-Email': 'admin@example.test', Cookie: 'CF_Authorization=admin@example.test' });
+    const res = await call({
+      'Cf-Access-Authenticated-User-Email': 'admin@example.test',
+      Cookie: 'CF_Authorization=admin@example.test',
+    });
     expect(res.status).toBe(401);
   });
 
@@ -70,21 +98,31 @@ describe('Access JWT middleware', () => {
     const ok = await f.sign();
     expect((await call(asToken(ok))).status).toBe(200);
     expect((await call(asToken(`${ok}x`))).status).toBe(401);
-    await f.db.prepare("UPDATE admin_users SET disabled_at = '2026-10-24T00:00:00.000Z' WHERE email = ?").bind('admin@example.test').run();
+    await f.db
+      .prepare("UPDATE admin_users SET disabled_at = '2026-10-24T00:00:00.000Z' WHERE email = ?")
+      .bind('admin@example.test')
+      .run();
     expect((await call(asToken(ok))).status).toBe(403);
   });
 
   it('fails closed when Access is not configured', async () => {
-    const { ACCESS_AUD: _a, ...noAud } = f.env;
-    const res = await call(asToken(await f.sign()), noAud as typeof f.env);
+    const noAud = { ...f.env, ACCESS_AUD: undefined };
+    const res = await call(asToken(await f.sign()), noAud);
     expect(res.status).toBe(500);
     expect(await res.json()).toEqual({ ok: false, error: 'server' });
-    const prod = await call(asToken(await f.sign()), { ...f.env, ENVIRONMENT: 'production', EMAIL_PROVIDER: 'brevo' });
+    const prod = await call(asToken(await f.sign()), {
+      ...f.env,
+      ENVIRONMENT: 'production',
+      EMAIL_PROVIDER: 'brevo',
+    });
     expect(prod.status).toBe(500); // ACCESS_CERTS_URL is refused in production
   });
 
   it('fails closed when the certs endpoint is unreachable', async () => {
-    const res = await call(asToken(await f.sign()), { ...f.env, ACCESS_CERTS_URL: 'http://127.0.0.1:9/certs' });
+    const res = await call(asToken(await f.sign()), {
+      ...f.env,
+      ACCESS_CERTS_URL: 'http://127.0.0.1:9/certs',
+    });
     expect(res.status).toBe(401);
   });
 
@@ -106,9 +144,14 @@ describe('admin CSRF (ADR-0001 D7)', () => {
     expect((await mut({ Origin: 'https://evil.example' })).status).toBe(403);
     expect((await mut({})).status).toBe(403);
     expect((await mut({ Origin: SITE, 'Content-Type': 'text/plain' })).status).toBe(403);
-    expect((await mut({ Origin: SITE, 'Content-Type': 'application/x-www-form-urlencoded' })).status).toBe(403);
+    expect(
+      (await mut({ Origin: SITE, 'Content-Type': 'application/x-www-form-urlencoded' })).status,
+    ).toBe(403);
     expect((await mut({ Origin: SITE, 'Sec-Fetch-Site': 'cross-site' })).status).toBe(403);
-    expect(await (await mut({ Origin: 'https://evil.example' })).json()).toEqual({ ok: false, error: 'origin' });
+    expect(await (await mut({ Origin: 'https://evil.example' })).json()).toEqual({
+      ok: false,
+      error: 'origin',
+    });
   });
   it('rejects GET with cross-site fetch metadata', async () => {
     const res = await call({ ...asToken(await f.sign()), 'Sec-Fetch-Site': 'cross-site' });

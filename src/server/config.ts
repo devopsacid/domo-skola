@@ -30,7 +30,12 @@ export interface Config {
   adminEmailLocale: Locale;
   ipHashSecret: string;
   rateLimit: { per10min: number; perDay: number; emailPerDay: number };
-  retention: { inquiryDays: number; applicationDays: number; afterCloseDays: number; auditDays: number };
+  retention: {
+    inquiryDays: number;
+    applicationDays: number;
+    afterCloseDays: number;
+    auditDays: number;
+  };
   marketingConsentEnabled: boolean;
   github: { clientId?: string; clientSecret?: string };
   analytics: { provider: string; domain?: string; upstream?: string };
@@ -133,7 +138,11 @@ export function parseConfig(env: Record<string, unknown>): Config {
     environment: raw.ENVIRONMENT as Config['environment'],
     siteUrl: siteUrl as string,
     allowedOrigins: allowed,
-    access: { teamDomain: raw.ACCESS_TEAM_DOMAIN, aud: raw.ACCESS_AUD, certsUrl: raw.ACCESS_CERTS_URL },
+    access: {
+      teamDomain: raw.ACCESS_TEAM_DOMAIN,
+      aud: raw.ACCESS_AUD,
+      certsUrl: raw.ACCESS_CERTS_URL,
+    },
     email: {
       provider: raw.EMAIL_PROVIDER as 'brevo' | 'mock',
       apiKey: raw.EMAIL_API_KEY,

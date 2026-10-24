@@ -47,7 +47,10 @@ export async function startMockMail({ port = 8791, host = '127.0.0.1' } = {}) {
   let failStatus = null;
 
   const send = (res, status, body, type = 'application/json') => {
-    res.writeHead(status, { 'content-type': `${type}; charset=utf-8`, 'cache-control': 'no-store' });
+    res.writeHead(status, {
+      'content-type': `${type}; charset=utf-8`,
+      'cache-control': 'no-store',
+    });
     res.end(body);
   };
   const json = (res, status, obj) => send(res, status, JSON.stringify(obj));
@@ -59,7 +62,8 @@ export async function startMockMail({ port = 8791, host = '127.0.0.1' } = {}) {
       if (failStatus) return json(res, failStatus, { code: 'mock_failure' });
       const body = await readJson(req);
       const m = body.ok ? body.value : null;
-      if (!m || !isStr(m.to) || !isStr(m.from) || !isStr(m.subject)) return json(res, 400, { code: 'invalid_message' });
+      if (!m || !isStr(m.to) || !isStr(m.from) || !isStr(m.subject))
+        return json(res, 400, { code: 'invalid_message' });
       const rec = {
         id: randomUUID(),
         received_at: new Date().toISOString(),
@@ -119,6 +123,10 @@ export async function startMockMail({ port = 8791, host = '127.0.0.1' } = {}) {
   return {
     url: `http://${host}:${actual}`,
     messages,
-    close: () => new Promise((resolve) => { server.close(() => resolve()); server.closeAllConnections?.(); }),
+    close: () =>
+      new Promise((resolve) => {
+        server.close(() => resolve());
+        server.closeAllConnections?.();
+      }),
   };
 }

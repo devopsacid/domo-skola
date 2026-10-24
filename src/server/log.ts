@@ -3,7 +3,15 @@
  * simple token (ids, route names, outcomes, numbers). Anything else becomes "[redacted]".
  * Errors are logged by class name only: provider and database messages can echo user data.
  */
-const ALLOWED_KEYS = new Set(['request_id', 'route', 'outcome', 'status', 'duration_ms', 'code', 'error']);
+const ALLOWED_KEYS = new Set([
+  'request_id',
+  'route',
+  'outcome',
+  'status',
+  'duration_ms',
+  'code',
+  'error',
+]);
 const TOKEN = /^[A-Za-z0-9_.:/-]{0,64}$/;
 
 export type LogFields = Record<string, unknown>;

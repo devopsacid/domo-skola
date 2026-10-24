@@ -1,7 +1,16 @@
 /** Development and e2e adapter: posts the message to tools/mock-mail. Refused in production by config. */
-import { errorCode, failureCode, type EmailMessage, type EmailTransport, type SendResult } from './transport';
+import {
+  errorCode,
+  failureCode,
+  type EmailMessage,
+  type EmailTransport,
+  type SendResult,
+} from './transport';
 
-export function createMockTransport(opts: { apiBase: string; fetch: typeof fetch }): EmailTransport {
+export function createMockTransport(opts: {
+  apiBase: string;
+  fetch: typeof fetch;
+}): EmailTransport {
   const base = opts.apiBase.replace(/\/+$/, '');
   return {
     async send(m: EmailMessage): Promise<SendResult> {

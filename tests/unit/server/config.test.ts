@@ -18,18 +18,33 @@ describe('parseConfig', () => {
     const c = parseConfig(base);
     expect(c.allowedOrigins).toEqual(['http://localhost:8788', 'http://localhost:4321']);
     expect(c.rateLimit).toEqual({ per10min: 5, perDay: 20, emailPerDay: 3 });
-    expect(c.retention).toEqual({ inquiryDays: 30, applicationDays: 60, afterCloseDays: 10, auditDays: 90 });
+    expect(c.retention).toEqual({
+      inquiryDays: 30,
+      applicationDays: 60,
+      afterCloseDays: 10,
+      auditDays: 90,
+    });
     expect(c.marketingConsentEnabled).toBe(false);
     expect(c.adminEmailLocale).toBe('sk');
   });
   it('enables marketing consent only for the exact string "true"', () => {
-    expect(parseConfig({ ...base, MARKETING_CONSENT_ENABLED: 'true' }).marketingConsentEnabled).toBe(true);
+    expect(
+      parseConfig({ ...base, MARKETING_CONSENT_ENABLED: 'true' }).marketingConsentEnabled,
+    ).toBe(true);
     for (const v of ['TRUE', '1', 'yes', ' true', 'false', '']) {
-      expect(parseConfig({ ...base, MARKETING_CONSENT_ENABLED: v }).marketingConsentEnabled).toBe(false);
+      expect(parseConfig({ ...base, MARKETING_CONSENT_ENABLED: v }).marketingConsentEnabled).toBe(
+        false,
+      );
     }
   });
   it('fails closed on missing or invalid values, naming variables but never values', () => {
-    for (const k of ['SITE_URL', 'IP_HASH_SECRET', 'RETENTION_DAYS_INQUIRY', 'AUDIT_RETENTION_DAYS', 'ENVIRONMENT']) {
+    for (const k of [
+      'SITE_URL',
+      'IP_HASH_SECRET',
+      'RETENTION_DAYS_INQUIRY',
+      'AUDIT_RETENTION_DAYS',
+      'ENVIRONMENT',
+    ]) {
       const env: Record<string, string | undefined> = { ...base };
       delete env[k];
       expect(() => parseConfig(env)).toThrow(ConfigError);
@@ -47,8 +62,15 @@ describe('parseConfig', () => {
     expect(() => parseConfig({ ...base, EMAIL_PROVIDER: 'carrier-pigeon' })).toThrow(ConfigError);
   });
   it('refuses ACCESS_CERTS_URL in production and mock mail in production', () => {
-    const prod = { ...base, ENVIRONMENT: 'production', EMAIL_PROVIDER: 'brevo', EMAIL_API_KEY: 'k' };
-    expect(() => parseConfig({ ...prod, ACCESS_CERTS_URL: 'http://localhost:8790/certs' })).toThrow(ConfigError);
+    const prod = {
+      ...base,
+      ENVIRONMENT: 'production',
+      EMAIL_PROVIDER: 'brevo',
+      EMAIL_API_KEY: 'k',
+    };
+    expect(() => parseConfig({ ...prod, ACCESS_CERTS_URL: 'http://localhost:8790/certs' })).toThrow(
+      ConfigError,
+    );
     expect(() => parseConfig({ ...prod, EMAIL_PROVIDER: 'mock' })).toThrow(ConfigError);
     expect(parseConfig(prod).environment).toBe('production');
   });

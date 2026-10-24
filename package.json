@@ -17,7 +17,10 @@
     "test:integration": "vitest run --config tests/integration/vitest.config.ts",
     "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs",
     "mock-mail": "node tools/mock-mail/index.mjs",
-    "dev:access": "node tools/dev-access-proxy/index.mjs"
+    "dev:access": "node tools/dev-access-proxy/index.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:seed:admins": "wrangler d1 execute DB --local --file tools/dev-access-proxy/seed-admins.sql",
+    "dev:api": "wrangler pages dev dist"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

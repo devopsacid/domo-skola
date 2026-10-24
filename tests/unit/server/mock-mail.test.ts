@@ -12,9 +12,20 @@ const boot = async () => {
   stop = m.close;
   return m.url;
 };
-const msg = { to: 'p@example.sk', from: 'a@b.sk', subject: 'S', text: 'T', html: '<p>H</p>', tag: 'x' };
+const msg = {
+  to: 'p@example.sk',
+  from: 'a@b.sk',
+  subject: 'S',
+  text: 'T',
+  html: '<p>H</p>',
+  tag: 'x',
+};
 const post = (url: string, body: unknown) =>
-  fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
 
 describe('mock-mail', () => {
   it('captures messages, lists them and clears them', async () => {
@@ -23,11 +34,15 @@ describe('mock-mail', () => {
     expect(r.status).toBe(201);
     const { id } = (await r.json()) as { id: string };
     expect(id).toBeTruthy();
-    const list = (await (await fetch(`${url}/messages`)).json()) as { messages: Record<string, unknown>[] };
+    const list = (await (await fetch(`${url}/messages`)).json()) as {
+      messages: Record<string, unknown>[];
+    };
     expect(list.messages).toHaveLength(1);
     expect(list.messages[0]).toMatchObject({ id, to: 'p@example.sk', subject: 'S', tag: 'x' });
     expect((await fetch(`${url}/messages`, { method: 'DELETE' })).status).toBe(204);
-    expect(((await (await fetch(`${url}/messages`)).json()) as { messages: unknown[] }).messages).toHaveLength(0);
+    expect(
+      ((await (await fetch(`${url}/messages`)).json()) as { messages: unknown[] }).messages,
+    ).toHaveLength(0);
   });
   it('rejects malformed messages', async () => {
     const url = await boot();
@@ -43,9 +58,17 @@ describe('mock-mail', () => {
   });
   it('can be told to fail, for the email failure path', async () => {
     const url = await boot();
-    await fetch(`${url}/mode`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ fail: 503 }) });
+    await fetch(`${url}/mode`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ fail: 503 }),
+    });
     expect((await post(`${url}/send`, msg)).status).toBe(503);
-    await fetch(`${url}/mode`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ fail: null }) });
+    await fetch(`${url}/mode`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ fail: null }),
+    });
     expect((await post(`${url}/send`, msg)).status).toBe(201);
   });
   it('binds to loopback only', async () => {

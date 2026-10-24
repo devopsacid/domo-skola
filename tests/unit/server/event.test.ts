@@ -11,12 +11,22 @@ const env = {
 };
 const ctx = () => {
   const pending: Promise<unknown>[] = [];
-  return { requestId: 'r1', waitUntil: (p: Promise<unknown>) => void pending.push(p), flush: () => Promise.all(pending) };
+  return {
+    requestId: 'r1',
+    waitUntil: (p: Promise<unknown>) => void pending.push(p),
+    flush: () => Promise.all(pending),
+  };
 };
 const req = (body: unknown, headers: Record<string, string> = {}, method = 'POST') =>
   new Request('https://skola.example/api/e', {
     method,
-    headers: { Origin: 'https://skola.example', 'Content-Type': 'application/json', 'User-Agent': 'UA/1', 'CF-Connecting-IP': '203.0.113.9', ...headers },
+    headers: {
+      Origin: 'https://skola.example',
+      'Content-Type': 'application/json',
+      'User-Agent': 'UA/1',
+      'CF-Connecting-IP': '203.0.113.9',
+      ...headers,
+    },
     body: method === 'POST' ? JSON.stringify(body) : undefined,
   });
 const spy = () => {
@@ -32,7 +42,12 @@ describe('POST /api/e', () => {
   it('is a 404 unless the provider is plausible', async () => {
     const s = spy();
     for (const p of [undefined, '', 'none', 'ga4']) {
-      const res = await handleEvent(req({ name: 'page_view', path: '/sk/' }), { ...env, PUBLIC_ANALYTICS_PROVIDER: p }, ctx(), { fetch: s.f });
+      const res = await handleEvent(
+        req({ name: 'page_view', path: '/sk/' }),
+        { ...env, PUBLIC_ANALYTICS_PROVIDER: p },
+        ctx(),
+        { fetch: s.f },
+      );
       expect(res.status).toBe(404);
     }
     expect(s.calls).toHaveLength(0);
@@ -40,7 +55,12 @@ describe('POST /api/e', () => {
   it('forwards a valid event to the upstream without the client IP', async () => {
     const s = spy();
     const c = ctx();
-    const res = await handleEvent(req({ name: 'cta_click', props: { cta: 'enrol', location: 'hero' }, path: '/sk/' }), env, c, { fetch: s.f });
+    const res = await handleEvent(
+      req({ name: 'cta_click', props: { cta: 'enrol', location: 'hero' }, path: '/sk/' }),
+      env,
+      c,
+      { fetch: s.f },
+    );
     await c.flush();
     expect(res.status).toBe(202);
     expect(s.calls).toHaveLength(1);
@@ -59,10 +79,16 @@ describe('POST /api/e', () => {
   it('rejects a foreign origin, bad content, unknown events and oversized bodies', async () => {
     const s = spy();
     const go = (r: Request) => handleEvent(r, env, ctx(), { fetch: s.f });
-    expect((await go(req({ name: 'page_view', path: '/' }, { Origin: 'https://evil.example' }))).status).toBe(403);
+    expect(
+      (await go(req({ name: 'page_view', path: '/' }, { Origin: 'https://evil.example' }))).status,
+    ).toBe(403);
     expect((await go(req({ name: 'purchase', path: '/' }))).status).toBe(400);
-    expect((await go(req({ name: 'page_view', path: '/' }, { 'Content-Type': 'text/plain' }))).status).toBe(400);
-    expect((await go(req({ name: 'page_view', path: '/', props: { note: 'x'.repeat(5000) } }))).status).toBe(400);
+    expect(
+      (await go(req({ name: 'page_view', path: '/' }, { 'Content-Type': 'text/plain' }))).status,
+    ).toBe(400);
+    expect(
+      (await go(req({ name: 'page_view', path: '/', props: { note: 'x'.repeat(5000) } }))).status,
+    ).toBe(400);
     expect((await go(req({}, {}, 'GET'))).status).toBe(405);
     expect(s.calls).toHaveLength(0);
   });
@@ -76,7 +102,9 @@ describe('POST /api/e', () => {
     expect(res.status).toBe(202);
   });
   it('fails closed on missing upstream configuration', async () => {
-    const { ANALYTICS_UPSTREAM: _u, ...rest } = env;
-    expect((await handleEvent(req({ name: 'page_view', path: '/sk/' }), rest, ctx(), {})).status).toBe(404);
+    const rest = { ...env, ANALYTICS_UPSTREAM: undefined };
+    expect(
+      (await handleEvent(req({ name: 'page_view', path: '/sk/' }), rest, ctx(), {})).status,
+    ).toBe(404);
   });
 });
