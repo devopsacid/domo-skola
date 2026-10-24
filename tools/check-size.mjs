@@ -10,7 +10,8 @@ const KB = 1024;
 const BUDGETS = [
   { match: /^\/(admin|cms)\//, js: 200 * KB, css: 60 * KB, html: 40 * KB },
   {
-    match: /\/(enrol|prihlaska|prihlaska-dieta|contact|kontakt|kontakt-odoslany|enrol-submitted)\b/,
+    // Form pages by route-map slug (src/i18n/routes.ts): enrol sk/cs `prihlaska`, en `apply`; contact `kontakt` / `contact`.
+    match: /^\/(sk|cs|en)\/(prihlaska|apply|kontakt|contact)\//,
     js: 35 * KB,
     css: 40 * KB,
     html: 40 * KB,
@@ -30,7 +31,9 @@ for (const file of walk(dist).filter((f) => f.endsWith('.html'))) {
   const budget = BUDGETS.find((b) => b.match.test(url));
   let js = 0;
   let css = 0;
-  for (const m of text.matchAll(/<script\b[^>]*\ssrc="([^"]+)"/g)) js += sizeOf(m[1]);
+  // Local module scripts plus everything they statically import (shared chunks), each file once.
+  const seen = new Set();
+  for (const m of text.matchAll(/<script\b[^>]*\ssrc="([^"]+)"/g)) js += moduleSize(m[1], seen);
   for (const m of text.matchAll(
     /<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]+)"|<link\b[^>]*\shref="([^"]+)"[^>]*\srel="stylesheet"/g,
   ))
@@ -50,6 +53,25 @@ for (const file of walk(dist).filter((f) => f.endsWith('.html'))) {
 }
 if (problems.length) fail('check-size', problems);
 console.log('check-size: ok');
+
+function moduleSize(ref, seen) {
+  if (/^(https?:)?\/\//.test(ref)) return 0;
+  const clean = ref.split(/[?#]/)[0];
+  const p = join(dist, clean);
+  if (seen.has(p) || !existsSync(p)) return 0;
+  seen.add(p);
+  const buf = readFileSync(p);
+  let total = gz(buf);
+  if (!clean.endsWith('.js')) return total;
+  // Relative static and dynamic imports in bundled output: from"./x.js", import"./x.js", import("./x.js")
+  for (const m of buf
+    .toString('utf8')
+    .matchAll(/(?:from|import)\s*\(?\s*["'](\.{1,2}\/[^"']+\.js)["']/g)) {
+    const dir = clean.slice(0, clean.lastIndexOf('/') + 1);
+    total += moduleSize(new URL(m[1], `http://x${dir}`).pathname, seen);
+  }
+  return total;
+}
 
 function sizeOf(ref) {
   if (/^(https?:)?\/\//.test(ref)) return 0;
