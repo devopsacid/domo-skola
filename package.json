@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "astro": "7.3.8",
+    "jose": "6.2.12",
     "zod": "4.6.5"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "prettier": "3.9.9",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
-    "vitest": "5.0.3"
+    "vitest": "5.0.3",
+    "wrangler": "4.149.0"
   }
 }
