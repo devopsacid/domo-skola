@@ -1,0 +1,512 @@
+/*
+ * Form controls as CSS classes and markup structure (system.md §6.8-§6.9,
+ * architecture.md §11.8). Shared by static Astro markup and the Preact islands.
+ *
+ * Field anatomy: .field > label.field__label, p.field__help, control, p.field__error
+ * (help and error ids go into aria-describedby; invalid controls get aria-invalid="true").
+ */
+
+.form-panel {
+  max-width: 40rem;
+  padding: var(--space-l);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-s);
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+}
+
+.form-note {
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+/* Short pairs (e-mail + phone) side by side from 48rem. */
+.field-row {
+  display: grid;
+  gap: var(--space-l);
+}
+
+@media (min-width: 48rem) {
+  .field-row {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.field__label,
+.choice-group__legend {
+  color: var(--color-text);
+  font-size: var(--step-0);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-ui);
+}
+
+.field__optional {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-body);
+}
+
+.field__help {
+  max-width: var(--measure-narrow);
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+  color: var(--color-error);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+  line-height: 1.5;
+}
+
+.field__error::before {
+  content: '!' / '';
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-block-start: 0.125rem;
+  border-radius: 50%;
+  background-color: var(--color-error);
+  color: var(--color-surface);
+  font-size: 0.8125rem;
+  line-height: 1;
+}
+
+.field__error[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------ Text-like controls -- */
+
+.input,
+.select,
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0.625rem 0.875rem;
+  border: var(--border-control) solid var(--color-border-strong);
+  border-radius: var(--radius-s);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-ui);
+  transition: border-color var(--duration-instant) var(--ease-standard);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-text-subtle);
+  opacity: 1;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: var(--color-text);
+}
+
+.textarea {
+  min-height: calc(6lh + 1.25rem);
+  resize: vertical;
+}
+
+/* Invalid: colour + thicker edge + icon and text below; no layout shift. */
+.input[aria-invalid='true'],
+.select[aria-invalid='true'],
+.textarea[aria-invalid='true'] {
+  border-color: var(--color-error);
+  box-shadow: inset 0 0 0 1px var(--color-error);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  border-color: var(--color-border);
+  background-color: var(--color-surface-sunk);
+  color: var(--color-text-subtle);
+  cursor: not-allowed;
+}
+
+.input[readonly],
+.textarea[readonly] {
+  border-style: dashed;
+  background-color: var(--color-surface-sunk);
+}
+
+/* Native select with a CSS chevron (no data: URI, CSP img-src stays 'self'). */
+.select-wrap {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  padding-inline-end: 2.75rem;
+  cursor: pointer;
+}
+
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 1.125rem;
+  width: 0.5625rem;
+  height: 0.5625rem;
+  border-right: 2px solid var(--color-text);
+  border-bottom: 2px solid var(--color-text);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+/* --------------------------------------------- Checkbox and radio ----- */
+
+.choice-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice-group__legend {
+  float: left;
+  width: 100%;
+  margin-block-end: var(--space-2xs);
+  padding: 0;
+}
+
+.choice-group__legend + * {
+  clear: left;
+}
+
+.choice-group > .field__help {
+  margin-block-end: var(--space-xs);
+}
+
+.choice-group > .field__error {
+  margin-block-start: var(--space-xs);
+}
+
+/* 24 px visual box inside a 44 px-tall label row. */
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  min-height: var(--target-min);
+  padding-block: 0.625rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.check__input {
+  appearance: none;
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  margin-block-start: calc((1.5em - 1.5rem) / 2);
+  border: var(--border-strong) solid var(--color-border-strong);
+  border-radius: 0.25rem;
+  background-color: var(--color-surface);
+  cursor: pointer;
+}
+
+.check__input[type='radio'] {
+  border-radius: 50%;
+}
+
+.check__input:checked {
+  border-color: var(--color-control-checked);
+  background-color: var(--color-control-checked);
+}
+
+/* Tick drawn with borders so it survives forced-colours mode. */
+.check__input[type='checkbox']:checked::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.75rem;
+  margin-block-start: -0.15rem;
+  border-right: 0.1875rem solid var(--color-control-checked-mark);
+  border-bottom: 0.1875rem solid var(--color-control-checked-mark);
+  transform: rotate(45deg);
+}
+
+.check__input[type='radio']:checked {
+  background-color: var(--color-surface);
+}
+
+.check__input[type='radio']:checked::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border: 0.375rem solid var(--color-control-checked);
+  border-radius: 50%;
+}
+
+.check__input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.check__input:disabled {
+  border-color: var(--color-border);
+  background-color: var(--color-surface-sunk);
+  cursor: not-allowed;
+}
+
+/* Radio cards: large 48 px tappable rows (grade 1-4, preferred next step). */
+.choice-grid {
+  display: grid;
+  gap: var(--space-xs);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+}
+
+.choice-list {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.radio-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--control-height);
+  padding: 0.625rem var(--space-s);
+  border: var(--border-control) solid var(--color-border-strong);
+  border-radius: var(--radius-s);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  line-height: var(--leading-ui);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-instant) var(--ease-standard),
+    background-color var(--duration-instant) var(--ease-standard);
+}
+
+.radio-card:hover {
+  border-color: var(--color-text);
+}
+
+.radio-card:has(:checked) {
+  border-color: var(--color-control-checked);
+  background-color: var(--color-control-selected-bg);
+  box-shadow: inset 0 0 0 1px var(--color-control-checked);
+  font-weight: var(--weight-bold);
+}
+
+.radio-card .check__input {
+  margin-block-start: 0;
+}
+
+/* The ring goes around the whole card, not the small circle inside. */
+.radio-card:has(:focus-visible) {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.radio-card .check__input:focus-visible {
+  outline: none;
+}
+
+/* ------------------------------------------------- Error summary ------ */
+
+.error-summary {
+  padding: var(--space-m);
+  border-inline-start: 0.25rem solid var(--color-error);
+  border-radius: var(--radius-s);
+  background-color: var(--color-error-bg);
+  color: var(--color-text);
+}
+
+.error-summary__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+}
+
+.error-summary__list {
+  margin-block-start: var(--space-xs);
+  padding-inline-start: 1.25em;
+}
+
+.error-summary__list a {
+  display: block;
+  padding-block: 0.625rem;
+  color: var(--color-error);
+  font-weight: var(--weight-bold);
+  line-height: 1.5;
+}
+
+.success-panel {
+  padding: var(--space-l);
+  border-inline-start: 0.25rem solid var(--color-success);
+  border-radius: var(--radius-s);
+  background-color: var(--color-success-bg);
+  color: var(--color-text);
+}
+
+.success-panel > * + * {
+  margin-block-start: var(--space-2xs);
+}
+
+.success-panel__title {
+  color: var(--color-success);
+}
+
+/* Honeypot: off-screen via class (never display:none inline, never style=""). */
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* --------------------------------------- Multi-step progress (§6.9) --- */
+
+.stepper__count {
+  color: var(--color-text);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+}
+
+.stepper__bar {
+  --progress: 0%;
+  height: 0.375rem;
+  margin-block-start: var(--space-2xs);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-sage);
+  overflow: hidden;
+}
+
+.stepper__bar::before {
+  content: '';
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-control-checked);
+}
+
+.stepper[data-step='1'] .stepper__bar {
+  --progress: 25%;
+}
+.stepper[data-step='2'] .stepper__bar {
+  --progress: 50%;
+}
+.stepper[data-step='3'] .stepper__bar {
+  --progress: 75%;
+}
+.stepper[data-step='4'] .stepper__bar {
+  --progress: 100%;
+}
+
+.stepper__list {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.stepper__item {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-height: var(--target-min);
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: var(--leading-ui);
+}
+
+.stepper__item::before {
+  content: counter(step);
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: var(--border-strong) solid var(--color-border-strong);
+  border-radius: 50%;
+  font-weight: var(--weight-bold);
+}
+
+.stepper__item[aria-current='step'] {
+  color: var(--color-text);
+  font-weight: var(--weight-bold);
+}
+
+.stepper__item[aria-current='step']::before {
+  border-color: var(--color-control-checked);
+  background-color: var(--color-control-checked);
+  color: var(--color-control-checked-mark);
+}
+
+.stepper__item[data-state='done'] {
+  color: var(--color-text);
+}
+
+.stepper__item[data-state='done']::before {
+  content: '✓' / '';
+  border-color: var(--color-control-checked);
+  color: var(--color-control-checked);
+}
+
+.stepper__item a,
+.stepper__item button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+@media (min-width: 48rem) {
+  .stepper__count,
+  .stepper__bar {
+    display: none;
+  }
+
+  .stepper__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-s);
+  }
+
+  .stepper__item:not(:last-child)::after {
+    content: '';
+    width: clamp(1rem, 3vw, 3rem);
+    height: 2px;
+    margin-inline-start: var(--space-xs);
+    background-color: var(--color-deco-sage);
+  }
+}

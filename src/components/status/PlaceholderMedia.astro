@@ -1,0 +1,36 @@
+---
+/**
+ * Image placeholder at the final aspect ratio: sage frame, mark silhouette and a
+ * caption (system.md §6.11 B). Preview builds only, like Placeholder.
+ */
+import type { Locale } from '../../i18n/routes';
+import { chrome } from '../site/strings';
+import { isStrictBuild } from './mode';
+
+interface Props {
+  locale: Locale;
+  field: string;
+  /** What will go here, in the page language. */
+  label: string;
+  ratio?: '4x3' | '16x9' | '1x1';
+  class?: string;
+}
+const { locale, field, label, ratio = '4x3', class: className } = Astro.props;
+if (isStrictBuild()) throw new Error(`CONTENT_STRICT=1: media placeholder "${field}" would be rendered`);
+const t = chrome(locale).status;
+---
+
+<figure class:list={['placeholder-media', className]} data-placeholder={field}>
+  <div class:list={['placeholder-media__frame', `ratio-${ratio}`]}>
+    <svg class="placeholder-media__mark" viewBox="0 0 64 64" width="96" height="96" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M33.5 3.5c13.6.6 25.3 9.9 27 23.4 1.8 14.3-7.1 29.6-22.2 32.6C23.6 62.4 7.4 55.9 4.1 40.6 1 26 8.2 11.7 20.6 6.2c4.1-1.8 8.5-2.9 12.9-2.7Z"
+      ></path>
+    </svg>
+  </div>
+  <figcaption class="placeholder-media__caption">
+    <mark class="placeholder">[{t.placeholderPrefix}: {label}]</mark>{' '}
+    {t.illustrationCaption}
+  </figcaption>
+</figure>

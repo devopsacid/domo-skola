@@ -1,35 +1,24 @@
 ---
-import { LOCALES, hreflangAlternates, type Locale } from '../../i18n/routes';
-import { isNoindex } from '../../shared/noindex';
+import { LOCALES, type Locale } from '../../i18n/routes';
+import Base from '../../layouts/Base.astro';
 
 export function getStaticPaths() {
   return LOCALES.map((locale) => ({ params: { locale } }));
 }
 
 const locale = Astro.params.locale as Locale;
-const site = Astro.site?.toString() ?? '';
-const alternates = hreflangAlternates({ key: 'home' }, site);
-const noindex = isNoindex(import.meta.env.PUBLIC_NOINDEX);
+// Placeholder until L3 builds the home sections.
 const placeholder: Record<Locale, string> = {
-  sk: 'Domoškola: pripravujeme',
-  cs: 'Domoškola: připravujeme',
-  en: 'Domoškola: coming soon',
+  sk: 'Pripravujeme',
+  cs: 'Připravujeme',
+  en: 'Coming soon',
 };
 ---
 
-<!doctype html>
-<html lang={locale}>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{placeholder[locale]}</title>
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="canonical" href={alternates.find((a) => a.hreflang === locale)?.href} />
-    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
-  </head>
-  <body>
-    <main>
+<Base locale={locale} page={{ key: 'home', locale }}>
+  <section class="section">
+    <div class="container">
       <h1>{placeholder[locale]}</h1>
-    </main>
-  </body>
-</html>
+    </div>
+  </section>
+</Base>

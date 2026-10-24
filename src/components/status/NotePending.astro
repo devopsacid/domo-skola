@@ -1,0 +1,43 @@
+---
+/**
+ * Public honesty label that ships (system.md §6.11 A): illustrative example,
+ * proposed process, or information still being confirmed. The slot holds a short
+ * explanation in the page language.
+ */
+import type { Locale } from '../../i18n/routes';
+import { chrome } from '../site/strings';
+
+interface Props {
+  locale: Locale;
+  kind: 'illustrative' | 'proposed' | 'pending';
+  /** Override the default label text (e.g. a CMS-provided disclaimer title). */
+  label?: string;
+  /** Inline label only (phrasing content, no explanation). */
+  inline?: boolean;
+  class?: string;
+}
+const { locale, kind, label, inline = false, class: className } = Astro.props;
+const text = label ?? chrome(locale).status[kind];
+const hasBody = !inline && Astro.slots.has('default');
+---
+
+{
+  inline ? (
+    <span
+      class:list={['note-pending', 'on-light', 'note-pending--inline', className]}
+      role="note"
+      data-kind={kind}
+    >
+      <span class="note-pending__label">{text}</span>
+    </span>
+  ) : (
+    <aside class:list={['note-pending', 'on-light', className]} role="note" data-kind={kind}>
+      <p class="note-pending__label">{text}</p>
+      {hasBody && (
+        <div class="note-pending__body">
+          <slot />
+        </div>
+      )}
+    </aside>
+  )
+}

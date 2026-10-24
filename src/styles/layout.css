@@ -1,0 +1,251 @@
+/*
+ * Layout primitives (system.md §2). Mobile first; breakpoints in rem so 200 % zoom
+ * falls back to the smaller layout: 40rem sm, 48rem md, 64rem lg, 75rem xl.
+ * Section layouts scope their own grids (e.g. `.hero-b .container`) in their own files.
+ */
+
+.container {
+  width: min(100% - 2 * var(--grid-gutter), var(--container-max));
+  margin-inline: auto;
+}
+
+.container-wide {
+  width: min(100% - 2 * var(--grid-gutter), var(--container-wide));
+  margin-inline: auto;
+}
+
+/* Full-width band with section rhythm. Adjacent bands on the same surface share padding. */
+.section {
+  padding-block: var(--space-section);
+}
+
+.section-tight {
+  padding-block: var(--space-2xl);
+}
+
+.section + .section:not([class*='surface-']),
+.section.surface-sage + .section.surface-sage,
+.section.surface-sun + .section.surface-sun,
+.section.surface-clay + .section.surface-clay,
+.section.surface-sunk + .section.surface-sunk,
+.section.surface-night + .section.surface-night,
+.section.surface-forest + .section.surface-forest {
+  padding-block-start: 0;
+}
+
+/* Vertical rhythm: gap token set by modifier classes, never by style="". */
+.stack {
+  --stack-gap: var(--space-s);
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap);
+}
+
+.stack-2xs {
+  --stack-gap: var(--space-2xs);
+}
+.stack-xs {
+  --stack-gap: var(--space-xs);
+}
+.stack-m {
+  --stack-gap: var(--space-m);
+}
+.stack-l {
+  --stack-gap: var(--space-l);
+}
+.stack-xl {
+  --stack-gap: var(--space-xl);
+}
+.stack-2xl {
+  --stack-gap: var(--space-2xl);
+}
+
+/* Horizontal group that wraps (button pairs, chips, meta lines). */
+.cluster {
+  --cluster-gap: var(--space-xs);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cluster-gap);
+}
+
+:is(ul, ol).cluster {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cluster-2xs {
+  --cluster-gap: var(--space-2xs);
+}
+.cluster-s {
+  --cluster-gap: var(--space-s);
+}
+.cluster-m {
+  --cluster-gap: var(--space-m);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+.measure-narrow {
+  max-width: var(--measure-narrow);
+}
+
+/* Long-form text: flow spacing, lists and heading rhythm (headings sit closer to
+ * what follows than to what precedes, system.md §5.1). */
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-block-start: var(--space-s);
+}
+
+.prose > * + :is(h2, h3, h4) {
+  margin-block-start: var(--space-xl);
+}
+
+.prose > :is(h2, h3, h4) + * {
+  margin-block-start: var(--space-xs);
+}
+
+.prose :is(ul, ol) {
+  padding-inline-start: 1.25em;
+}
+
+.prose li + li {
+  margin-block-start: var(--space-2xs);
+}
+
+.prose li::marker {
+  color: var(--color-accent-text);
+}
+
+.lead {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  max-width: var(--measure);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+.text-small {
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+.text-fine {
+  font-size: var(--step--2);
+  line-height: 1.5;
+}
+
+.eyebrow {
+  color: var(--color-accent-text);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+  line-height: 1.5;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+/* Headings whose size is chosen by the token, not the level (system.md §3.3). */
+.heading-hero {
+  font-family: var(--font-hero);
+  font-size: var(--step-5);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  max-width: 8em;
+}
+
+.heading-4 {
+  font-size: var(--step-4);
+  line-height: var(--leading-tight);
+}
+.heading-3 {
+  font-size: var(--step-3);
+  line-height: var(--leading-heading);
+}
+.heading-2 {
+  font-size: var(--step-2);
+  line-height: var(--leading-heading);
+}
+.heading-1 {
+  font-size: var(--step-1);
+  line-height: var(--leading-heading);
+}
+
+/* ------------------------------------------- Section heading (§6.3) ---- */
+
+.section-heading {
+  margin-block-end: var(--space-xl);
+}
+
+.section-heading > .eyebrow + :is(h1, h2, h3) {
+  margin-block-start: var(--space-2xs);
+}
+
+.section-heading__title {
+  max-width: 12em;
+}
+
+.section-heading__ornament {
+  width: 3rem;
+  height: 3rem;
+  margin-block-end: var(--space-s);
+  color: var(--color-deco-clay);
+}
+
+.section-heading__intro {
+  margin-block-start: var(--space-m);
+  max-width: var(--measure);
+  color: var(--color-text-muted);
+}
+
+.section-heading--landing .section-heading__intro {
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.section-heading__link {
+  margin-block-start: var(--space-s);
+}
+
+.section-heading--center {
+  text-align: center;
+}
+
+.section-heading--center > * {
+  margin-inline: auto;
+}
+
+/* Organic and pebble frames are for imagery only, never for text containers. */
+.frame-organic {
+  border-radius: var(--radius-organic);
+  overflow: hidden;
+}
+
+.frame-pebble {
+  border-radius: var(--radius-pebble);
+  overflow: hidden;
+}
+
+.ratio-4x3 {
+  aspect-ratio: 4 / 3;
+}
+.ratio-16x9 {
+  aspect-ratio: 16 / 9;
+}
+.ratio-1x1 {
+  aspect-ratio: 1;
+}
+.ratio-36x10 {
+  aspect-ratio: 36 / 10;
+}
+
+/* Buttons keep their intrinsic width inside a stack. */
+.stack > .btn {
+  align-self: flex-start;
+}
