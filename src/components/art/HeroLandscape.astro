@@ -1,0 +1,82 @@
+---
+/**
+ * Hero option B landscape band (brand.md §5.2, system.md §6.2): layered paper-cut hills,
+ * a sun, a dotted stepping path (Hejný "krokovanie"), stairs of blocks ("schody") and a
+ * sum triangle drawn like a teacher's sketch. Decorative: the facts line carries the
+ * regional information as text. No location pins or town markers (brief §2).
+ * Colours come from CSS classes (art.css), so there are no style attributes; no
+ * foreignObject, no SMIL, no external references.
+ * preserveAspectRatio slice keeps the centre (x ~380-1060) in view on phones; the
+ * viewBox starts at y 100 so the band is mostly hills, not sky.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['hero-landscape', className]}
+  viewBox="0 100 1440 300"
+  width="1440"
+  height="300"
+  preserveAspectRatio="xMidYMax slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle class="art-sun hero-landscape__sun" cx="1004" cy="160" r="40"></circle>
+
+  <g class="hero-landscape__far">
+    <path
+      class="art-sage-200"
+      d="M0 248c96-38 190-70 300-62 96 7 160 44 252 40 104-5 168-70 288-78 116-8 196 52 300 58 108 6 196-38 300-30v224H0Z"
+    ></path>
+    <!-- sum triangle (súčtový trojuholník): three numbers joined by lines -->
+    <g class="art-line hero-landscape__triangle">
+      <path d="M512 147l-26 44M538 147l26 44M498 202h54"></path>
+      <circle cx="525" cy="133" r="12"></circle>
+      <circle cx="481" cy="202" r="12"></circle>
+      <circle cx="569" cy="202" r="12"></circle>
+    </g>
+  </g>
+
+  <g class="hero-landscape__mid">
+    <path
+      class="art-sage"
+      d="M0 300c120-26 228-62 352-58 118 4 196 54 316 54 112 0 176-46 300-50 138-4 218 50 330 46 64-2 104-14 142-24v132H0Z"
+    ></path>
+    <!-- trees: soft leaf shapes on the mid hills -->
+    <g class="art-forest-700">
+      <path d="M596 288c-14-26-12-58 8-76 20 18 22 50 8 76Z"></path>
+      <path d="M626 292c-10-20-9-44 6-58 15 14 16 38 6 58Z"></path>
+      <path d="M1180 270c-12-24-10-52 8-68 18 16 20 44 8 68Z"></path>
+    </g>
+    <rect class="art-forest-700" x="602" y="286" width="4" height="12" rx="2"></rect>
+    <rect class="art-forest-700" x="630" y="290" width="3" height="10" rx="1.5"></rect>
+    <rect class="art-forest-700" x="1186" y="268" width="4" height="12" rx="2"></rect>
+    <!-- stairs of wooden blocks (schody) -->
+    <g class="hero-landscape__stairs">
+      <rect class="art-cream-2" x="836" y="262" width="34" height="34" rx="4"></rect>
+      <rect class="art-sun" x="870" y="228" width="34" height="68" rx="4"></rect>
+      <rect class="art-clay" x="904" y="194" width="34" height="102" rx="4"></rect>
+      <rect class="art-forest" x="938" y="160" width="34" height="136" rx="4"></rect>
+    </g>
+  </g>
+
+  <g class="hero-landscape__near">
+    <path
+      class="art-forest"
+      d="M0 336c86-6 170-32 262-30 104 2 150 34 250 36 64 1 112-8 168-14 40-4 70 12 96 30 12 8 22 22 30 42H0Z"
+    ></path>
+    <path
+      class="art-forest"
+      d="M1440 318c-90 0-170-26-262-22-96 4-150 40-246 44-46 2-80-4-112-2-34 3-58 22-78 44-8 8-14 12-18 18h716Z"
+    ></path>
+    <!-- stepping path (krokovanie): dots winding up between the hills -->
+    <path
+      class="art-dots"
+      d="M560 398c26-30 64-44 104-50 46-7 84-20 96-44 10-22 40-34 72-36"
+    ></path>
+    <path class="art-ground" d="M0 372c180-14 360-18 540-14s360 22 540 18 270-14 360-20v44H0Z"></path>
+  </g>
+</svg>

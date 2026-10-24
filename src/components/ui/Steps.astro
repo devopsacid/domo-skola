@@ -1,0 +1,29 @@
+---
+/**
+ * Numbered process steps (system.md §6.6): vertical on mobile, horizontal from 64rem.
+ * An <ol> conveys the order; the circled numerals are decorative. Put the CTA after
+ * the list, never inside a step. Pair with <NotePending kind="proposed"> until verified.
+ */
+interface Props {
+  steps: { title: string; text: string }[];
+  /** Heading level of each step title (keeps the page outline correct). */
+  level?: 3 | 4;
+  class?: string;
+}
+const { steps, level = 3, class: className } = Astro.props;
+const H = `h${level}` as 'h3' | 'h4';
+---
+
+<ol class:list={['steps', steps.length === 4 && 'steps--4', className]}>
+  {
+    steps.map((step, i) => (
+      <li class="steps__item">
+        <span class="steps__num" aria-hidden="true">
+          {i + 1}
+        </span>
+        <H class="steps__title">{step.title}</H>
+        <p class="steps__text">{step.text}</p>
+      </li>
+    ))
+  }
+</ol>

@@ -14,9 +14,18 @@ interface Props {
   /** Shown in the strict-build error, e.g. "pages/home.hero". */
   name?: string;
   as?: 'div' | 'section' | 'article' | 'li';
+  /** Badge only, placed in the space above the block; no outline (whole page sections). */
+  quiet?: boolean;
   class?: string;
 }
-const { locale, status, name = 'content', as: Tag = 'div', class: className } = Astro.props;
+const {
+  locale,
+  status,
+  name = 'content',
+  as: Tag = 'div',
+  quiet = false,
+  class: className,
+} = Astro.props;
 const mode = renderMode(status, isStrictBuild(), name);
 ---
 
@@ -29,7 +38,7 @@ const mode = renderMode(status, isStrictBuild(), name);
 }
 {
   mode === 'marked' && (
-    <Tag class:list={['review-block', className]} data-status={status}>
+    <Tag class:list={['review-block', quiet && 'review-block--quiet', className]} data-status={status}>
       <ReviewBadge locale={locale} status={status} />
       <slot />
     </Tag>

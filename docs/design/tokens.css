@@ -187,6 +187,10 @@
   --color-deco-sun: var(--palette-yellow);
   --color-deco-clay: var(--palette-terracotta);
   --color-deco-forest: var(--palette-forest);
+  --color-deco-sage-light: var(--palette-sage-200); /* far hills, block tints */
+  --color-deco-forest-deep: var(--palette-forest-700); /* trees, deep shapes */
+  --color-deco-paper: var(--palette-cream-2); /* paper and light block tints */
+  --color-deco-dots: var(--palette-cream); /* dotted paths on forest shapes */
 
   /* Pillar accents (motif fill + thin rule; text stays --color-text) */
   --color-pillar-montessori: var(--palette-sage);

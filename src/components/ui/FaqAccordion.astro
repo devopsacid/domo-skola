@@ -1,0 +1,70 @@
+---
+/**
+ * FAQ accordion (system.md §6.7): native <details>/<summary>, no JS. Items share a
+ * `name`, so supporting browsers keep one open at a time (exclusive accordion);
+ * others simply allow several. Each item has a stable id for deep links.
+ * `answer` is plain text with blank lines between paragraphs (the CMS field is
+ * Markdown; only paragraphs are rendered here, which keeps the home page free of a
+ * Markdown runtime). Answers that depend on unverified facts get a contact link.
+ */
+interface Item {
+  id: string;
+  question: string;
+  answer: string;
+  /** True when the answer depends on a fact that is not verified yet. */
+  pending?: boolean;
+}
+interface Props {
+  items: Item[];
+  /** Exclusive-accordion group name; unique per list on a page. */
+  name: string;
+  /** Prefix for item ids, e.g. "faq-". */
+  idPrefix?: string;
+  pendingLink?: { href: string; label: string };
+  class?: string;
+}
+const { items, name, idPrefix = 'faq-', pendingLink, class: className } = Astro.props;
+const paragraphs = (text: string) =>
+  text
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+---
+
+<div class:list={['faq-list', className]}>
+  {
+    items.map((item) => (
+      <details class="faq-item" name={name} id={`${idPrefix}${item.id}`}>
+        <summary class="faq-item__q">
+          <span class="faq-item__q-text">{item.question}</span>
+          <svg
+            class="faq-item__icon"
+            viewBox="0 0 20 20"
+            width="20"
+            height="20"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M10 3v14M3 10h14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </summary>
+        <div class="faq-item__a">
+          {paragraphs(item.answer).map((p) => (
+            <p>{p}</p>
+          ))}
+          {item.pending && pendingLink && (
+            <p>
+              <a href={pendingLink.href}>{pendingLink.label}</a>
+            </p>
+          )}
+        </div>
+      </details>
+    ))
+  }
+</div>
