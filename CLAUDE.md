@@ -18,5 +18,6 @@ Multilingual (SK default, CS, EN) marketing website plus enrolment backend for a
 ## Deploy (Cloudflare Pages)
 - Use the global `cf-pages-deploy` skill. One owner yes per deploy. Preview and production are separate approvals.
 - The project is `domo-skola`. Previews go to branch `preview` at https://preview.domo-skola.pages.dev, are noindex (`PUBLIC_NOINDEX` on by default), static only, with no Functions until the backend lane ships.
+- First preview, 2026-10-24: commit e11289b, deployment c636a01b. Use wrangler 4.152.0, which needed `pages project create --force` (the plain create fails in its Workers delegation). The clean-archive install needs `--prefer-offline`, because the store lacks some tarballs. New aliases take about 2 minutes to get TLS.
 - The production branch is `main`. Deploying it is a separate yes, and production preflight requires real retention values, `SITE_URL`, D1 and email settings.
 - **Credentials**, read only by `secrets-manager` (entry names only): the token is the single line of `cloudflare-pages-token`, a user-scoped token verified at `/user/tokens/verify`. The account ID is the `ACCOUNT_ID:` line of `cloudflare-creds`. Never use the `API_TOKEN:` line of `cloudflare-creds`.
