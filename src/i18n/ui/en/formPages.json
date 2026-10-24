@@ -1,0 +1,71 @@
+{
+  "enrol": {
+    "title": "Apply",
+    "description": "Apply to our community learning group for grades 1–4. An application is an expression of interest, not a confirmation of acceptance.",
+    "lead": "An application is an expression of interest, not a confirmation of acceptance.",
+    "offerHeading": "What we offer",
+    "offer": "Montessori-inspired community learning for children in grades 1–4. You can read about our approach on its own page.",
+    "offerLink": "Discover our approach",
+    "gradesHeading": "Which grades",
+    "grades": "You can apply for grade 1, 2, 3 or 4.",
+    "nextHeading": "Requirements and next steps",
+    "next": "After you send the application we will get in touch about the next steps. We are still working out the admission requirements and capacity.",
+    "processHeading": "How it works",
+    "processNote": "This process is a proposal and has yet to be confirmed.",
+    "process": [
+      {
+        "title": "You get in touch",
+        "text": "You fill in the application or write to us."
+      },
+      {
+        "title": "Introductory conversation",
+        "text": "We call or write and go through your questions."
+      },
+      {
+        "title": "Getting to know each other",
+        "text": "We arrange a meeting so that we can meet."
+      },
+      {
+        "title": "Agreeing on next steps",
+        "text": "Together we decide how to continue."
+      }
+    ],
+    "formHeading": "Application",
+    "privacyHeading": "How we handle your data",
+    "privacy": "We use the details in your application to handle it and to stay in touch with you. We do not ask for birth numbers or health details. You can read more in our privacy information.",
+    "privacyLink": "Privacy",
+    "closedHeading": "We are not taking applications at the moment",
+    "closedText": "If you would like to ask about next steps, write to us.",
+    "closedLink": "Write to us",
+    "waitlistNote": "We keep a waiting list. An application puts you on it, but it does not mean acceptance."
+  },
+  "enrolSubmitted": {
+    "title": "Application sent",
+    "confirmation": "Thank you for your interest. We have received your application and will get in touch about the next steps.",
+    "note": "An application is an expression of interest, not a confirmation of acceptance.",
+    "home": "Back to the home page"
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "Write to us, or arrange an introductory visit or meeting.",
+    "lead": "Write to us, or arrange an introductory visit or meeting. We will gladly reply.",
+    "formHeading": "Write to us",
+    "detailsHeading": "Contact details",
+    "detailsPending": "We are still confirming our contact details. For now, please write to us through the form.",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "regionsHeading": "Which regions",
+    "regionsLead": "For families from:",
+    "venueHeading": "Venue",
+    "venuePending": "We are still confirming the venue. We will publish the address and how to get there once they are certain.",
+    "venueAddress": "Address:",
+    "visitHeading": "Introductory visit or meeting",
+    "visit": "Would you like to come and see us, or arrange an introductory meeting? Choose the subject “Introductory visit” in the form and tell us when would suit you.",
+    "mapLink": "View on a map"
+  },
+  "contactSent": {
+    "title": "Message sent",
+    "confirmation": "Thank you, we have received your message. We will reply to the email address you gave.",
+    "home": "Back to the home page"
+  }
+}

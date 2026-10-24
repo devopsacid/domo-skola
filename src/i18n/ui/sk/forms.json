@@ -1,0 +1,210 @@
+{
+  "common": {
+    "requiredNote": "Všetky polia sú povinné, ak nie je uvedené inak.",
+    "optional": "(nepovinné)",
+    "select": "Vyberte…",
+    "privacyBefore": "Oboznámil/a som sa s ",
+    "privacyLink": "informáciami o spracúvaní osobných údajov",
+    "privacyAfter": ".",
+    "summaryTitle": "Skontrolujte, prosím, tieto polia:",
+    "sending": "Odosielame…",
+    "retry": "Skúsiť znova",
+    "reloadHint": "Načítať stránku znova",
+    "contactLink": "Napísať nám",
+    "regionOther": "Iný región",
+    "languageNames": {
+      "sk": "Slovenčina",
+      "cs": "Čeština",
+      "en": "English"
+    },
+    "errors": {
+      "required": "Vyplňte, prosím, toto pole.",
+      "invalid_type": "Skontrolujte, prosím, zadanú hodnotu.",
+      "too_long": "Text je príliš dlhý.",
+      "invalid_option": "Vyberte, prosím, jednu z možností.",
+      "email_invalid": "Zadajte, prosím, platnú e-mailovú adresu.",
+      "phone_invalid": "Zadajte, prosím, platné telefónne číslo, napríklad +421 900 000 000.",
+      "name_invalid": "Meno nesmie obsahovať číslice.",
+      "school_year_invalid": "Zadajte školský rok v tvare RRRR/RRRR, napríklad 2027/2028.",
+      "privacy_ack_required": "Pred odoslaním je potrebné potvrdiť, že ste sa oboznámili s informáciami o spracúvaní osobných údajov.",
+      "consent_version_required": "Znenie súhlasu sa nepodarilo overiť. Načítajte, prosím, stránku znova.",
+      "consent_version_stale": "Znenie súhlasu sa medzitým zmenilo. Načítajte, prosím, stránku znova a skúste to ešte raz."
+    },
+    "fail": {
+      "network": {
+        "title": "Správu sa nepodarilo odoslať",
+        "text": "Skontrolujte pripojenie a skúste to znova. Vaše údaje sú zachované."
+      },
+      "server": {
+        "title": "Niečo sa pokazilo",
+        "text": "Chyba je na našej strane. Vaše údaje sú zachované, skúste to, prosím, o chvíľu znova."
+      },
+      "rate": {
+        "title": "Príliš veľa pokusov",
+        "text": "Skúste to znova {time}. Vaše údaje sú zachované."
+      },
+      "closed": {
+        "title": "Prihlášky momentálne neprijímame",
+        "text": "Napíšte nám cez kontaktný formulár, radi vám odpovieme."
+      },
+      "stale": {
+        "title": "Znenie súhlasu sa zmenilo",
+        "text": "Načítajte, prosím, stránku znova. Vaše údaje zostanú zachované, súhlas stačí potvrdiť ešte raz."
+      },
+      "generic": {
+        "title": "Formulár sa nepodarilo odoslať",
+        "text": "Skontrolujte údaje a skúste to, prosím, znova."
+      }
+    },
+    "time": {
+      "seconds": "o {n} s",
+      "minutes": "o {n} min",
+      "soon": "o chvíľu"
+    }
+  },
+  "contact": {
+    "formLabel": "Kontaktný formulár",
+    "fields": {
+      "parent_name": {
+        "label": "Vaše meno",
+        "help": "Ako vás môžeme osloviť."
+      },
+      "email": {
+        "label": "E-mail",
+        "help": "Na túto adresu vám odpovieme."
+      },
+      "phone": {
+        "label": "Telefón",
+        "help": ""
+      },
+      "region": {
+        "label": "Región",
+        "help": ""
+      },
+      "subject": {
+        "label": "Téma správy",
+        "help": ""
+      },
+      "message": {
+        "label": "Správa",
+        "help": "Nepíšte, prosím, citlivé údaje o dieťati, napríklad zdravotné."
+      }
+    },
+    "subjects": {
+      "general": "Všeobecná otázka",
+      "visit": "Úvodná návšteva",
+      "enrollment": "Prihláška",
+      "other": "Iné"
+    },
+    "privacyHeading": "Ochrana osobných údajov",
+    "submit": "Odoslať správu",
+    "success": {
+      "title": "Správa odoslaná",
+      "text": "Ďakujeme, vašu správu sme prijali. Ozveme sa vám na uvedený e-mail."
+    }
+  },
+  "enrol": {
+    "formLabel": "Prihláška",
+    "stepperLabel": "Priebeh prihlášky",
+    "stepOf": "Krok {n} zo {total}",
+    "documentTitle": "Krok {n} zo {total}",
+    "steps": ["Rodič", "Dieťa", "Očakávania", "Kontrola"],
+    "stepTitles": [
+      "Údaje o rodičovi alebo zákonnom zástupcovi",
+      "Údaje o dieťati",
+      "Vaše očakávania",
+      "Kontrola a odoslanie"
+    ],
+    "stepsDone": "dokončené",
+    "next": "Pokračovať",
+    "back": "Späť",
+    "submit": "Odoslať prihlášku",
+    "fields": {
+      "parent_name": {
+        "label": "Meno a priezvisko rodiča alebo zákonného zástupcu",
+        "help": ""
+      },
+      "email": {
+        "label": "E-mail",
+        "help": "Na túto adresu vám odpovieme."
+      },
+      "phone": {
+        "label": "Telefón",
+        "help": ""
+      },
+      "municipality": {
+        "label": "Obec alebo mesto",
+        "help": ""
+      },
+      "region": {
+        "label": "Región",
+        "help": ""
+      },
+      "preferred_language": {
+        "label": "Preferovaný jazyk komunikácie",
+        "help": ""
+      },
+      "child_name": {
+        "label": "Krstné alebo prezývané meno dieťaťa",
+        "help": "Stačí krstné meno alebo prezývka. Nezadávajte priezvisko, rodné číslo ani zdravotné údaje."
+      },
+      "intended_grade": {
+        "label": "Plánovaný ročník",
+        "help": ""
+      },
+      "intended_school_year": {
+        "label": "Plánovaný školský rok",
+        "help": "Napíšte v tvare RRRR/RRRR, napríklad 2027/2028."
+      },
+      "current_arrangement": {
+        "label": "Súčasné vzdelávanie dieťaťa",
+        "help": "Pomôže nám pripraviť sa na rozhovor."
+      },
+      "motivation": {
+        "label": "Prečo vás tento prístup k vzdelávaniu zaujal?",
+        "help": ""
+      },
+      "environment_priorities": {
+        "label": "Čo je pre učenie vášho dieťaťa dôležité?",
+        "help": ""
+      },
+      "questions": {
+        "label": "Čo by ste sa chceli dozvedieť?",
+        "help": ""
+      },
+      "preferred_next_step": {
+        "label": "Aký ďalší krok by vám vyhovoval?",
+        "help": ""
+      }
+    },
+    "textHelp": "Nepíšte, prosím, citlivé údaje o dieťati, napríklad diagnózy alebo zdravotný stav.",
+    "grades": {
+      "1": "1. ročník",
+      "2": "2. ročník",
+      "3": "3. ročník",
+      "4": "4. ročník"
+    },
+    "arrangements": {
+      "kindergarten": "Materská škola",
+      "registered_school": "Škola, v ktorej je dieťa zapísané",
+      "individual_education": "Individuálne vzdelávanie",
+      "other": "Iné",
+      "prefer_not_say": "Nechcem uviesť"
+    },
+    "nextSteps": {
+      "call": "Úvodný telefonát",
+      "visit": "Návšteva",
+      "info": "Viac informácií e-mailom"
+    },
+    "review": {
+      "intro": "Skontrolujte, prosím, údaje pred odoslaním. Každú časť môžete upraviť.",
+      "edit": "Upraviť",
+      "editLabels": ["Upraviť údaje o rodičovi", "Upraviť údaje o dieťati", "Upraviť očakávania"],
+      "empty": "Nevyplnené",
+      "privacyHeading": "Ochrana osobných údajov",
+      "privacyText": "Údaje z prihlášky použijeme na vybavenie vašej prihlášky a komunikáciu s vami.",
+      "applicationNote": "Prihláška je prejavom záujmu, nie potvrdením prijatia."
+    },
+    "draftNote": "Rozpracovanú prihlášku si pamätá len tento panel prehliadača a po odoslaní sa vymaže."
+  }
+}
