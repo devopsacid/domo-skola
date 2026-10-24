@@ -1,0 +1,30 @@
+---
+/**
+ * /admin/: a static shell for the AdminApp island (client-only; nothing is rendered on the server).
+ * Behind Cloudflare Access; the headers for /admin/* (no-store, no-referrer, noindex) come from
+ * config/headers.template. The page is always noindex, independent of PUBLIC_NOINDEX.
+ */
+import '../../styles/index.css';
+import AdminApp from '../../islands/admin/AdminApp';
+import en from '../../i18n/ui/en/admin.json';
+import sk from '../../i18n/ui/sk/admin.json';
+---
+
+<!doctype html>
+<html lang="sk" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{sk['app.title']}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="color-scheme" content="light" />
+  </head>
+  <body>
+    <AdminApp client:only="preact" />
+    <noscript>
+      <p class="admin-noscript">{sk['app.noscript']} {en['app.noscript']}</p>
+    </noscript>
+  </body>
+</html>

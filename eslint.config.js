@@ -6,7 +6,16 @@ import globals from 'globals';
 import local from './eslint-rules/import-allowlist.js';
 
 export default [
-  { ignores: ['dist/', '.astro/', 'node_modules/', 'seed/', 'pnpm-lock.yaml'] },
+  { ignores: [
+      'dist/',
+      '.astro/',
+      '.wrangler/',
+      'node_modules/',
+      'playwright-report/',
+      'test-results/',
+      'seed/',
+      'pnpm-lock.yaml',
+    ] },
   { languageOptions: { globals: { ...globals.node } } },
   js.configs.recommended,
   ...tseslint.configs.recommended,

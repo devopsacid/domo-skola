@@ -149,6 +149,45 @@ describe('check-size', () => {
     expect(r.code).toBe(1);
     expect(r.out).toContain('js');
   });
+  it('counts statically imported chunks, not only the page script', () => {
+    const chunk = randomBytes(20 * 1024).toString('base64');
+    const r = run(
+      'check-size.mjs',
+      mk({
+        'sk/index.html': page('/_astro/a.js'),
+        '_astro/a.js': 'import{x}from"./b.js";console.log(x)',
+        '_astro/b.js': `export const x="${chunk}"`,
+      }),
+    );
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('/sk/: js');
+  });
+  it('gives the form pages (sk, cs and en slugs) the 35 KB budget', () => {
+    const chunk = (n: number) => `export const x="${randomBytes(n).toString('base64')}"`;
+    const files = (path: string, extra: Record<string, string> = {}) =>
+      mk({
+        [`${path}/index.html`]: page('/_astro/a.js'),
+        '_astro/a.js': 'import{x}from"./b.js";console.log(x)',
+        '_astro/b.js': chunk(20 * 1024),
+        ...extra,
+      });
+    for (const path of [
+      'sk/prihlaska',
+      'cs/prihlaska',
+      'en/apply',
+      'sk/kontakt',
+      'cs/kontakt',
+      'en/contact',
+    ])
+      expect(run('check-size.mjs', files(path)).code, path).toBe(0);
+    const tooBig = files('en/apply', {
+      '_astro/a.js': 'import{x}from"./b.js";import{y}from"./c.js";console.log(x,y)',
+      '_astro/c.js': chunk(20 * 1024).replace('x=', 'y='),
+    });
+    const r = run('check-size.mjs', tooBig);
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('/en/apply/: js');
+  });
 });
 
 describe('check-dist', () => {

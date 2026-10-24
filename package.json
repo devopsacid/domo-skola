@@ -15,6 +15,7 @@
     "typecheck": "astro check && tsc -p functions/tsconfig.json",
     "test": "vitest run",
     "test:integration": "vitest run --config tests/integration/vitest.config.ts",
+    "test:e2e": "playwright test --project=desktop --project=mobile && playwright test --project=admin --workers=1",
     "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs",
     "mock-mail": "node tools/mock-mail/index.mjs",
     "dev:access": "node tools/dev-access-proxy/index.mjs",
@@ -28,13 +29,17 @@
     ]
   },
   "dependencies": {
+    "@astrojs/preact": "6.0.6",
     "astro": "7.3.8",
     "jose": "6.2.12",
+    "preact": "10.29.8",
     "zod": "4.6.5"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.0",
     "@types/node": "22.20.5",
     "eslint": "10.12.0",
     "eslint-plugin-astro": "3.2.1",

@@ -1,0 +1,10 @@
+---
+import SentPage from '../../../_forms/SentPage.astro';
+import { localesFor } from '../../../_forms/paths';
+import type { Locale } from '../../../../i18n/routes';
+
+export const getStaticPaths = () => localesFor('contact-sent', '/kontakt/odeslano/');
+const locale = Astro.params.locale as Locale;
+---
+
+<SentPage locale={locale} kind="contact" />
