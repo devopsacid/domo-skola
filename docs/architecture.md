@@ -61,11 +61,11 @@ Only `/api/*` invokes Functions (`_routes.json`). Everything else is a static fi
 
 ### 4.1 Contact form (`/api/contact`)
 1. **Browser:** the `ContactForm` island validates with `src/shared/schemas/contact.ts` on blur and on submit. It shows field errors from error codes, linked through `aria-describedby`, plus an error summary that receives focus.
-2. **Submit:** a `POST` with JSON `{ locale, fields, hp, renderedAt }`.
+2. **Submit:** a `POST` with JSON `{ locale, fields, hp, elapsedMs }` (contract in §4.5).
    - The button is disabled and `aria-busy` is set during the request.
    - Network errors keep the entered data and offer a retry.
    - On success the island shows an inline success state, focuses its heading, and fires `contact_submit`.
-   - **No JS:** the native `<form method="post">` sends urlencoded data. The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`, which shows a generic localized message.
+   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`, which shows a generic localized message.
 3. **Function** (`src/server/handlers/contact.ts`) runs these steps in order:
    1. method, content type and size check
    2. Origin and `Sec-Fetch-Site` check (ADR-0001 D7)
@@ -130,6 +130,20 @@ Same pipeline, with these differences:
 3. The editor edits in SK, CS and EN side by side. Saving opens a PR on the content branch (editorial workflow).
 4. A merge to `main`, CI, and an owner-approved deploy publish the change.
 
+### 4.5 Form contract (L5a sign-off, 2026-10-24)
+
+The contract is `src/shared/schemas/{common,contact,application}.ts`, `src/shared/api-types.ts` and `migrations/0001_init.sql`. It is frozen for L6 (plan §5 risk 4). Decisions:
+
+- **Envelope:** `{ locale, fields, hp, elapsedMs }`. `elapsedMs` is a non-negative integer measured by the island with `performance.now()` from mount to submit (ADR-0001 D6 item 5). It replaces `renderedAt`.
+- **Marketing consent version:** the client sends `marketing_consent_text_version`, the version of the checkbox text it rendered, because only the client knows what was shown. The server never trusts it blindly: it must equal `settings.marketingConsent.textVersion`, otherwise 422 with `fields.marketing_consent = consent_version_stale` and nothing is stored. The island asks the user to reload. The server stamps `granted_at` itself. When `MARKETING_CONSENT_ENABLED` is not `true`, the consent fields are ignored and no `marketing_consents` row is written. Consent field errors are keyed on the visible `marketing_consent` control, never on the hidden version field.
+- **Privacy notice version** stays server-derived (§7); there is no client field for it.
+- **Optional free text:** `motivation`, `environment_priorities` and `questions` are optional; blank becomes `undefined` and is stored as `NULL`. The same holds for the contact phone and `current_arrangement`. Repositories bind `undefined` as `null` explicitly (D1 rejects `undefined` binds).
+- **Extra rules:** names (`parent_name`, `child_name`) contain no digits (`name_invalid`). `intended_school_year` is `YYYY/YYYY` with consecutive years (`school_year_invalid`); the server also requires it to be in `settings.schoolYear.applicationYears`, otherwise 422 with the same code.
+- **Application phone:** required by the single flag `APPLICATION_PHONE_REQUIRED`; the SQL column is nullable so relaxing it needs no migration. The owner's answer (plan §6 q11) is still open.
+- **Lengths:** schema `maxLength` counts UTF-16 code units, SQL `length()` counts characters. The schema is therefore never looser than SQL, so a value the schema accepts always fits the `CHECK`. Accepted as is.
+- **No-JS decoding:** a server-only decoder (`src/server/forms/urlencoded.ts`) turns `URLSearchParams` into the JSON shape: checkbox fields listed in the shared `CHECKBOX_FIELDS` become `true` only for the value `on`, and are absent otherwise; a repeated key is `bad_request`; `elapsedMs` is absent. All other coercion (grade string to number, blank to `undefined`) stays in the schemas, which keep rejecting `"on"` on the JSON path.
+- **D1 triggers:** `audit_log_no_update` (`BEFORE UPDATE … RAISE(ABORT)`) applies with `wrangler d1 migrations apply --local` (wrangler 4.152.0: 25 statements, the update fails with `SQLITE_CONSTRAINT_TRIGGER`). L5b's D1 integration tests re-assert it, and L11 confirms it on the preview database.
+
 ## 5. Functions routing (`functions/`)
 
 ```
@@ -176,19 +190,19 @@ contact_inquiries(
   subject CHECK(general|visit|enrollment|other), message TEXT NOT NULL (≤4000),
   status CHECK(new|contacted|closed) DEFAULT 'new', status_changed_at,
   privacy_notice_version TEXT NOT NULL, privacy_ack_at TEXT NOT NULL,
-  source_page TEXT,                      -- page key, not URL
+  source_page TEXT,                      -- page key, not URL; set by the server to 'contact' (the only placement, docs/ia.md); not a request field
   suspected_spam INTEGER DEFAULT 0,
   retain_until TEXT NOT NULL, closed_at TEXT NULL)
 
 applications(
   id TEXT PK, created_at, updated_at, locale,
-  parent_name, email, phone TEXT NOT NULL,           -- brief §7 step 1 lists phone without "optional"; owner may relax
+  parent_name, email, phone TEXT NULL (≤32),         -- required by the schema flag APPLICATION_PHONE_REQUIRED (brief §7 step 1); nullable in SQL so the owner's decision (plan §6 q11) is a flag change, not a migration
   municipality TEXT NOT NULL (≤120), region CHECK(...as above),
   preferred_language CHECK(sk|cs|en),
   child_name TEXT NOT NULL (≤60),                    -- first or preferred name only
   intended_grade INTEGER CHECK(1..4), intended_school_year TEXT NOT NULL,
   current_arrangement CHECK(kindergarten|registered_school|individual_education|other|prefer_not_say) NULL,
-  motivation TEXT (≤2000), environment_priorities TEXT (≤2000), questions TEXT NULL (≤2000),
+  motivation TEXT NULL (≤2000), environment_priorities TEXT NULL (≤2000), questions TEXT NULL (≤2000),   -- all optional: brief §7 step 3 marks none required
   preferred_next_step CHECK(call|visit|info),
   status CHECK(new|contacted|meeting_planned|in_discussion|accepted|waitlisted|closed) DEFAULT 'new',
   status_changed_at, privacy_notice_version, privacy_ack_at, suspected_spam, retain_until, closed_at)

@@ -112,7 +112,7 @@ Facts that shape this ADR:
   2. Origin check (D7).
   3. **D1-backed fixed-window limiter.** The key is HMAC-SHA256(IP, `IP_HASH_SECRET`) plus the route. Defaults, all configurable: 5 per 10 minutes and 20 per day per IP. The recipient address is also limited (HMAC of the email, 3 confirmations per day) to prevent mail-bombing. Rows expire after 24 hours.
   4. **Honeypot field.** A hit returns a fake success and nothing is stored or sent.
-  5. **Minimum fill time.** The client includes a render timestamp; if the form was filled in under 3 seconds, the record is stored with `suspected_spam = 1` and no confirmation email is sent.
+  5. **Minimum fill time.** The island sends `elapsedMs`, the time from mount to submit measured with the client's monotonic clock (`performance.now()`); client and server wall clocks are never compared, so a skewed device clock cannot flag a real parent. If the form was filled in under 3 seconds, the record is stored with `suspected_spam = 1` and no confirmation email is sent. The no-JS form cannot measure time and sends no value (treated as unknown, not suspected); a JSON request without a positive `elapsedMs` is suspected, because the island always sends one. (Amended at the L5a sign-off, 2026-10-24; it replaces the earlier `renderedAt` render timestamp.)
   6. **Content heuristics.** More than 3 URLs in the free text marks the record as suspected.
 
   One Cloudflare WAF rate-limiting rule on `/api/*` adds coarse burst protection at the edge (zone setting, Phase 8).
