@@ -11,8 +11,6 @@ export const STUB_KEYS = [
   'approach',
   'day',
   'parents',
-  'enrol',
-  'contact',
   'faq',
   'blog',
   'privacy',

@@ -1,0 +1,139 @@
+---
+/**
+ * Contact page (brief §5.6, ia.md §2.6). Contact details and venue render only when their settings
+ * facts are verified; otherwise an honest pending note. The form is the ContactForm island.
+ */
+import Base from '../../layouts/Base.astro';
+import NotePending from '../../components/status/NotePending.astro';
+import Reviewable from '../../components/status/Reviewable.astro';
+import ContactForm from '../../islands/ContactForm';
+import { verifiedValue } from '../../content-schemas';
+import { localePath, type Locale } from '../../i18n/routes';
+import { formPageStrings, formStrings } from '../../i18n/forms';
+import { formPageData } from './settings';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const p = formPageStrings(locale).contact;
+const ui = formStrings(locale);
+const { settings, regions, marketing } = await formPageData(locale);
+const status = 'needs-review' as const;
+const formProps = {
+  locale,
+  t: { common: ui.common, contact: ui.contact },
+  regions,
+  privacyHref: localePath('privacy', locale),
+  marketing,
+};
+
+const email = verifiedValue(settings.contact.email);
+const phone = verifiedValue(settings.contact.phone);
+const venueName = verifiedValue(settings.venue.name)?.[locale] || null;
+const venueAddress = verifiedValue(settings.venue.address);
+const venueMunicipality = verifiedValue(settings.venue.municipality);
+const venueNotes = verifiedValue(settings.venue.commuteNotes)?.[locale] || null;
+const mapUrl = verifiedValue(settings.venue.mapUrl);
+const hasVenue = Boolean(venueName || venueAddress);
+const regionNames = regions.filter((r) => r.value !== 'other').map((r) => r.label);
+---
+
+<Base locale={locale} title={p.title} description={p.description} page={{ key: 'contact', locale }}>
+  <section class="section">
+    <div class="container stack stack-xl">
+      <header class="stack">
+        <h1 class="heading-1">{p.title}</h1>
+        <p class="lead">{p.lead}</p>
+      </header>
+
+      <div class="stack stack-l">
+        <h2 class="heading-2">{p.formHeading}</h2>
+        <div class="form-panel">
+          <div data-island="contact" data-props={JSON.stringify(formProps)}>
+            <ContactForm {...formProps} />
+          </div>
+        </div>
+      </div>
+
+      <div class="stack stack-l measure">
+        <section class="stack stack-xs" aria-labelledby="contact-details">
+          <h2 class="heading-3" id="contact-details">{p.detailsHeading}</h2>
+          {
+            email || phone ? (
+              <ul class="stack stack-2xs">
+                {email && (
+                  <li>
+                    {p.emailLabel}: <a href={`mailto:${email}`}>{email}</a>
+                  </li>
+                )}
+                {phone && (
+                  <li>
+                    {p.phoneLabel}: <a href={`tel:${phone.replace(/[^+\d]/g, '')}`}>{phone}</a>
+                  </li>
+                )}
+              </ul>
+            ) : (
+              <NotePending locale={locale} kind="pending">
+                <p>{p.detailsPending}</p>
+              </NotePending>
+            )
+          }
+        </section>
+
+        <Reviewable
+          locale={locale}
+          status={status}
+          name="pages/contact.regions"
+          as="section"
+          class="stack stack-xs"
+        >
+          <h2 class="heading-3">{p.regionsHeading}</h2>
+          <p>{p.regionsLead} {regionNames.join(', ')}.</p>
+        </Reviewable>
+
+        <section class="stack stack-xs" aria-labelledby="contact-venue">
+          <h2 class="heading-3" id="contact-venue">{p.venueHeading}</h2>
+          {
+            hasVenue ? (
+              <div class="stack stack-2xs">
+                {venueName && <p>{venueName}</p>}
+                {venueAddress && (
+                  <p>
+                    {p.venueAddress} {venueAddress}
+                    {venueMunicipality ? `, ${venueMunicipality}` : ''}
+                  </p>
+                )}
+                {venueNotes && <p>{venueNotes}</p>}
+                {mapUrl && (
+                  <a class="link-arrow" href={mapUrl} rel="noopener">
+                    {p.mapLink}
+                  </a>
+                )}
+              </div>
+            ) : (
+              <NotePending locale={locale} kind="pending">
+                <p>{p.venuePending}</p>
+              </NotePending>
+            )
+          }
+        </section>
+
+        <Reviewable
+          locale={locale}
+          status={status}
+          name="pages/contact.visit"
+          as="section"
+          class="stack stack-xs"
+        >
+          <h2 class="heading-3">{p.visitHeading}</h2>
+          <p>{p.visit}</p>
+        </Reviewable>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../islands/mount-contact';
+</script>

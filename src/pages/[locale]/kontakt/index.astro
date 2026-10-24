@@ -1,0 +1,10 @@
+---
+import ContactPage from '../../_forms/ContactPage.astro';
+import { localesFor } from '../../_forms/paths';
+import type { Locale } from '../../../i18n/routes';
+
+export const getStaticPaths = () => localesFor('contact', '/kontakt/');
+const locale = Astro.params.locale as Locale;
+---
+
+<ContactPage locale={locale} />
