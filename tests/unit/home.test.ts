@@ -9,6 +9,8 @@ import Reviewable from '../../src/components/status/Reviewable.astro';
 import PlaceholderMedia from '../../src/components/status/PlaceholderMedia.astro';
 import LangSwitcher from '../../src/components/site/LangSwitcher.astro';
 import HeroLandscape from '../../src/components/art/HeroLandscape.astro';
+import Regions from '../../src/components/home/Regions.astro';
+import Faq from '../../src/components/home/Faq.astro';
 import { factsVerified } from '../../src/components/site/facts';
 import { keepRanges } from '../../src/components/home/text';
 import { LOCALES } from '../../src/shared/enums';
@@ -141,6 +143,116 @@ describe('shared patterns', () => {
   });
 });
 
+/** Minimal settings for the section components: only the facts they read. */
+function fakeSettings(verified: boolean) {
+  const status = verified ? 'verified' : 'draft';
+  return {
+    regions: [
+      { key: 'bb', label: { sk: 'Banská Bystrica', cs: 'Banská Bystrica', en: 'Banská Bystrica' } },
+    ],
+    venue: {
+      name: { value: verified ? { sk: 'Záhrada', cs: 'Zahrada', en: 'Garden' } : null, status },
+      address: { value: verified ? 'Ulica 1' : null, status },
+      municipality: { value: verified ? 'Mestečko' : null, status },
+      mapImage: { value: null, status },
+      mapUrl: { value: null, status },
+      commuteNotes: { value: null, status },
+    },
+    legalModel: { type: { value: 'unknown', status }, partnerSchools: [] },
+    fees: { value: null, status },
+  };
+}
+
+describe('Regions section', () => {
+  const data = {
+    status: 'needs-review',
+    eyebrow: 'Regióny',
+    title: 'Pre rodiny z troch regiónov',
+    intro: 'Intro',
+    pending: 'Miesto zverejníme po potvrdení.',
+  } as const;
+
+  it('shows the pending note and no venue while the venue facts are not verified', async () => {
+    const html = await container.renderToString(Regions, {
+      props: { locale: 'sk', data, settings: fakeSettings(false) },
+    });
+    expect(html).toContain('Miesto zverejníme po potvrdení.');
+    expect(html).toContain('note-pending');
+    expect(html).not.toContain('home-regions__venue');
+    expect(html).toContain('Banská Bystrica');
+  });
+
+  it('shows the venue and no pending note once the venue facts are verified', async () => {
+    const html = await container.renderToString(Regions, {
+      props: { locale: 'sk', data, settings: fakeSettings(true) },
+    });
+    expect(html).toMatch(/home-regions__venue[^>]*>Záhrada, Mestečko</);
+    expect(html).not.toContain('Miesto zverejníme po potvrdení.');
+  });
+});
+
+describe('Faq section', () => {
+  const data = {
+    status: 'needs-review',
+    eyebrow: 'Otázky',
+    title: 'Časté otázky',
+    link: 'Všetky otázky',
+    pendingLink: 'Napíšte nám',
+  } as const;
+  const items = [
+    {
+      id: 'regions',
+      category: 'location',
+      question: 'Môžu sa prihlásiť rodiny z regiónov?',
+      answer: 'Áno.',
+      pendingNote: 'Miesto zatiaľ potvrdzujeme.',
+      order: 1,
+      featuredOnHome: true,
+      dependsOnFacts: ['settings.venue'],
+      status: 'needs-review',
+    },
+    {
+      id: 'hejny',
+      category: 'philosophy',
+      question: 'Ako funguje Hejného matematika?',
+      answer: 'Objavovaním.',
+      order: 2,
+      featuredOnHome: true,
+      dependsOnFacts: [],
+      status: 'needs-review',
+    },
+  ];
+
+  it('renders the pending note and the contact link only while the facts are unverified', async () => {
+    const html = await container.renderToString(Faq, {
+      props: { locale: 'sk', data, items, settings: fakeSettings(false) },
+    });
+    expect(html).toContain('Miesto zatiaľ potvrdzujeme.');
+    expect(html.match(/href="\/sk\/kontakt\/"/g)).toHaveLength(1);
+  });
+
+  it('drops the pending note and the contact link once the facts are verified', async () => {
+    const html = await container.renderToString(Faq, {
+      props: { locale: 'sk', data, items, settings: fakeSettings(true) },
+    });
+    expect(html).toContain('Áno.');
+    expect(html).not.toContain('Miesto zatiaľ potvrdzujeme.');
+    expect(html).not.toMatch(/href="\/sk\/kontakt\/"/);
+  });
+});
+
+describe('strict builds', () => {
+  it('Reviewable quiet still throws on needs-review under CONTENT_STRICT=1', async () => {
+    process.env.CONTENT_STRICT = '1';
+    await expect(
+      container.renderToString(Reviewable, {
+        props: { locale: 'sk', status: 'needs-review', quiet: true, name: 'pages/home.regions' },
+        slots: { default: '<p>Obsah</p>' },
+      }),
+    ).rejects.toThrow(/needs-review pages\/home\.regions/);
+  });
+});
+
 describe('hero landscape (brand.md §5.2, CSP)', () => {
   it('is decorative, has no pins, text, foreignObject, SMIL or style attributes', async () => {
     const html = await container.renderToString(HeroLandscape, { props: {} });
@@ -179,6 +291,58 @@ describe('home content files', () => {
           expect(text, `${dir}/${l}/${f}`).toMatch(/^status: needs-review$/m);
           expect(text, `${dir}/${l}/${f}`).not.toMatch(/status: verified/);
         }
+  });
+
+  it('give every needs-review entry a non-empty reviewNote', () => {
+    for (const dir of dirs)
+      for (const l of LOCALES)
+        for (const f of files(dir, l)) {
+          const text = readFileSync(join(root, dir, l, f), 'utf8');
+          if (/^status: needs-review$/m.test(text))
+            expect(text, `${dir}/${l}/${f}`).toMatch(/^reviewNote: \S.*$/m);
+        }
+  });
+
+  it('keep "still confirming" sentences out of FAQ answers (pendingNote instead)', () => {
+    const pendingPhrase = /zatiaľ potvrdzujeme|zatím ověřujeme|still confirming/i;
+    for (const l of LOCALES)
+      for (const f of files('faqItems', l)) {
+        const text = readFileSync(join(root, 'faqItems', l, f), 'utf8');
+        const answer = text.split(/^answer: /m)[1]?.split(/^\S/m)[0] ?? '';
+        expect(answer, `${l}/${f}`).not.toMatch(pendingPhrase);
+      }
+    for (const l of LOCALES)
+      for (const f of [
+        'regions.yaml',
+        'compulsory-education.yaml',
+        'progress.yaml',
+        'difference-traditional.yaml',
+      ]) {
+        const text = readFileSync(join(root, 'faqItems', l, f), 'utf8');
+        expect(text, `${l}/${f}`).toMatch(/^pendingNote: \S/m);
+        expect(text, `${l}/${f}`).toMatch(/^dependsOnFacts: \[settings\.\w+/m);
+      }
+  });
+
+  it('use one term for the adult in the room (sprievodca / průvodce / guide)', () => {
+    const teacher = /učiteľ|učitel|teacher/i;
+    for (const dir of ['pages', 'pillars', 'faqItems'])
+      for (const l of LOCALES)
+        for (const f of files(dir, l))
+          expect(readFileSync(join(root, dir, l, f), 'utf8'), `${dir}/${l}/${f}`).not.toMatch(
+            teacher,
+          );
+  });
+
+  it('word the disclaimers as "this does not mean" in every locale', () => {
+    const wording = {
+      sk: /^disclaimer: .*Neznamená to /m,
+      cs: /^disclaimer: .*Neznamená to /m,
+      en: /^disclaimer: .*This does not mean /m,
+    };
+    for (const l of LOCALES)
+      for (const f of ['montessori.yaml', 'hejny.yaml'])
+        expect(readFileSync(join(root, 'pillars', l, f), 'utf8'), `${l}/${f}`).toMatch(wording[l]);
   });
 
   it('carry the Montessori and Hejný non-accreditation disclaimers in every locale', () => {
