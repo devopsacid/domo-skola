@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
+id: day-rhythm
+category: daily
+order: 13
+featuredOnHome: false
+status: needs-review
+reviewNote: "Illustrative rhythm only; times stay pending until settings.operations.hours is verified."
+dependsOnFacts: [settings.operations.hours]
+question: "Ako vyzerá bežný deň?"
+answer: |-
+  Deň by mal mať pokojný a opakujúci sa rytmus. Môže sa začať ranným kruhom. Potom môže nasledovať samostatná práca s pomôckami, matematika a jazyk, čas vonku, projekty a tvorenie. Na konci sa deti spolu vrátia k tomu, čo sa im podarilo.
+
+  Poradie sa môže meniť podľa počasia a projektu. Ilustračný príklad nájdete na stránke Deň v komunite.
+pendingNote: "Kedy sa deň začína a končí, zatiaľ potvrdzujeme."

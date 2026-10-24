@@ -1,12 +1,14 @@
-# Czech placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
 id: difference-traditional
 category: philosophy
 order: 1
 featuredOnHome: true
 status: needs-review
-reviewNote: "Answer describes the intended practice; \"menšia skupina\" (smaller group) wording awaits the owner (group size not confirmed). Legal part stays in pendingNote until settings.legalModel is verified."
+reviewNote: "Intended practice (owner to confirm); 'menšia skupina' has no number until a group size is decided. Legal part stays in pendingNote until settings.legalModel is verified."
 dependsOnFacts: [settings.legalModel]
-question: "Jaký je rozdíl mezi domoškolou a tradiční školou?"
+question: "Jaký je rozdíl mezi domoškolou a běžnou školou?"
 answer: |-
-  Rozdíl je hlavně ve způsobu učení. Děti se učí v menší skupině, objevováním, s pomůckami a v projektech a každé postupuje vlastním tempem. Cíle vzdělávání pro 1. stupeň jsou přitom důležité i pro nás.
-pendingNote: "Jak je komunita uspořádaná po právní stránce a se kterou školou spolupracuje, zatím ověřujeme. Zveřejníme to na stránce Pro rodiče."
+  Rozdíl je hlavně ve způsobu učení. Chceme, aby se děti učily v menší skupině, objevováním, s pomůckami a v projektech a aby každé postupovalo vlastním tempem. Dospělý má být průvodce, který pozoruje a pomáhá, ne někdo, kdo celý den vykládá před tabulí.
+
+  Cíle vzdělávání pro 1. stupeň jsou důležité i pro nás. Běžné školy nepovažujeme za horší, jen nabízíme jinou cestu rodinám, kterým víc vyhovuje.
+pendingNote: "Jak je komunita uspořádána po právní stránce a se kterou školou spolupracuje, zatím ověřujeme. Zveřejníme to na stránce Pro rodiče."

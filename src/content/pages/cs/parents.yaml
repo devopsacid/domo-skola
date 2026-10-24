@@ -1,0 +1,202 @@
+# For parents (docs/ia.md §2.4). Czech draft copy (natural, not literal), needs-review: native review in L9.
+key: parents
+status: needs-review
+reviewNote: "Czech draft copy (owner request 2026-10-24). The 'formal' group and the legal-status block describe SLOVAK rules (the community operates in Slovakia) and need a LEGAL REVIEW before they can be verified; they must never assert which legal form applies."
+seo:
+  title: Pro rodiče
+  description: Praktické informace pro rodiče dětí 1. až 4. ročníku. Ročníky, dojíždění, spolupráce s rodinou, postup přihlášení a jak obecně funguje zápis do školy a individuální vzdělávání na Slovensku.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Pro rodiče
+    title: Praktické informace pro rodiče
+    lead: Všechno, co potřebujete vědět před prvním setkáním. Co ještě ověřujeme, otevřeně označujeme a doplníme, jakmile to bude jisté.
+  basics:
+    status: needs-review
+    id: zakladni-informace
+    eyebrow: Základní informace
+    title: Pro koho a odkud
+    items:
+      - id: rocniky-a-vek
+        title: Ročníky a věk
+        body:
+          - Komunita je určená dětem 1. až 4. ročníku základní školy. Děti různého věku se mohou učit spolu, každé ale pracuje na svých cílech.
+      - id: dostupnost
+        title: Odkud k nám děti chodí
+        body:
+          - Rádi přivítáme rodiny z okolí Banské Bystrice, Ružomberku a Liptovského Mikuláše. Počítáme s jedním místem setkávání, ne s pobočkami v každém městě. Kde se budeme scházet, zveřejníme po ověření.
+          - Pokud bydlíte dál, vyplatí se myslet na dojíždění předem. Pokud byste rádi vozili děti společně s jinou rodinou z vašeho okolí, řekněte nám to při prvním setkání.
+        facts:
+          - label: Místo
+            path: settings.venue.name
+          - label: Obec
+            path: settings.venue.municipality
+          - label: Dojíždění
+            path: settings.venue.commuteNotes
+  learning:
+    status: needs-review
+    reviewNote: "Intended practice; formal assessment depends on the legal model (pendingNote)."
+    id: uceni
+    eyebrow: Učení
+    title: Jak je učení uspořádané
+    items:
+      - id: struktura-uceni
+        title: Struktura učení
+        body:
+          - Den se střídá mezi samostatnou prací s pomůckami, prací v malých skupinách s průvodcem, projekty a časem venku. Jasné cíle, pravidelný rytmus a domluvená pravidla dávají svobodě pevný rámec.
+          - Svoboda u nás neznamená, že si dítě dělá, co chce. Znamená, že si v připraveném prostředí vybírá, jak a v jakém pořadí se dostane k cíli.
+        link:
+          to: day
+          label: Jak může vypadat jeden den
+      - id: vzdelavaci-cile
+        title: Vzdělávací cíle
+        body:
+          - Chceme, aby děti učivu prvního stupně rozuměly, ne si ho jen zapamatovaly. Čtení s porozuměním, psaní, počítání a poznávání světa kolem sebe jsou pro nás stejně důležité jako samostatnost, chuť se učit a schopnost spolupracovat.
+        pendingNote: Jak se naše cíle vážou na slovenský státní vzdělávací program a na požadavky školy, ve které bude dítě zapsané, zatím ověřujeme.
+        dependsOnFacts: [settings.legalModel]
+      - id: sledovani-pokroku
+        title: Jak sledujeme pokrok
+        body:
+          - Pokrok chceme sledovat průběžně, pozorováním, sbíráním prací dítěte a rozhovory s ním. S vámi o něm chceme mluvit pravidelně a konkrétně, nad tím, co dítě opravdu udělalo.
+        pendingNote: Jak bude probíhat formální hodnocení a přezkoušení, záleží na škole, ve které bude dítě zapsané. Tuto část zatím ověřujeme.
+        dependsOnFacts: [settings.legalModel]
+        link:
+          to: approach
+          hash: pokrok
+          label: Více o sledování pokroku
+  family:
+    status: needs-review
+    reviewNote: "Communication form and frequency not decided (owner). Cooperation with a school depends on settings.legalModel."
+    id: spoluprace
+    eyebrow: Spolupráce s rodinou
+    title: Rodiče jako partneři
+    intro:
+      - Vzdělávání dítěte je společná věc rodiny a komunity. Chceme, abyste věděli, co se děje, a abyste se mohli ozvat, když vás něco trápí.
+    items:
+      - id: komunikace
+        title: Komunikace s rodiči
+        body:
+          - Chceme s vámi být v pravidelném kontaktu, například krátkými zprávami o tom, na čem dítě pracuje, a osobními rozhovory nad jeho pracemi. Konkrétní formu a četnost ještě upřesňujeme.
+          - Pokud se něco děje doma nebo ve skupině, je lepší si to říct dřív. Na krátký rozhovor chceme mít prostor i při příchodu a odchodu.
+      - id: zapojeni
+        title: Jak se můžete zapojit
+        body:
+          - Někteří rodiče rádi přijdou ukázat svou práci, řemeslo nebo koníček, jiní pomohou s výletem či projektem. Je to nabídka, ne povinnost.
+          - Chceme se scházet i jako rodiče, například na společných setkáních, kde mluvíme o tom, jak se komunitě daří a co bychom chtěli změnit.
+      - id: spoluprace-se-skolou
+        title: Spolupráce se školou, ve které je dítě zapsané
+        body:
+          - Pokud bude dítě zapsané v jiné škole, chceme s ní spolupracovat tak, abyste měli jasno v tom, co škola očekává, a aby bylo dítě dobře připravené.
+        pendingNote: Se kterou školou a v jaké formě budeme spolupracovat, zatím ověřujeme.
+        dependsOnFacts: [settings.legalModel]
+        link:
+          to: parents
+          hash: pravni-status
+          label: Právní a organizační status
+      - id: dochazka
+        title: Očekávaná docházka
+        body:
+          - Pravidelná docházka pomáhá dítěti zapojit se do skupiny a do společných projektů. Jak často a ve které dny se budeme scházet, zveřejníme po ověření.
+        facts:
+          - label: Docházka
+            path: settings.operations.attendance
+  practical:
+    status: needs-review
+    reviewNote: "Meals, outdoor time and fees stay pending until verified; fees render only when settings.fees is verified and visible."
+    id: prakticky
+    eyebrow: Prakticky
+    title: Strava, pobyt venku, náklady a návštěva
+    items:
+      - id: strava-a-venku
+        title: Strava a pobyt venku
+        body:
+          - Čas venku je pro nás důležitou součástí učení, ne jen přestávkou. Ven chceme chodit každý den, pokud je to bezpečné, proto se hodí oblečení, které se může ušpinit.
+        facts:
+          - label: Strava
+            path: settings.operations.meals
+          - label: Čas venku
+            path: settings.operations.outdoorTime
+      - id: poplatky
+        title: Náklady
+        facts:
+          - label: Náklady
+            path: settings.fees
+            pending: Informace o nákladech zveřejníme po potvrzení
+        link:
+          to: contact
+          label: Zeptejte se na náklady
+      - id: navsteva
+        title: Návštěva komunity
+        body:
+          - Nejlepší způsob, jak zjistit, zda je to místo pro vaše dítě, je přijít se podívat. Termín návštěvy nebo úvodní schůzky si domluvíme individuálně. Připravte si otázky, rádi na ně odpovíme.
+        link:
+          to: contact
+          query: subject=visit
+          label: Domluvit si návštěvu
+  admission:
+    status: needs-review
+    id: prijimani
+    eyebrow: Přihlášení
+    title: Orientační postup přijímání
+    intro: Takto si představujeme cestu od prvního kontaktu po dohodu o dalších krocích. Jde nám o to, abyste se rozhodovali bez tlaku a s dostatkem informací.
+    note: Postup ještě upřesňujeme. Přihláška je projevem zájmu, ne potvrzením přijetí.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Domluvit si schůzku
+  formal:
+    status: needs-review
+    reviewNote: "LEGAL REVIEW REQUIRED: general description of SLOVAK rules (enrolment in a school in the network, individual education approved by the head of that school, periodic examination). Check against the current Slovak school act before verified. Never states which route the community uses."
+    id: jak-to-funguje-formalne
+    eyebrow: Formální stránka
+    title: Jak to funguje formálně
+    intro:
+      - Přihláška do komunity a zápis do školy jsou dvě různé věci. Komunita působí na Slovensku, proto zde stručně a obecně popisujeme slovenská pravidla, která se od českých v některých bodech liší. Nejde o právní poradenství, podrobnosti si vždy ověřte ve škole.
+    items:
+      - id: zapis-ve-skole
+        title: Dítě má svou školu
+        body:
+          - Podle slovenských pravidel se povinná školní docházka obvykle plní ve škole, která je zařazená do sítě škol. I když se dítě učí jinde, má svou školu, ve které je zapsané a která odpovídá za jeho hodnocení.
+          - Zápis do školy dělají rodiče, podle pravidel a termínů, které určuje škola a obec.
+      - id: individualni-vzdelavani
+        title: Individuální vzdělávání
+        body:
+          - Při individuálním vzdělávání se dítě neučí ve třídě své školy, ale jinde. O povolení žádá rodič ředitele školy, ve které je dítě zapsané. Zákon přitom stanovuje podmínky, například kdo vzdělávání zajišťuje.
+          - Škola pak pravidelně ověřuje, co se dítě naučilo, obvykle formou přezkoušení. Na jeho základě dostává dítě vysvědčení.
+      - id: co-to-znamena-u-nas
+        title: Co to znamená u nás
+        body:
+          - Přihláškou na tomto webu projevujete zájem o komunitu. Formální kroky vůči škole, například zápis nebo žádost, dělá rodič. Chceme vám pomoct zorientovat se v tom, co a kdy je potřeba udělat.
+        pendingNote: Kterou z těchto cest bude naše komunita využívat a se kterou školou bude spolupracovat, zatím ověřujeme. Dokud to nebude jisté, nic z toho neslibujeme.
+        dependsOnFacts: [settings.legalModel]
+  legal:
+    status: needs-review
+    reviewNote: "LEGAL REVIEW REQUIRED: the three general descriptions must be checked against current Slovak school law (the community operates in Slovakia) before verified. Never state which form applies."
+    id: pravni-status
+    eyebrow: Právní a organizační status
+    title: Domoškola, škola a individuální vzdělávání
+    intro:
+      - Domoškola není automaticky totéž co registrovaná základní škola. Abyste se mohli rozhodnout s jistotou, vysvětlujeme rozdíl mezi třemi formami, se kterými se můžete setkat.
+      - Která z nich platí pro naši komunitu, zveřejníme až po ověření a právní kontrole.
+    formsTitle: Tři různé formy
+    forms:
+      - key: registered_school
+        title: Registrovaná základní škola
+        text: Škola zařazená do sítě škol. Dítě je v ní zapsané, plní v ní povinnou školní docházku a dostává od ní vysvědčení.
+      - key: community_group
+        title: Komunitní vzdělávací skupina
+        text: Skupina dětí a dospělých, kteří se spolu pravidelně učí. Sama o sobě není školou a nevydává vysvědčení. Podle slovenských pravidel je dítě vedle ní obvykle zapsané v některé škole.
+      - key: individual_education
+        title: Individuální (domácí) vzdělávání
+        text: Dítě se vzdělává mimo výuku ve třídě, s povolením ředitele školy, ve které je zapsané. Škola ověřuje, co se naučilo, zpravidla formou přezkoušení.
+    formsNote: Jde o obecný popis pro lepší orientaci, ne o právní poradenství. Podmínky určují platné předpisy na Slovensku a škola, ve které je dítě zapsané.
+    ourModelTitle: Jak je uspořádaná naše komunita
+    ourModelPending: Právní model upřesníme. Dokud nebude potvrzený, netvrdíme, že jsme škola, že máme akreditaci, ani že účast v komunitě sama o sobě plní povinnou školní docházku.
+    partnersTitle: Spolupracující školy
+    responsibilitiesTitle: Co je na rodičích
+    responsibilitiesPending: Jaké povinnosti budou mít rodiče, například vůči škole, ve které je dítě zapsané, zveřejníme spolu s právním modelem.
+    contactLink: Zeptejte se nás na podrobnosti
+  cta:
+    status: needs-review
+    title: Máte další otázky?
+    text: Rádi si s vámi popovídáme osobně. Na schůzce se dozvíte víc, než se dá napsat na web.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Domluvit si schůzku

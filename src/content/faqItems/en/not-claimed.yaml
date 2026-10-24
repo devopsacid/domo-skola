@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: not-claimed
+category: legal
+order: 6
+featuredOnHome: false
+status: needs-review
+reviewNote: "Honesty answer (brief §2, §5.4). OWNER MUST CONFIRM that there is no Montessori accreditation and no Hejný certification before this is verified. Rewrite only after settings.legalModel and any accreditation are verified."
+dependsOnFacts: [settings.legalModel]
+question: "Are you a school? Are you Montessori accredited?"
+answer: |-
+  Until our legal model is confirmed, we do not claim to be a school, nor that taking part in the community by itself fulfils compulsory school attendance.
+
+  We are inspired by Montessori principles and Hejný mathematics. We are not an accredited Montessori institution and we hold no certification for the Hejný method.
+pendingNote: "We are still confirming how the community is organised legally and will publish it on the For parents page."

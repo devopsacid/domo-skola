@@ -1,0 +1,64 @@
+---
+/**
+ * Blog post route (docs/ia.md §2.8): one page per renderable post (components/blog/rules.ts).
+ * Draft outlines are never built; needs-review posts build only outside CONTENT_STRICT=1,
+ * and legal posts only once legalReviewedAt is set. The language switcher
+ * and hreflang use the post's translationKey siblings; a missing translation goes to
+ * that locale's blog index (routes.ts switcherHref).
+ */
+import { getEntry, render } from 'astro:content';
+import type { Locale } from '../../../i18n/routes';
+import Base from '../../../layouts/Base.astro';
+import '../../../styles/pages.css';
+import PostArticle from '../../../components/blog/PostArticle.astro';
+import { getPostTranslations, getRenderablePosts, type PostEntry } from '../../../components/blog/posts';
+import { related } from '../../../components/blog/rules';
+import { getPage } from '../../../components/pages/content';
+
+export async function getStaticPaths() {
+  const all = await getRenderablePosts();
+  const translations = await getPostTranslations();
+  return all.map(({ locale, entry }) => ({
+    params: { locale, slug: entry.data.slug },
+    props: {
+      entry,
+      translations: translations.get(entry.data.translationKey) ?? {},
+      siblings: all.filter((p) => p.locale === locale).map((p) => p.entry.data),
+    },
+  }));
+}
+
+interface Props {
+  entry: PostEntry;
+  translations: Partial<Record<Locale, string>>;
+  siblings: PostEntry['data'][];
+}
+const locale = Astro.params.locale as Locale;
+const { entry, translations, siblings } = Astro.props;
+const post = entry.data;
+const blog = await getPage('blog', locale);
+const { Content } = await render(entry);
+let author: string | undefined;
+if (post.author !== 'editorial') {
+  const member = await getEntry('team', `${locale}/${post.author}`);
+  if (member?.data.status === 'verified') author = member.data.name;
+}
+---
+
+<Base
+  locale={locale}
+  title={post.seo?.title ?? post.title}
+  description={post.seo?.description ?? post.excerpt}
+  page={{ key: 'post', locale, slug: post.slug, translations }}
+>
+  <PostArticle
+    locale={locale}
+    blog={blog.sections}
+    blogTitle={blog.sections.intro.title}
+    post={post}
+    author={author}
+    related={related(post, siblings)}
+  >
+    <Content />
+  </PostArticle>
+</Base>

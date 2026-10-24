@@ -1,0 +1,101 @@
+---
+/**
+ * Legal and organizational status (brief §5.4, docs/ia.md §2.4 item 13): explains the
+ * difference between a registered primary school, a community learning group and
+ * individual (home) education WITHOUT asserting which one applies. The community's own
+ * model, partner schools and parent responsibilities come from settings.legalModel and
+ * render only when verified; otherwise a neutral pending text.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import { verifiedValue } from '../../content-schemas';
+import Reviewable from '../status/Reviewable.astro';
+import NotePending from '../status/NotePending.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import type { PageSections, getSettings } from './content';
+
+interface Props {
+  locale: Locale;
+  data: PageSections<'parents'>['legal'];
+  settings: Pick<Awaited<ReturnType<typeof getSettings>>, 'legalModel'>;
+}
+const { locale, data, settings } = Astro.props;
+const model = settings.legalModel;
+const type = verifiedValue(model.type);
+const confirmed = type !== null && type !== 'unknown';
+const description = confirmed ? model.description?.[locale]?.trim() : undefined;
+const responsibilities = confirmed ? model.parentResponsibilities?.[locale]?.trim() : undefined;
+const partners = model.partnerSchools.filter((p) => p.status === 'verified');
+const titleId = `${data.id}-title`;
+---
+
+<section class="section surface-paper legal-status" id={data.id} aria-labelledby={titleId}>
+  <Reviewable locale={locale} status={data.status} name="pages/parents.legal" quiet class="container">
+    <div class="legal-status__head">
+      <SectionHeading eyebrow={data.eyebrow} title={data.title} id={titleId}>
+        {data.intro.map((p) => <p>{p}</p>)}
+      </SectionHeading>
+    </div>
+
+    <h3 class="legal-status__subtitle">{data.formsTitle}</h3>
+    <ul class="legal-forms">
+      {
+        data.forms.map((f) => (
+          <li class="legal-forms__item" data-form={f.key}>
+            <h4 class="legal-forms__title">{f.title}</h4>
+            <p>{f.text}</p>
+            {f.points.length > 0 && (
+              <ul class="legal-forms__points">
+                {f.points.map((pt) => (
+                  <li>{pt}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="legal-status__forms-note">{data.formsNote}</p>
+
+    <div class="legal-status__ours">
+      <div class="legal-status__block">
+        <h3 class="legal-status__subtitle">{data.ourModelTitle}</h3>
+        {
+          description ? (
+            <p>{description}</p>
+          ) : (
+            <NotePending locale={locale} kind="pending">
+              <p>{data.ourModelPending}</p>
+            </NotePending>
+          )
+        }
+        {
+          partners.length > 0 && (
+            <>
+              <h4 class="legal-status__minor">{data.partnersTitle}</h4>
+              <ul class="legal-status__partners">
+                {partners.map((p) => (
+                  <li>{p.url ? <a href={p.url}>{p.name}</a> : p.name}</li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </div>
+      <div class="legal-status__block">
+        <h3 class="legal-status__subtitle">{data.responsibilitiesTitle}</h3>
+        {
+          responsibilities ? (
+            <p>{responsibilities}</p>
+          ) : (
+            <NotePending locale={locale} kind="pending">
+              <p>{data.responsibilitiesPending}</p>
+            </NotePending>
+          )
+        }
+        <p>
+          <a href={localePath('contact', locale)}>{data.contactLink}</a>
+        </p>
+      </div>
+    </div>
+  </Reviewable>
+</section>

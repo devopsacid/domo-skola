@@ -1,11 +1,11 @@
-# Czech placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
 id: cost
 category: costs
-order: 6
+order: 18
 featuredOnHome: true
 status: needs-review
 reviewNote: "No fee information until settings.fees is verified; owner to supply the wording."
 dependsOnFacts: [settings.fees]
-question: "Kolik stojí účast v komunitě?"
+question: "Jaké jsou náklady na účast v komunitě?"
 answer: |-
-  Výši příspěvku zveřejníme po potvrzení. Napište nám a rádi vám řekneme, jak o nákladech uvažujeme.
+  Informace o nákladech zveřejníme po potvrzení. Napište nám a rádi vám řekneme, jak o nich uvažujeme.

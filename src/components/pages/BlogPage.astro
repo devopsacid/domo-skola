@@ -1,0 +1,101 @@
+---
+/**
+ * Blog / knowledge centre index (docs/ia.md §2.8, brief §9). Lists renderable posts
+ * (components/blog/rules.ts) grouped by topic cluster, with cluster chips as in-page
+ * anchors. With no posts (today: the 8 article concepts are draft outlines) it shows a
+ * designed empty state that points to the approach page and the FAQ.
+ * Pagination is not needed below ~20 posts; see the L4 report.
+ */
+import type { Locale } from '../../i18n/routes';
+import { localePath } from '../../i18n/routes';
+import { POST_CLUSTERS } from '../../content-schemas';
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import PageIntro from '../ui/PageIntro.astro';
+import OnThisPage from '../ui/OnThisPage.astro';
+import LinkArrow from '../ui/LinkArrow.astro';
+import CtaBand from '../ui/CtaBand.astro';
+import Reviewable from '../status/Reviewable.astro';
+import { getRenderablePosts } from '../blog/posts';
+import { getPage } from './content';
+import { linkHref } from './links';
+import { anchorSlug } from './slug';
+import { pageStrings } from './strings';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const page = await getPage('blog', locale);
+const s = page.sections;
+const posts = (await getRenderablePosts()).filter((p) => p.locale === locale).map((p) => p.entry.data);
+const fmt = new Intl.DateTimeFormat(pageStrings(locale).dateLocale, { dateStyle: 'long' });
+const groups = POST_CLUSTERS.map((c) => ({
+  key: c,
+  label: s.taxonomy.clusters[c],
+  anchor: anchorSlug(s.taxonomy.clusters[c]),
+  posts: posts.filter((p) => p.cluster === c),
+})).filter((g) => g.posts.length > 0);
+---
+
+<Base locale={locale} title={page.seo.title} description={page.seo.description} page={{ key: 'blog', locale }}>
+  <PageIntro
+    locale={locale}
+    status={s.intro.status}
+    name="pages/blog.intro"
+    eyebrow={s.intro.eyebrow}
+    title={s.intro.title}
+    lead={s.intro.lead}
+  >
+    {
+      groups.length > 1 && (
+        <OnThisPage label={s.taxonomy.label} items={groups.map((g) => ({ href: `#${g.anchor}`, label: g.label }))} />
+      )
+    }
+  </PageIntro>
+
+  {
+    groups.length === 0 ? (
+      <section class="section blog-empty" aria-labelledby="blog-empty-title">
+        <Reviewable locale={locale} status={s.empty.status} name="pages/blog.empty" quiet class="container blog-empty__inner">
+          <h2 class="blog-empty__title" id="blog-empty-title">{s.empty.title}</h2>
+          <p class="blog-empty__text">{s.empty.text}</p>
+          <ul class="blog-empty__links">
+            {s.empty.links.map((l) => (
+              <li>
+                <LinkArrow href={linkHref(l, locale)}>{l.label}</LinkArrow>
+              </li>
+            ))}
+          </ul>
+        </Reviewable>
+      </section>
+    ) : (
+      groups.map((g) => (
+        <section class="section blog-cluster" id={g.anchor} aria-labelledby={`${g.anchor}-title`}>
+          <div class="container">
+            <h2 class="blog-cluster__title" id={`${g.anchor}-title`}>{g.label}</h2>
+            <ul class="post-list">
+              {g.posts.map((p) => (
+                <li class="post-list__item">
+                  <Reviewable locale={locale} status={p.status} name={`posts/${locale}/${p.slug}`} as="article" class="post-teaser">
+                    <h3 class="post-teaser__title">
+                      <a href={localePath('post', locale, p.slug)}>{p.title}</a>
+                    </h3>
+                    <p class="post-teaser__excerpt">{p.excerpt}</p>
+                    {p.publishedAt && (
+                      <p class="post-teaser__meta">
+                        <time datetime={p.publishedAt.toISOString().slice(0, 10)}>{fmt.format(p.publishedAt)}</time>
+                      </p>
+                    )}
+                  </Reviewable>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))
+    )
+  }
+
+  <CtaBand locale={locale} name="pages/blog" data={s.cta} />
+</Base>

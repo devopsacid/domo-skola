@@ -1,7 +1,6 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { LOCALES, ROUTES, type PageKey } from '../../src/i18n/routes';
-import { STUB_KEYS } from '../../src/components/site/stubs';
 import { localesFor } from '../../src/pages/_forms/paths';
 
 const FORM_KEYS = [
@@ -39,8 +38,9 @@ describe('form page routes', () => {
     }
   });
 
-  it('are no longer stubs', () => {
-    for (const key of FORM_KEYS) expect(STUB_KEYS as readonly string[]).not.toContain(key);
+  it('are no longer stubs (the temporary stub route is gone)', () => {
+    expect(existsSync('src/pages/[locale]/[...stub].astro')).toBe(false);
+    expect(existsSync('src/components/site/stubs.ts')).toBe(false);
   });
 
   it('gives sk, cs and en distinct success paths below their form page', () => {

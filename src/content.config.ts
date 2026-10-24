@@ -50,7 +50,16 @@ export const collections = {
     loader: perLocale('gallery'),
     schema: gallerySchema,
   }),
-  posts: defineCollection({ loader: perLocale('posts'), schema: postsSchema }),
+  // Posts carry a `slug` field, which the glob loader would use as the id; keep the
+  // locale folder in the id ("sk/<file>") so equal slugs in two locales never collide.
+  posts: defineCollection({
+    loader: glob({
+      pattern: '**/*.{md,mdx}',
+      base: './src/content/posts',
+      generateId: ({ entry }) => entry.replace(/\.mdx?$/, ''),
+    }),
+    schema: postsSchema,
+  }),
   // src/content/ui/<locale>/<namespace>.json
   ui: defineCollection({ loader: perLocale('ui'), schema: uiSchema }),
 };

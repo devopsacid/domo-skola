@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
+id: not-claimed
+category: legal
+order: 6
+featuredOnHome: false
+status: needs-review
+reviewNote: "Honesty answer (brief §2, §5.4). OWNER MUST CONFIRM that there is no Montessori accreditation and no Hejný certification before this is verified. Rewrite only after settings.legalModel and any accreditation are verified."
+dependsOnFacts: [settings.legalModel]
+question: "Ste škola? Máte akreditáciu Montessori?"
+answer: |-
+  Kým nebude potvrdený náš právny model, netvrdíme, že sme škola, ani že účasť v komunite sama osebe plní povinnú školskú dochádzku.
+
+  Inšpirujeme sa princípmi Montessori a Hejného matematikou. Nie sme akreditované Montessori zariadenie a nemáme certifikát na Hejného metódu.
+pendingNote: "Ako je komunita usporiadaná po právnej stránke, zatiaľ potvrdzujeme a zverejníme to na stránke Pre rodičov."

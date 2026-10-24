@@ -1,0 +1,31 @@
+---
+/**
+ * Breadcrumbs for every page except home (docs/ia.md §2): an ordered list of links,
+ * the last item is the current page (aria-current, not a link). Separators are CSS.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import { chrome } from '../site/strings';
+import { pageStrings } from '../pages/strings';
+
+interface Props {
+  locale: Locale;
+  /** Intermediate crumbs between home and the current page. */
+  trail?: { href: string; label: string }[];
+  current: string;
+}
+const { locale, trail = [], current } = Astro.props;
+const crumbs = [{ href: localePath('home', locale), label: chrome(locale).home }, ...trail];
+---
+
+<nav class="breadcrumbs" aria-label={pageStrings(locale).breadcrumb}>
+  <ol class="breadcrumbs__list">
+    {
+      crumbs.map((c) => (
+        <li>
+          <a href={c.href}>{c.label}</a>
+        </li>
+      ))
+    }
+    <li><span aria-current="page">{current}</span></li>
+  </ol>
+</nav>

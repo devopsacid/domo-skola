@@ -1,11 +1,11 @@
-# English placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), English draft copy (needs-review).
 id: cost
 category: costs
-order: 6
+order: 18
 featuredOnHome: true
 status: needs-review
 reviewNote: "No fee information until settings.fees is verified; owner to supply the wording."
 dependsOnFacts: [settings.fees]
-question: "How much does it cost to take part?"
+question: "What are the costs of taking part?"
 answer: |-
-  We will publish the fee once it is confirmed. Write to us and we'll gladly tell you how we are thinking about costs.
+  We will publish information about costs once it is confirmed. Write to us and we will gladly tell you how we are thinking about them.

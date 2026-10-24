@@ -1,0 +1,63 @@
+# Cookies (docs/ia.md §2.9). Czech placeholder translation, needs-review and LEGAL REVIEW.
+key: cookies
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. Czech placeholder translation; reflects the build (no cookies on public pages while analytics are off). L6 to confirm the sessionStorage wording."
+seo:
+  title: Cookies
+  description: Jaké cookies a podobné technologie používají naše stránky. Veřejné stránky žádné cookies nenastavují.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Právní dokumenty
+    title: Cookies
+    lead: Stručně o tom, zda a jaké cookies a podobné technologie naše stránky používají.
+    draftNote: Tento text je pracovní návrh a čeká na právní kontrolu.
+  coJsouCookies:
+    status: needs-review
+    id: co-jsou-cookies
+    title: Co jsou cookies
+    items:
+      - id: definice
+        title: Cookies a podobné technologie
+        body:
+          - Cookies jsou malé soubory, které si stránka ukládá ve vašem prohlížeči. Podobně fungují i jiná úložiště v prohlížeči, například sessionStorage.
+  naseStranky:
+    status: needs-review
+    id: nase-stranky
+    title: Cookies na našich stránkách
+    items:
+      - id: verejne-stranky
+        if: analyticsOff
+        title: Veřejné stránky
+        body:
+          - Veřejné stránky nenastavují žádné cookies. Nepoužíváme analytické ani reklamní nástroje třetích stran, proto se vás neptáme na souhlas s cookies.
+      - id: mereni
+        if: analyticsOn
+        title: Měření návštěvnosti
+        body:
+          - K měření návštěvnosti používáme analytický nástroj. Podrobnosti o něm a o souhlasu doplníme po právní kontrole.
+      - id: rozpracovana-prihlaska
+        title: Rozpracovaná přihláška
+        body:
+          - Pokud začnete vyplňovat přihlášku, rozpracované údaje se mohou dočasně uložit v úložišti sessionStorage vašeho prohlížeče, abyste o ně nepřišli. Není to cookie, nikam se neodesílá a smaže se, když zavřete kartu prohlížeče.
+  administrace:
+    status: needs-review
+    id: administrace
+    title: Neveřejná administrace
+    items:
+      - id: prihlaseni
+        title: Přihlášení do administrace
+        body:
+          - Při přihlášení do neveřejné administrace nastavuje služba Cloudflare Access nezbytnou cookie CF_Authorization. Týká se jen pověřených lidí z komunity, ne návštěvníků stránek.
+  nastaveni:
+    status: needs-review
+    id: nastaveni
+    title: Jak cookies smazat nebo zablokovat
+    items:
+      - id: prohlizec
+        title: Nastavení prohlížeče
+        body:
+          - Cookies a úložiště stránek můžete kdykoli smazat nebo zablokovat v nastavení svého prohlížeče.
+        link:
+          to: privacy
+          label: Ochrana osobních údajů

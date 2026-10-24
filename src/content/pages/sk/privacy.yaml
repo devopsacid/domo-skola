@@ -1,0 +1,131 @@
+# Privacy notice (docs/ia.md §2.9, brief §10 GDPR). PLACEHOLDER STRUCTURE: needs-review and LEGAL REVIEW.
+# The controller, legal bases, retention and processors are settings facts (settings.dataController,
+# settings.privacy); they show "pending" until verified. Never write them into this file.
+key: privacy
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. Placeholder structure only: controller identity, legal bases, retention periods and processors are configurable settings facts, not text. The data lists mirror the L5a form contract (src/shared/schemas)."
+seo:
+  title: Ochrana osobných údajov
+  description: Ako spracúvame osobné údaje z kontaktného formulára a z prihlášky, na aký účel, ako dlho a aké máte práva.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Právne dokumenty
+    title: Ochrana osobných údajov
+    lead: Tu vysvetľujeme, aké osobné údaje od vás získavame, prečo ich potrebujeme, ako dlho ich uchovávame a aké máte práva.
+    draftNote: Tento text je pracovný návrh. Prevádzkovateľa, právne základy, lehoty uchovávania a sprostredkovateľov doplníme po právnej kontrole. Dovtedy je pri nich uvedené, že informáciu zatiaľ potvrdzujeme.
+  prevadzkovatel:
+    status: needs-review
+    id: prevadzkovatel
+    title: Kto spracúva vaše údaje
+    intro:
+      - Prevádzkovateľ je ten, kto rozhoduje o tom, prečo a ako sa vaše osobné údaje spracúvajú.
+    items:
+      - id: udaje-prevadzkovatela
+        title: Prevádzkovateľ
+        facts:
+          - label: Názov
+            path: settings.dataController.name
+          - label: Adresa
+            path: settings.dataController.address
+          - label: IČO
+            path: settings.dataController.companyId
+          - label: E-mail
+            path: settings.dataController.email
+          - label: Zodpovedná osoba (ak je určená)
+            path: settings.dataController.dpoContact
+  akeUdaje:
+    status: needs-review
+    id: ake-udaje
+    title: Aké údaje spracúvame a prečo
+    intro:
+      - Zbierame len údaje, ktoré potrebujeme na to, aby sme vám mohli odpovedať a dohodnúť ďalší postup.
+    items:
+      - id: kontaktny-formular
+        title: Správa z kontaktného formulára
+        body:
+          - Keď nám napíšete, spracúvame vaše meno, e-mailovú adresu, telefónne číslo (ak ho uvediete), región, tému a text správy. Potrebujeme ich, aby sme vám mohli odpovedať.
+      - id: prihlaska
+        title: Prihláška (prejav záujmu)
+        body:
+          - V prihláške spracúvame údaje o vás (meno, e-mail, telefón, obec, región a preferovaný jazyk) a o dieťati (meno, ročník a školský rok, o ktorý máte záujem, a ak ju uvediete, súčasnú formu vzdelávania). Spracúvame aj odpovede, ktoré nám napíšete o svojich očakávaniach.
+          - Údaje používame na to, aby sme sa s vami spojili a dohodli ďalší postup. Prihláška je prejavom záujmu, nie potvrdením prijatia.
+      - id: technicke-udaje
+        title: Technické údaje
+        body:
+          - Pri návšteve stránok sa spracúvajú technické údaje potrebné na ich doručenie a na ochranu formulárov pred zneužitím, napríklad IP adresa. Podrobnosti doplníme po právnej kontrole.
+          - "Formuláre chránime pred spamom. Majú skryté pole, ktoré ľudia nevypĺňajú: ak je vyplnené, správu neuložíme. Meria sa aj čas vyplnenia a počet odkazov v texte; príliš rýchlo vyplnený formulár alebo veľa odkazov označí záznam ako podozrivý. Na obmedzenie počtu odoslaní sa používa jednosmerný odtlačok (hash) IP adresy. Tento popis čaká na právnu kontrolu."
+      - id: marketing
+        if: marketingEnabled
+        title: Novinky (len so súhlasom)
+        body:
+          - Ak nám na to dáte samostatný súhlas, môžeme vám posielať novinky. Súhlas je dobrovoľný a môžete ho kedykoľvek odvolať.
+  pravnyZaklad:
+    status: needs-review
+    id: pravny-zaklad
+    title: Na akom právnom základe
+    intro:
+      - Pre každý účel platí samostatný právny základ. Určí ho prevádzkovateľ po právnej kontrole.
+    items:
+      - id: zaklady
+        title: Právne základy podľa účelu
+        facts:
+          - label: Odpoveď na vašu správu
+            path: settings.privacy.legalBases.inquiry
+          - label: Spracovanie prihlášky
+            path: settings.privacy.legalBases.application
+      - id: zaklad-marketing
+        if: marketingEnabled
+        title: Novinky
+        facts:
+          - label: Zasielanie noviniek
+            path: settings.privacy.legalBases.marketing
+  akoDlho:
+    status: needs-review
+    id: ako-dlho
+    title: Ako dlho údaje uchovávame
+    items:
+      - id: lehoty
+        title: Lehoty uchovávania
+        body:
+          - Po uplynutí lehoty sa majú údaje vymazať. Postup vymazania doplníme po právnej kontrole.
+        facts:
+          - label: Správy z kontaktného formulára
+            path: settings.privacy.retentionDays.inquiry
+            unit: days
+          - label: Prihlášky
+            path: settings.privacy.retentionDays.application
+            unit: days
+          - label: Po uzavretí komunikácie
+            path: settings.privacy.retentionDays.afterClose
+            unit: days
+          - label: Záznamy o prístupe k údajom
+            path: settings.privacy.retentionDays.audit
+            unit: days
+  ktoMaPristup:
+    status: needs-review
+    id: kto-ma-pristup
+    title: Kto má k údajom prístup
+    intro:
+      - Prístup k údajom chceme obmedziť na poverených ľudí z komunity, ktorí ich potrebujú na vybavenie vašej správy alebo prihlášky. Ako sú prístupy nastavené, doplníme po právnej kontrole. Technické služby, napríklad hosting a odosielanie e-mailov, nám poskytujú sprostredkovatelia.
+    items:
+      - id: sprostredkovatelia
+        title: Sprostredkovatelia
+        show: processors
+  vasePrava:
+    status: needs-review
+    id: vase-prava
+    title: Vaše práva
+    items:
+      - id: prava
+        title: Aké práva máte
+        list:
+          - požiadať o prístup k svojim údajom,
+          - požiadať o ich opravu alebo vymazanie,
+          - požiadať o obmedzenie spracúvania,
+          - namietať proti spracúvaniu,
+          - na prenosnosť údajov,
+          - kedykoľvek odvolať súhlas, ak údaje spracúvame na jeho základe,
+          - podať sťažnosť na dozornom orgáne.
+        body:
+          - Svoje práva môžete uplatniť e-mailom u prevádzkovateľa. Kontakt nájdete vyššie.

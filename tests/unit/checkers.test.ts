@@ -187,7 +187,8 @@ describe('check-size', () => {
     const r = run('check-size.mjs', tooBig);
     expect(r.code).toBe(1);
     expect(r.out).toContain('/en/apply/: js');
-  });
+    // Seven check-size child processes; on a loaded machine this passes the 5 s default.
+  }, 30_000);
 });
 
 describe('check-dist', () => {

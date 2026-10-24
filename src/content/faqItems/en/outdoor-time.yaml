@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: outdoor-time
+category: daily
+order: 14
+featuredOnHome: false
+status: needs-review
+reviewNote: "Outdoor time is not confirmed; the pendingNote stays until settings.operations.outdoorTime is verified."
+dependsOnFacts: [settings.operations.outdoorTime]
+question: "How much time do children spend outdoors?"
+answer: |-
+  Time outdoors is part of learning for us, not just a break. Outside you can measure, observe and explore, and the children get to run around too. We want to go out every day, even when the sun is not shining, as long as it is safe.
+
+  It helps if your child has clothes that can get dirty, and a change of clothes.
+pendingNote: "We are still confirming how much time outdoors a typical day will include."

@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
+id: enrolment-how
+category: enrollment
+order: 11
+featuredOnHome: false
+status: needs-review
+reviewNote: "Mirrors the proposed process (home §J); availability and dates stay pending until settings.enrollment is verified."
+dependsOnFacts: [settings.enrollment]
+question: "Ako prebieha prihlásenie?"
+answer: |-
+  Vyplníte krátku prihlášku alebo nám napíšete. Ozveme sa vám, dohodneme si úvodný rozhovor a pozveme vás aj s dieťaťom spoznať prostredie. Potom sa spoločne rozhodneme o ďalších krokoch.
+
+  Prihláška je prejavom záujmu, nie potvrdením prijatia. Nič sa ňou nezaväzujete.
+pendingNote: "Postup a termíny prijímania zatiaľ potvrdzujeme."

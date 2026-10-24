@@ -1,12 +1,14 @@
-# Home FAQ item, Slovak working copy (needs-review).
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
 id: difference-traditional
 category: philosophy
 order: 1
 featuredOnHome: true
 status: needs-review
-reviewNote: "Answer describes the intended practice; \"menšia skupina\" (smaller group) wording awaits the owner (group size not confirmed). Legal part stays in pendingNote until settings.legalModel is verified."
+reviewNote: "Intended practice (owner to confirm); 'menšia skupina' has no number until a group size is decided. Legal part stays in pendingNote until settings.legalModel is verified."
 dependsOnFacts: [settings.legalModel]
 question: "Aký je rozdiel medzi domoškolou a tradičnou školou?"
 answer: |-
-  Rozdiel je najmä v spôsobe učenia. Deti sa učia v menšej skupine, objavovaním, s pomôckami a v projektoch a každé postupuje vlastným tempom. Ciele vzdelávania pre 1. stupeň pritom zostávajú dôležité aj pre nás.
+  Rozdiel je najmä v spôsobe učenia. Chceme, aby sa deti učili v menšej skupine, objavovaním, s pomôckami a v projektoch a aby každé postupovalo vlastným tempom. Dospelý má byť sprievodca, ktorý pozoruje a pomáha, nie niekto, kto celý deň vykladá pred tabuľou.
+
+  Ciele vzdelávania pre 1. stupeň zostávajú dôležité aj pre nás. Bežné školy neberieme ako horšie, len ponúkame inú cestu pre rodiny, ktorým viac vyhovuje.
 pendingNote: "Ako je komunita usporiadaná po právnej stránke a s ktorou školou spolupracuje, zatiaľ potvrdzujeme. Zverejníme to na stránke Pre rodičov."

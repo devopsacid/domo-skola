@@ -83,6 +83,41 @@ export const settingsSchema = z.object({
     email: fact(z.string()),
     dpoContact: fact(z.string()),
   }),
+  /** Day-to-day facts (docs/ia.md §2.3, §2.4, §5): hours, meals, time outdoors, attendance. */
+  operations: z.object({
+    hours: fact(i18nString),
+    meals: fact(i18nString),
+    outdoorTime: fact(i18nString),
+    attendance: fact(i18nString),
+  }),
+  /**
+   * Privacy facts (docs/ia.md §2.9, brief §10 GDPR): legal bases per purpose, retention
+   * in days (must equal the RETENTION_* / AUDIT_RETENTION_DAYS vars the Functions use)
+   * and processors. All need legal review; nothing here is ever defaulted.
+   */
+  privacy: z.object({
+    legalBases: z.object({
+      inquiry: fact(i18nString),
+      application: fact(i18nString),
+      marketing: fact(i18nString),
+    }),
+    retentionDays: z.object({
+      inquiry: fact(z.number().int().nonnegative()),
+      application: fact(z.number().int().nonnegative()),
+      afterClose: fact(z.number().int().nonnegative()),
+      audit: fact(z.number().int().nonnegative()),
+    }),
+    processors: z
+      .array(
+        z.object({
+          name: z.string(),
+          purpose: i18nString,
+          location: z.string().optional(),
+          status,
+        }),
+      )
+      .default([]),
+  }),
   privacyNotice: z.object({
     version: z.string(),
     effectiveDate: z.string().optional(),

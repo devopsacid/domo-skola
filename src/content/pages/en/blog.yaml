@@ -1,0 +1,48 @@
+# Blog (docs/ia.md §2.8). English placeholder translation (not literal), needs-review: native review in L9.
+key: blog
+status: needs-review
+reviewNote: "English placeholder translation: blog index, empty state and post labels."
+seo:
+  title: Blog
+  description: Articles about primary education. Respectful education, Montessori, the Hejný mathematics method, constructivist learning and choosing a learning environment.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Blog
+    title: Articles on learning and education
+    lead: We write about how children learn and about the questions every parent of a future first-grader faces.
+  empty:
+    status: needs-review
+    title: Our first articles are on the way
+    text: In the meantime, you will find many answers on our approach page and in the questions and answers.
+    links:
+      - to: approach
+        label: Our approach
+      - to: faq
+        label: Questions and answers
+      - to: day
+        label: A day with us
+  taxonomy:
+    status: needs-review
+    label: Topics
+    clusters:
+      respectful: Respectful education
+      montessori: Montessori
+      hejny: Hejný mathematics
+      constructivism: Constructivist learning
+      choosing: Choosing a school
+      legal: Legal questions
+      independence: Independence
+  post:
+    status: needs-review
+    published: Published
+    updated: Updated
+    editorial: Editorial team
+    related: Related articles
+    back: All articles
+  cta:
+    status: needs-review
+    title: Would you like to experience it in person?
+    text: The best way is to come and see us and talk. You can start with a short application or a message.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Arrange a meeting

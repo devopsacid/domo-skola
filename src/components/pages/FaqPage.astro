@@ -1,0 +1,128 @@
+---
+/**
+ * Searchable, categorised FAQ (docs/ia.md §2.7, system.md §6.7, brief §5.7).
+ * Without JS: every question is visible, grouped under its category h2, and the category
+ * list is an in-page anchor nav. With JS (components/faq/faq-search.ts, external module):
+ * the search field appears, filters by question and answer ignoring diacritics, opens and
+ * marks matches, hides empty categories, announces the count and opens `#id` targets.
+ * Answers that depend on unverified facts show their pendingNote and a contact link.
+ * FAQPage JSON-LD is left to L9 (verified items only).
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import PageIntro from '../ui/PageIntro.astro';
+import OnThisPage from '../ui/OnThisPage.astro';
+import FaqAccordion from '../ui/FaqAccordion.astro';
+import CtaBand from '../ui/CtaBand.astro';
+import Reviewable from '../status/Reviewable.astro';
+import { factsVerified } from '../site/facts';
+import { worstStatus } from '../home/content';
+import { getFaqCategories, getFaqItems, getPage, getSettings } from './content';
+import { anchorSlug } from './slug';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const [page, categories, items, settings] = await Promise.all([
+  getPage('faq', locale),
+  getFaqCategories(locale),
+  getFaqItems(locale),
+  getSettings(),
+]);
+const s = page.sections;
+const groups = categories
+  .map((c) => ({
+    ...c,
+    anchor: anchorSlug(c.title),
+    items: items
+      .filter((f) => f.category === c.key)
+      .map((f) => ({
+        id: f.id,
+        question: f.question,
+        answer: f.answer,
+        pendingNote: f.pendingNote,
+        pending: !f.dependsOnFacts.every((p) => factsVerified(settings, p)),
+      })),
+  }))
+  .filter((g) => g.items.length > 0);
+const ids = items.map((f) => f.id);
+if (new Set([...ids, ...groups.map((g) => g.anchor)]).size !== ids.length + groups.length)
+  throw new Error(`faq/${locale}: duplicate item id or category anchor`);
+const status = worstStatus(
+  s.search.status,
+  ...categories.map((c) => c.status),
+  ...items.map((f) => f.status),
+);
+const contact = localePath('contact', locale);
+---
+
+<Base locale={locale} title={page.seo.title} description={page.seo.description} page={{ key: 'faq', locale }}>
+  <PageIntro
+    locale={locale}
+    status={s.intro.status}
+    name="pages/faq.intro"
+    eyebrow={s.intro.eyebrow}
+    title={s.intro.title}
+    lead={s.intro.lead}
+  />
+
+  <section class="section faq-page" aria-label={s.intro.title} data-faq>
+    <Reviewable locale={locale} status={status} name="pages/faq + faqCategories + faqItems" quiet class="container faq-layout">
+      <div class="faq-search" role="search" data-faq-search>
+        <label class="field__label" for="faq-query">{s.search.label}</label>
+        <p class="field__help" id="faq-query-hint">{s.search.hint}</p>
+        <input
+          class="input faq-search__input"
+          id="faq-query"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          aria-describedby="faq-query-hint"
+          data-faq-input
+        />
+        <p
+          class="faq-search__status"
+          role="status"
+          data-faq-status
+          data-results={s.search.results}
+        >
+        </p>
+      </div>
+      <div class="faq-layout__nav">
+        <OnThisPage
+          label={s.search.categoriesLabel}
+          items={groups.map((g) => ({ href: `#${g.anchor}`, label: g.title }))}
+          class="toc--vertical"
+        />
+      </div>
+      <div class="faq-layout__main">
+        {
+          groups.map((g) => (
+            <section class="faq-cat" id={g.anchor} aria-labelledby={`${g.anchor}-title`} data-faq-cat>
+              <h2 class="faq-cat__title" id={`${g.anchor}-title`}>
+                {g.title}
+              </h2>
+              <FaqAccordion items={g.items} idPrefix="" pendingLink={{ href: contact, label: s.search.pendingLink }} />
+            </section>
+          ))
+        }
+
+        <div class="faq-none" data-faq-none hidden>
+          <h2 class="faq-none__title">{s.search.noneTitle}</h2>
+          <p>{s.search.noneText}</p>
+          <div class="btn-group">
+            <a class="btn btn-secondary" href={contact}>{s.search.ctaContact}</a>
+            <a class="btn btn-secondary" href={`${contact}?subject=visit`}>{s.search.ctaMeet}</a>
+          </div>
+        </div>
+      </div>
+    </Reviewable>
+  </section>
+
+  <CtaBand locale={locale} name="pages/faq" data={s.cta} />
+  <script>
+    import '../faq/faq-search';
+  </script>
+</Base>

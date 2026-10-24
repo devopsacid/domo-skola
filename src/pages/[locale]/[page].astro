@@ -1,0 +1,36 @@
+---
+/**
+ * Content pages (L4): approach, day, parents, faq, blog, privacy, cookies, legal.
+ * One route because the slugs are localized (src/i18n/routes.ts); each page key
+ * renders its own component. enrol and contact belong to L6 (still stubs).
+ */
+import { LOCALES, localePath, type Locale } from '../../i18n/routes';
+import ApproachPage from '../../components/pages/ApproachPage.astro';
+import DayPage from '../../components/pages/DayPage.astro';
+import ParentsPage from '../../components/pages/ParentsPage.astro';
+import FaqPage from '../../components/pages/FaqPage.astro';
+import BlogPage from '../../components/pages/BlogPage.astro';
+import LegalDocPage from '../../components/pages/LegalDocPage.astro';
+import { CONTENT_PAGE_KEYS } from '../../components/pages/keys';
+
+type Key = (typeof CONTENT_PAGE_KEYS)[number];
+
+export function getStaticPaths() {
+  return LOCALES.flatMap((locale) =>
+    CONTENT_PAGE_KEYS.map((key) => ({
+      params: { locale, page: localePath(key, locale).slice(`/${locale}/`.length, -1) },
+      props: { key },
+    })),
+  );
+}
+
+const locale = Astro.params.locale as Locale;
+const { key } = Astro.props as { key: Key };
+---
+
+{key === 'approach' && <ApproachPage locale={locale} />}
+{key === 'day' && <DayPage locale={locale} />}
+{key === 'parents' && <ParentsPage locale={locale} />}
+{key === 'faq' && <FaqPage locale={locale} />}
+{key === 'blog' && <BlogPage locale={locale} />}
+{(key === 'privacy' || key === 'cookies' || key === 'legal') && <LegalDocPage locale={locale} doc={key} />}

@@ -1,14 +1,14 @@
-# Home FAQ item, Slovak working copy (needs-review).
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
 id: progress
 category: parents
-order: 4
+order: 16
 featuredOnHome: true
 status: needs-review
 reviewNote: "Day-to-day observation is intended practice (owner to confirm); formal assessment depends on the registered school (pendingNote)."
 dependsOnFacts: [settings.legalModel]
 question: "Ako sledujete pokrok dieťaťa?"
 answer: |-
-  Pokrok sledujeme priebežne: pozorujeme dieťa pri práci, zbierame jeho práce a pravidelne sa o nich s vami rozprávame.
+  Pokrok sledujeme priebežne: pozorujeme dieťa pri práci, zbierame jeho práce a rozprávame sa s ním o tom, čo sa mu darí. Počas dňa chceme deťom namiesto známok dávať slovnú spätnú väzbu.
 
-  Ako bude prebiehať formálne hodnotenie a preskúšanie, závisí od školy, v ktorej bude dieťa zapísané.
-pendingNote: "Túto časť zatiaľ potvrdzujeme."
+  S vami sa o pokroku chceme rozprávať pravidelne a konkrétne, nad prácami dieťaťa. Formálne hodnotenie, napríklad vysvedčenie, závisí od školy, v ktorej bude dieťa zapísané.
+pendingNote: "Ako bude prebiehať formálne hodnotenie, zatiaľ potvrdzujeme."

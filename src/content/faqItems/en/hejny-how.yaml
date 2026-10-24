@@ -1,12 +1,12 @@
-# English placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), English draft copy (needs-review).
 id: hejny-how
 category: philosophy
-order: 3
+order: 4
 featuredOnHome: true
 status: needs-review
 reviewNote: "Describes the Hejný approach in general terms; no certification claimed. Content owner to confirm wording."
 question: "How does Hejný mathematics work?"
 answer: |-
-  Children don't get a ready-made procedure. They get a problem in an environment they know, such as Stepping or Stairs. They solve it alone or in a group, look for rules and explain to each other why the answer works.
+  Children are not handed a ready-made procedure. They get a problem in a setting they already know, such as Stepping or Stairs, solve it alone or in a group, look for patterns and explain to each other why the answer works.
 
-  The guide doesn't give the answer away but asks questions that help children move on. Mistakes are part of learning, and we come back to them together.
+  The guide does not give the answer away. They ask questions that help the children move on. Mistakes are part of learning and we come back to them together. We are inspired by the Hejný method; we hold no certification for it.

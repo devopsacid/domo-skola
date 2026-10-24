@@ -1,0 +1,48 @@
+# Blog (docs/ia.md §2.8). Czech placeholder translation (not literal), needs-review: native review in L9.
+key: blog
+status: needs-review
+reviewNote: "Czech placeholder translation: blog index, empty state and post labels."
+seo:
+  title: Blog
+  description: Články o vzdělávání na prvním stupni. Respektující přístup, Montessori, Hejného metoda, konstruktivistické učení a výběr vzdělávacího prostředí.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Blog
+    title: Články o učení a vzdělávání
+    lead: Píšeme o tom, jak se děti učí, a o otázkách, které řeší každý rodič budoucího prvňáčka.
+  empty:
+    status: needs-review
+    title: První články připravujeme
+    text: Mezitím najdete hodně odpovědí na stránce o našem přístupu a v častých dotazech.
+    links:
+      - to: approach
+        label: Náš přístup
+      - to: faq
+        label: Časté dotazy
+      - to: day
+        label: Den v komunitě
+  taxonomy:
+    status: needs-review
+    label: Témata
+    clusters:
+      respectful: Respektující přístup
+      montessori: Montessori
+      hejny: Hejného metoda
+      constructivism: Konstruktivistické učení
+      choosing: Výběr školy
+      legal: Právní otázky
+      independence: Samostatnost
+  post:
+    status: needs-review
+    published: Publikováno
+    updated: Aktualizováno
+    editorial: Redakce
+    related: Související články
+    back: Všechny články
+  cta:
+    status: needs-review
+    title: Chcete to zažít naživo?
+    text: Nejlepší je přijít se podívat a popovídat si. Začít můžete krátkou přihláškou nebo zprávou.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Domluvit si schůzku

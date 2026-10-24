@@ -1,0 +1,12 @@
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
+id: instruction-language
+category: language_support
+order: 20
+featuredOnHome: false
+status: needs-review
+reviewNote: "Instruction languages are NOT confirmed (brief §8): the answer must never imply instruction in Czech or English."
+dependsOnFacts: [settings.instructionLanguages]
+question: "V jakém jazyce probíhá vzdělávání?"
+answer: |-
+  Web je ve slovenštině, češtině a angličtině, aby si o nás mohlo přečíst co nejvíc rodin. Překlad webu neznamená, že v těchto jazycích také probíhá vzdělávání.
+pendingNote: "V jakém jazyce nebo jazycích se děti budou učit, zatím ověřujeme."

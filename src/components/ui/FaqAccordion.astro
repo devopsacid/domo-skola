@@ -7,6 +7,7 @@
  * Markdown; only paragraphs are rendered here, which keeps the home page free of a
  * Markdown runtime). Answers that depend on unverified facts (`pending`) get their
  * `pendingNote` and a contact link; both disappear once the facts are verified.
+ * `data-faq-text` marks the question and answer text, the only text the FAQ search reads.
  */
 interface Item {
   id: string;
@@ -19,8 +20,11 @@ interface Item {
 }
 interface Props {
   items: Item[];
-  /** Exclusive-accordion group name; unique per list on a page. */
-  name: string;
+  /**
+   * Exclusive-accordion group name; unique per list on a page. Omit it where several
+   * items must open at once (the searchable FAQ opens every match).
+   */
+  name?: string;
   /** Prefix for item ids, e.g. "faq-". */
   idPrefix?: string;
   pendingLink?: { href: string; label: string };
@@ -37,9 +41,9 @@ const paragraphs = (text: string) =>
 <div class:list={['faq-list', className]}>
   {
     items.map((item) => (
-      <details class="faq-item" name={name} id={`${idPrefix}${item.id}`}>
+      <details class="faq-item" name={name} id={`${idPrefix}${item.id}`} data-faq-item>
         <summary class="faq-item__q">
-          <span class="faq-item__q-text">{item.question}</span>
+          <span class="faq-item__q-text" data-faq-text>{item.question}</span>
           <svg
             class="faq-item__icon"
             viewBox="0 0 20 20"
@@ -59,7 +63,7 @@ const paragraphs = (text: string) =>
         </summary>
         <div class="faq-item__a">
           {paragraphs(item.answer).map((p) => (
-            <p>{p}</p>
+            <p data-faq-text>{p}</p>
           ))}
           {item.pending && item.pendingNote && <p class="faq-item__pending">{item.pendingNote}</p>}
           {item.pending && pendingLink && (

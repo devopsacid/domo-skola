@@ -1,0 +1,63 @@
+# Cookies (docs/ia.md §2.9). English placeholder translation, needs-review and LEGAL REVIEW.
+key: cookies
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. English placeholder translation; reflects the build (no cookies on public pages while analytics are off). L6 to confirm the sessionStorage wording."
+seo:
+  title: Cookies
+  description: Which cookies and similar technologies our website uses. Public pages set no cookies.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Legal documents
+    title: Cookies
+    lead: A short note on whether, and which, cookies and similar technologies our website uses.
+    draftNote: This text is a working draft awaiting legal review.
+  whatAreCookies:
+    status: needs-review
+    id: what-are-cookies
+    title: What cookies are
+    items:
+      - id: definition
+        title: Cookies and similar technologies
+        body:
+          - Cookies are small files that a website stores in your browser. Other browser storage, such as sessionStorage, works in a similar way.
+  ourSite:
+    status: needs-review
+    id: our-site
+    title: Cookies on our website
+    items:
+      - id: public-pages
+        if: analyticsOff
+        title: Public pages
+        body:
+          - Public pages set no cookies. We do not use third-party analytics or advertising tools, so we do not ask for cookie consent.
+      - id: analytics
+        if: analyticsOn
+        title: Measuring visits
+        body:
+          - We use an analytics tool to measure visits. Details about it and about consent will be added after legal review.
+      - id: application-draft
+        title: An unfinished application
+        body:
+          - If you start filling in the application, your unfinished answers may be stored temporarily in your browser's sessionStorage so that you don't lose them. This is not a cookie, it is not sent anywhere, and it is deleted when you close the browser tab.
+  admin:
+    status: needs-review
+    id: admin
+    title: Non-public administration
+    items:
+      - id: admin-login
+        title: Signing in to the administration
+        body:
+          - When authorised people from the community sign in to the non-public administration, Cloudflare Access sets the strictly necessary cookie CF_Authorization. It does not apply to visitors of the website.
+  settings:
+    status: needs-review
+    id: settings
+    title: How to delete or block cookies
+    items:
+      - id: browser
+        title: Browser settings
+        body:
+          - You can delete or block cookies and site storage at any time in your browser settings.
+        link:
+          to: privacy
+          label: Privacy policy

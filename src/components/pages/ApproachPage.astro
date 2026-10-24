@@ -1,0 +1,165 @@
+---
+/**
+ * Our approach (docs/ia.md §2.2, brief §5.2): one tinted band per pillar with the five
+ * sub-blocks, after a "how we work" group (small groups, guide, environment, outdoors,
+ * parents); then projects, emotional development, pace and progress, how the four
+ * approaches complement each other, what the community does not claim, and the CTA. Montessori and Hejný carry their
+ * "this does not mean" disclaimers (brief §2).
+ */
+import type { Locale } from '../../i18n/routes';
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import PageIntro from '../ui/PageIntro.astro';
+import OnThisPage from '../ui/OnThisPage.astro';
+import TopicGroup from '../ui/TopicGroup.astro';
+import CtaBand from '../ui/CtaBand.astro';
+import Reviewable from '../status/Reviewable.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Motif from '../art/Motif.astro';
+import { getPillars, worstStatus } from '../home/content';
+import { getPage, getSettings } from './content';
+import { buildConditions } from './links';
+import { PILLAR_MOTIF } from './motifs';
+import { pageStrings } from './strings';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const [page, pillars, settings] = await Promise.all([
+  getPage('approach', locale),
+  getPillars(locale),
+  getSettings(),
+]);
+const s = page.sections;
+const conditions = buildConditions(settings, import.meta.env.PUBLIC_ANALYTICS_PROVIDER);
+const SURFACES = ['surface-sage', 'surface-clay', 'surface-sun', 'surface-sunk'];
+const toc = [
+  { href: `#${s.howWeWork.id}`, label: s.howWeWork.title },
+  ...pillars.map((p) => ({ href: `#${p.anchor}`, label: p.title })),
+  { href: `#${s.topics.id}`, label: s.topics.title },
+  { href: `#${s.complement.id}`, label: s.complement.title },
+  { href: `#${s.notClaimed.id}`, label: s.notClaimed.title },
+];
+const byKey = Object.fromEntries(pillars.map((p) => [p.key, p]));
+const L = s.pillarLabels;
+---
+
+<Base locale={locale} title={page.seo.title} description={page.seo.description} page={{ key: 'approach', locale }}>
+  <PageIntro
+    locale={locale}
+    status={s.intro.status}
+    name="pages/approach.intro"
+    eyebrow={s.intro.eyebrow}
+    title={s.intro.title}
+    lead={s.intro.lead}
+  >
+    <OnThisPage label={pageStrings(locale).onThisPage} items={toc} />
+  </PageIntro>
+
+  <TopicGroup
+    locale={locale}
+    group={s.howWeWork}
+    settings={settings}
+    conditions={conditions}
+    name="pages/approach.howWeWork"
+  />
+
+  {
+    pillars.map((p, i) => (
+      <section
+        class:list={['section', 'approach-pillar', SURFACES[i]]}
+        id={p.anchor}
+        aria-labelledby={`${p.anchor}-title`}
+        data-pillar={p.key}
+      >
+        <Reviewable
+          locale={locale}
+          status={worstStatus(p.status, L.status)}
+          name={`pillars/${p.key}`}
+          quiet
+          class="container approach-pillar__grid"
+        >
+          <div class="approach-pillar__head">
+            <div class="approach-pillar__marks" aria-hidden="true">
+              <span class="approach-pillar__num">{String(i + 1).padStart(2, '0')}</span>
+              <Motif name={PILLAR_MOTIF[p.key]} class="approach-pillar__motif" />
+            </div>
+            <h2 class="approach-pillar__title" id={`${p.anchor}-title`}>
+              {p.title}
+            </h2>
+            <p class="approach-pillar__summary">{p.summary}</p>
+            {p.disclaimer && <p class="disclaimer">{p.disclaimer}</p>}
+          </div>
+          <div class="approach-pillar__body">
+            <div class="approach-block">
+              <h3>{L.whatItMeans}</h3>
+              <p>{p.whatItMeans}</p>
+            </div>
+            <div class="approach-block">
+              <h3>{L.inPractice}</h3>
+              <p>{p.inPractice}</p>
+            </div>
+            {p.examples.length > 0 && (
+              <div class="approach-block">
+                <h3>{L.examples}</h3>
+                <ul class="approach-block__examples">
+                  {p.examples.map((e) => (
+                    <li>{e}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div class="approach-block">
+              <h3>{L.benefits}</h3>
+              <p>{p.benefits}</p>
+            </div>
+            <div class="approach-block approach-block--parents">
+              <h3>{L.parentsCanExpect}</h3>
+              <p>{p.parentsCanExpect}</p>
+            </div>
+          </div>
+        </Reviewable>
+      </section>
+    ))
+  }
+
+  <TopicGroup
+    locale={locale}
+    group={s.topics}
+    settings={settings}
+    conditions={conditions}
+    name="pages/approach.topics"
+  />
+
+  <section class="section approach-complement surface-sage" id={s.complement.id} aria-labelledby={`${s.complement.id}-title`}>
+    <Reviewable locale={locale} status={s.complement.status} name="pages/approach.complement" quiet class="container">
+      <SectionHeading eyebrow={s.complement.eyebrow} title={s.complement.title} id={`${s.complement.id}-title`}>
+        {s.complement.body.map((p) => <p>{p}</p>)}
+      </SectionHeading>
+      <ul class="complement-list">
+        {
+          s.complement.items.map((it) => (
+            <li class="complement-list__item" data-pillar={it.key}>
+              <Motif name={PILLAR_MOTIF[it.key]} class="complement-list__motif" />
+              <p class="complement-list__pillar">{byKey[it.key]?.title}</p>
+              <p class="complement-list__role">{it.role}</p>
+              <p class="complement-list__text">{it.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="approach-complement__caveat">{s.complement.caveat}</p>
+    </Reviewable>
+  </section>
+
+  <TopicGroup
+    locale={locale}
+    group={s.notClaimed}
+    settings={settings}
+    conditions={conditions}
+    name="pages/approach.notClaimed"
+  />
+
+  <CtaBand locale={locale} name="pages/approach" data={s.cta} />
+</Base>

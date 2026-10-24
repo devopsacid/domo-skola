@@ -93,8 +93,8 @@ describe('shared patterns', () => {
     });
     expect(html.match(/<details class="faq-item" name="faq-home"/g)).toHaveLength(2);
     expect(html).toContain('id="q-one"');
-    expect(html).toContain('<p>P1</p>');
-    expect(html).toContain('<p>P2</p>');
+    expect(html).toContain('<p data-faq-text>P1</p>');
+    expect(html).toContain('<p data-faq-text>P2</p>');
     expect(html.match(/href="\/sk\/kontakt\/"/g)).toHaveLength(1);
     expect(html).not.toMatch(/<script/);
   });

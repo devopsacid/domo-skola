@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: individual-education
+category: legal
+order: 9
+featuredOnHome: false
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED: general description of Slovak individual education (approved by the head of the school of enrolment, conditions on who provides it, periodic examination). Check against the current school act before verified."
+dependsOnFacts: [settings.legalModel]
+question: "What is individual education?"
+answer: |-
+  In individual education (the Slovak term for a form of home education), the child does not learn in a classroom at their school but elsewhere. The parent asks the head of the school where the child is enrolled for permission. The law sets conditions, for example on who provides the education.
+
+  The school then regularly checks what the child has learned, usually through an examination, and issues the school report. This is a general description, not legal advice.
+pendingNote: "We are still confirming whether and how our community will work with individual education."

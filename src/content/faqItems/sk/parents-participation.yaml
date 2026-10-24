@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
+id: parents-participation
+category: parents
+order: 17
+featuredOnHome: false
+status: needs-review
+reviewNote: "Participation examples are intended practice (owner to confirm); parents' formal duties depend on the legal model."
+dependsOnFacts: [settings.legalModel]
+question: "Musia sa rodičia zapájať?"
+answer: |-
+  Rodičov berieme ako partnerov. Dôležité sú pre nás pravidelné rozhovory o tom, ako sa dieťaťu darí, a otvorená komunikácia, keď sa niečo deje.
+
+  Ďalšie zapojenie je ponuka, nie povinnosť. Môžete napríklad ukázať deťom svoju prácu alebo remeslo, pomôcť pri výlete či projekte alebo prísť na spoločné stretnutie rodičov.
+pendingNote: "Čo bude od rodičov povinné, napríklad voči škole, v ktorej je dieťa zapísané, zatiaľ potvrdzujeme."

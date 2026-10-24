@@ -1,0 +1,134 @@
+---
+/**
+ * A topic group (pages content model, components/pages/content.ts): heading, intro and
+ * topics. Facts show only verified values; a topic's pendingNote and its contact link
+ * render only while one of its `dependsOnFacts` is unverified (never an invented
+ * answer). Topics with an unmet build condition (`if`) are left out.
+ * Layouts: `split` (heading block left, topics right from 64rem) and `doc` (one column,
+ * for the privacy, cookies and legal pages).
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import SectionHeading from './SectionHeading.astro';
+import FactList from './FactList.astro';
+import LinkArrow from './LinkArrow.astro';
+import { chrome } from '../site/strings';
+import { factText, factsVerified } from '../site/facts';
+import { linkHref, type Conditions } from '../pages/links';
+import type { Group } from '../pages/content';
+
+interface Processor {
+  name: string;
+  purpose: Record<string, string>;
+  location?: string;
+  status: string;
+}
+interface Props {
+  locale: Locale;
+  group: Group;
+  settings: Record<string, unknown>;
+  conditions: Conditions;
+  layout?: 'split' | 'doc';
+  /** Label of the contact link shown under a pending note. */
+  pendingLink?: string;
+  /** Section surface class, e.g. "surface-sunk". */
+  surface?: string;
+  name: string;
+}
+const {
+  locale,
+  group,
+  settings,
+  conditions,
+  layout = 'split',
+  pendingLink,
+  surface,
+  name,
+} = Astro.props;
+const names = chrome(locale).languageNames;
+const items = group.items
+  .filter((t) => !t.if || conditions[t.if])
+  .map((t) => ({
+    ...t,
+    rows: t.facts.map((f) => ({
+      label: f.label,
+      value: factText(settings, f.path, locale, { unit: f.unit, names }),
+      pending: f.pending,
+    })),
+    pending: t.dependsOnFacts.some((p) => !factsVerified(settings, p)),
+    processors: t.show === 'processors' ? verifiedProcessors() : undefined,
+  }));
+
+/** settings.privacy.processors, verified entries only (empty list = pending). */
+function verifiedProcessors() {
+  const list = (settings as { privacy?: { processors?: Processor[] } }).privacy?.processors ?? [];
+  return list
+    .filter((p) => p.status === 'verified')
+    .map((p) => ({ name: p.name, text: [p.purpose[locale], p.location].filter(Boolean).join(' · ') }));
+}
+const titleId = `${group.id}-title`;
+const contact = localePath('contact', locale);
+---
+
+<section
+  class:list={[
+    'topic-group',
+    `topic-group--${layout}`,
+    layout === 'split' && 'section',
+    layout === 'split' && surface,
+  ]}
+  id={group.id}
+  aria-labelledby={titleId}
+>
+  <Reviewable
+    locale={locale}
+    status={group.status}
+    name={name}
+    quiet
+    class={layout === 'split' ? 'container topic-group__inner' : 'topic-group__inner'}
+  >
+    <div class="topic-group__head">
+      <SectionHeading
+        eyebrow={group.eyebrow}
+        title={group.title}
+        id={titleId}
+        size={layout === 'doc' ? '3' : undefined}
+      >
+        {group.intro.length > 0 && group.intro.map((p) => <p>{p}</p>)}
+      </SectionHeading>
+    </div>
+    <div class="topic-group__body">
+      {
+        items.map((t) => (
+          <div class="topic" id={t.id}>
+            <h3 class="topic__title">{t.title}</h3>
+            {t.body.map((p) => (
+              <p>{p}</p>
+            ))}
+            {t.list.length > 0 && (
+              <ul class="topic__list">
+                {t.list.map((li) => (
+                  <li>{li}</li>
+                ))}
+              </ul>
+            )}
+            {t.rows.length > 0 && <FactList locale={locale} rows={t.rows} />}
+            {t.processors &&
+              (t.processors.length > 0 ? (
+                <FactList locale={locale} rows={t.processors.map((p) => ({ label: p.name, value: p.text }))} />
+              ) : (
+                <FactList locale={locale} rows={[{ label: t.title, value: null }]} />
+              ))}
+            {t.pending && t.pendingNote && <p class="topic__pending">{t.pendingNote}</p>}
+            {t.pending && t.pendingNote && pendingLink && (
+              <p>
+                <a href={contact}>{pendingLink}</a>
+              </p>
+            )}
+            {t.link && <LinkArrow href={linkHref(t.link, locale)}>{t.link.label}</LinkArrow>}
+          </div>
+        ))
+      }
+    </div>
+  </Reviewable>
+</section>

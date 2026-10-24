@@ -1,14 +1,14 @@
-# English placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), English draft copy (needs-review).
 id: progress
 category: parents
-order: 4
+order: 16
 featuredOnHome: true
 status: needs-review
 reviewNote: "Day-to-day observation is intended practice (owner to confirm); formal assessment depends on the registered school (pendingNote)."
 dependsOnFacts: [settings.legalModel]
 question: "How do you follow a child's progress?"
 answer: |-
-  We follow progress continuously: we observe children as they work, keep a record of their work and talk with you about it regularly.
+  We follow progress continuously: we watch the child at work, collect their work and talk with them about what is going well. During the day we want to give spoken feedback instead of grades.
 
-  How formal assessment and examinations will work depends on the school where your child is enrolled.
-pendingNote: "We are still confirming this part."
+  We want to talk with you about progress regularly and concretely, over your child's actual work. Formal assessment, such as the school report, depends on the school where the child is enrolled.
+pendingNote: "We are still confirming how formal assessment will work."

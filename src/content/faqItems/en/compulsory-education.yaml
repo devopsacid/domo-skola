@@ -1,12 +1,14 @@
-# English placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), English draft copy (needs-review).
 id: compulsory-education
 category: legal
-order: 2
+order: 7
 featuredOnHome: true
 status: needs-review
-reviewNote: "Answer must be rewritten with the verified legal model before the pendingNote can go; no legal claim until then."
+reviewNote: "LEGAL REVIEW: general Slovak rule only (attendance is fulfilled at a school in the network). Must be rewritten with the verified legal model before the pendingNote can go."
 dependsOnFacts: [settings.legalModel]
-question: "How is compulsory school attendance fulfilled?"
+question: "How is compulsory education fulfilled?"
 answer: |-
-  It depends on the community's legal model and on the school where your child will be formally enrolled. We are happy to talk it through with you in person.
-pendingNote: "We are still confirming this. Until it is confirmed, we won't promise anything."
+  Under Slovak rules, compulsory school attendance is usually fulfilled at a school that is part of the official school network. Even a child who learns outside a classroom has a school where they are enrolled and which assesses them.
+
+  How this will work for our community depends on its legal model and, if that route is used, on the school we would work with. We are happy to talk it through with you in person.
+pendingNote: "We are still confirming this. Until it is confirmed, we will not promise anything."

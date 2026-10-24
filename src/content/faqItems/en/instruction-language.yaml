@@ -1,0 +1,12 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: instruction-language
+category: language_support
+order: 20
+featuredOnHome: false
+status: needs-review
+reviewNote: "Instruction languages are NOT confirmed (brief §8): the answer must never imply instruction in Czech or English."
+dependsOnFacts: [settings.instructionLanguages]
+question: "In what language do the children learn?"
+answer: |-
+  This website is in Slovak, Czech and English so that as many families as possible can read about us. The translation does not mean that learning takes place in these languages.
+pendingNote: "We are still confirming the language or languages the children will learn in."

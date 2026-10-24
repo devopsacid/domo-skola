@@ -1,0 +1,31 @@
+# FAQ page (docs/ia.md §2.7, brief §5.7). Working Slovak copy: needs-review.
+# Questions live in src/content/faqItems, categories in src/content/faqCategories.
+key: faq
+status: needs-review
+reviewNote: "L4 working copy: page chrome for the searchable FAQ. Answers are reviewed per faqItems entry."
+seo:
+  title: Časté otázky
+  description: Odpovede na otázky rodičov o domoškole, povinnej školskej dochádzke, prihlásení, bežnom dni, nákladoch a dochádzaní z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Časté otázky
+    title: Otázky a odpovede
+    lead: Na čo sa rodičia pýtajú najčastejšie. Ak niektorú informáciu ešte potvrdzujeme, povieme vám to otvorene.
+  search:
+    status: needs-review
+    label: Hľadať v otázkach
+    hint: Napíšte slovo, napríklad „dochádzka“ alebo „matematika“. Diakritiku písať nemusíte.
+    results: "Nájdené otázky: {n}"
+    noneTitle: Takú otázku sme nenašli
+    noneText: Skúste iné slovo alebo sa nás opýtajte priamo. Radi odpovieme aj na osobnom stretnutí.
+    ctaContact: Napíšte nám
+    ctaMeet: Dohodnúť si stretnutie
+    categoriesLabel: Témy otázok
+    pendingLink: Napíšte nám
+  cta:
+    status: needs-review
+    title: Nenašli ste odpoveď?
+    text: Napíšte nám alebo si dohodnite stretnutie. Odpovieme na všetko, čo už vieme, a povieme, čo ešte potvrdzujeme.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie

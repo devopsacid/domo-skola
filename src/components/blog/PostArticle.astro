@@ -1,0 +1,106 @@
+---
+/**
+ * Blog post template (docs/ia.md §2.8): breadcrumbs, cluster eyebrow, h1, excerpt as
+ * the lead, dates (published, updated) and author, the body (default slot, rendered
+ * Markdown), related posts and the closing CTA. Kept separate from the route so the
+ * container tests can render it with fixture data.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import LinkArrow from '../ui/LinkArrow.astro';
+import CtaBand from '../ui/CtaBand.astro';
+import Reviewable from '../status/Reviewable.astro';
+import type { ContentStatus } from '../status/mode';
+import type { PageSections } from '../pages/content';
+import { pageStrings } from '../pages/strings';
+
+interface Props {
+  locale: Locale;
+  blog: PageSections<'blog'>;
+  blogTitle: string;
+  post: {
+    slug: string;
+    title: string;
+    excerpt: string;
+    cluster: keyof PageSections<'blog'>['taxonomy']['clusters'];
+    status: ContentStatus;
+    publishedAt?: Date;
+    updatedAt?: Date;
+  };
+  /** Display name of the author; omit for the editorial team. */
+  author?: string;
+  related: { slug: string; title: string; excerpt: string }[];
+}
+const { locale, blog, blogTitle, post, author, related } = Astro.props;
+const t = blog.post;
+const fmt = new Intl.DateTimeFormat(pageStrings(locale).dateLocale, { dateStyle: 'long' });
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const updated = post.updatedAt && (!post.publishedAt || iso(post.updatedAt) !== iso(post.publishedAt));
+---
+
+<article class="post" aria-labelledby="post-title">
+  <div class="page-intro post__intro">
+    <div class="container">
+      <Breadcrumbs
+        locale={locale}
+        trail={[{ href: localePath('blog', locale), label: blogTitle }]}
+        current={post.title}
+      />
+    </div>
+    <Reviewable locale={locale} status={post.status} name={`posts/${locale}/${post.slug}`} quiet class="container page-intro__inner">
+      <p class="eyebrow">{blog.taxonomy.clusters[post.cluster]}</p>
+      <h1 class="page-intro__title" id="post-title">{post.title}</h1>
+      <p class="page-intro__lead">{post.excerpt}</p>
+      <p class="post__meta">
+        {
+          post.publishedAt && (
+            <span>
+              {t.published} <time datetime={iso(post.publishedAt)}>{fmt.format(post.publishedAt)}</time>
+            </span>
+          )
+        }
+        {
+          updated && post.updatedAt && (
+            <span>
+              {t.updated} <time datetime={iso(post.updatedAt)}>{fmt.format(post.updatedAt)}</time>
+            </span>
+          )
+        }
+        <span>{author ?? t.editorial}</span>
+      </p>
+    </Reviewable>
+  </div>
+
+  <div class="section post__body-section">
+    <div class="container">
+      <div class="prose post__body">
+        <slot />
+      </div>
+    </div>
+  </div>
+
+  {
+    related.length > 0 && (
+      <section class="section surface-sunk post__related" aria-labelledby="post-related-title">
+        <div class="container">
+          <h2 class="heading-3" id="post-related-title">{t.related}</h2>
+          <ul class="post-list">
+            {related.map((r) => (
+              <li class="post-list__item">
+                <article class="post-teaser">
+                  <h3 class="post-teaser__title">
+                    <a href={localePath('post', locale, r.slug)}>{r.title}</a>
+                  </h3>
+                  <p class="post-teaser__excerpt">{r.excerpt}</p>
+                </article>
+              </li>
+            ))}
+          </ul>
+          <LinkArrow href={localePath('blog', locale)}>{t.back}</LinkArrow>
+        </div>
+      </section>
+    )
+  }
+</article>
+
+<CtaBand locale={locale} name={`posts/${post.slug}`} data={blog.cta} />

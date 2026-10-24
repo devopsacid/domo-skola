@@ -1,0 +1,155 @@
+# Our approach (docs/ia.md §2.2). English draft copy (natural, not literal), needs-review: native review in L9.
+key: approach
+status: needs-review
+reviewNote: "English draft copy of the L4 Slovak text (owner request 2026-10-24); native-speaker review needed. No group sizes, schedules, staff, accreditation or legal status are stated; nothing implies instruction in English."
+seo:
+  title: Our approach
+  description: How children learn with us. Small groups, their own pace, a prepared environment, a guide rather than lectures from the front, time outdoors and parents as partners.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Our approach
+    title: How children learn with us
+    lead: We want children to really understand what they learn in the first four grades, to enjoy learning and to feel safe while they do it. This page describes how we go about it, what we draw on and what you can expect as parents.
+  howWeWork:
+    status: needs-review
+    reviewNote: "Intended way of working (owner to confirm). 'Small groups' stays without a number until a group size is decided; outdoor time is not quantified."
+    id: how-we-work
+    eyebrow: How we work
+    title: Six things that matter to us
+    intro:
+      - We are not a classroom with rows of desks and a blackboard. We are a community of families and adults who want to give children in grades 1 to 4 a calm, stimulating place to learn.
+      - These are the principles we want to work by every day. We shape them in practice together with the children and their parents.
+    items:
+      - id: small-groups
+        title: Small groups
+        body:
+          - We want to work in small groups in which the adult knows every child and has time for them. In a small group it is easier to ask, easier to admit you do not understand something, and easier to work together.
+          - Children of different ages can come together over the same piece of work. Older children consolidate what they know by explaining it, and younger ones see what they can grow into.
+      - id: own-pace-in-practice
+        title: Their own pace, clear goals
+        body:
+          - Every child learns to read, write and count at a different speed. One needs more time with times tables, another is already reading books for older children. We fit the pace to the child, not the child to the pace of a class.
+          - The goals of the first four grades still apply to everyone. The guide follows where each child is and helps them take the next step.
+      - id: prepared-environment
+        title: A prepared environment
+        body:
+          - We arrange the space, materials and equipment so that a child can choose a task on their own, get started and finish it. Everything has its place, is within reach and can be picked up and handled.
+          - The environment changes with what the children are exploring. It looks different when they are learning about water than when they are building a model of their village.
+      - id: guide
+        title: A guide, not a lecture from the front
+        body:
+          - We call the adult who is with the children a guide. Most of the time they do not stand in front of the group and lecture. They observe, offer new work, ask questions and help when a child gets stuck.
+          - A new topic is often introduced briefly, to one child or a small group. Then the guide lets the children try things and discover for themselves, while staying close by.
+      - id: time-outdoors
+        title: Time outdoors
+        body:
+          - We want to be outside every day, even when the sun is not shining, as long as it is safe. Nature is not just a place for breaks. You can measure, count, observe, draw and tell stories there.
+          - Movement helps many children concentrate. After time outdoors, work at the table often goes better too.
+      - id: parents-as-partners
+        title: Parents as partners
+        body:
+          - Parents know their child best. We want to talk with you regularly about what is going well for your child and what they are struggling with, and work out together what helps.
+          - If you would like to, you can enrich the community too, for example with your profession, a craft or help with a project. It is not a requirement.
+        link:
+          to: parents
+          hash: working-together
+          label: How we work with parents
+  pillarLabels:
+    status: needs-review
+    whatItMeans: What it means
+    inPractice: How it may look in practice
+    examples: Examples
+    benefits: What children gain
+    parentsCanExpect: What parents can expect
+  topics:
+    status: needs-review
+    reviewNote: "Intended practice (owner to confirm). Formal assessment stays in pendingNote until settings.legalModel is verified."
+    id: how-we-learn
+    eyebrow: Learning in context
+    title: Projects, emotions, pace and progress
+    intro:
+      - On an ordinary day the four pillars overlap. These topics show where they meet.
+    items:
+      - id: project-learning
+        title: Learning through projects
+        body:
+          - A project starts with a question the children care about, such as where the water in a stream comes from or how to build a bird box. Reading, maths, science and art can all come together around it.
+          - Children plan, try things out, keep records and finally show what they found out, for example to the other children or to their parents. Topics and the length of projects may vary with the age and interests of the group.
+      - id: emotional-development
+        title: Emotional development
+        body:
+          - Children learn better when they feel safe. So we also pay attention to how children name their feelings, cope with disappointment and reach agreement when they disagree.
+          - This might be a morning circle where everyone says how they are, or looking for a solution together when something goes wrong. We do not want to shout, shame or set children against each other.
+      - id: individual-pace
+        title: Individual pace
+        body:
+          - Children of the same age are not equally far along in everything. A child may stay longer with one thing and move faster with another.
+          - Working at their own pace does not mean goals don't matter. The guide follows where each child is heading and offers the next step when they are ready. If something does not move for a while, we will tell you and look for the reason together.
+      - id: progress
+        title: How progress is observed and assessed
+        body:
+          - We want to follow progress continuously. We watch children at work, keep their work and talk with them about what is going well and what they want to work on. During the day we want to give spoken feedback rather than grades.
+          - We want to talk with parents about progress regularly and concretely, looking at the child's work together. The form and frequency of these conversations are still being worked out.
+        pendingNote: How formal assessment will work, such as a school report or an examination, depends on the legal model and on the school where your child is enrolled. We are still confirming this part.
+        dependsOnFacts: [settings.legalModel]
+        link:
+          to: parents
+          hash: legal-status
+          label: Legal and organisational status
+  complement:
+    status: needs-review
+    id: how-they-fit
+    eyebrow: How it fits together
+    title: How the four approaches complement each other
+    body:
+      - Each approach answers a different question. Together they form one whole, not four separate programmes.
+    items:
+      - key: montessori
+        role: Environment
+        text: How to prepare the space and materials so that a child can choose meaningful work on their own.
+      - key: respectful
+        role: Relationships
+        text: How we talk to each other, resolve disagreements and build trust between children, guides and parents.
+      - key: constructivist
+        role: Understanding
+        text: How a child builds understanding through their own experience, questions and exploration.
+      - key: hejny
+        role: Mathematics
+        text: How understanding grows in maths, step by step, in settings the children already know.
+    caveat: Not every principle applies in the same way in every situation or to every child. We treat these approaches as inspiration rather than fixed rules, and adapt them to the children's age and needs.
+  notClaimed:
+    status: needs-review
+    reviewNote: "Honesty block (brief §2, §3, §5.4). OWNER MUST CONFIRM there is no Montessori accreditation and no Hejný certification. Keep it until the facts it mentions are verified; then reword, never drop silently."
+    id: what-we-do-not-claim
+    eyebrow: Plainly
+    title: What we do not claim
+    intro:
+      - We want you to decide based on accurate information. That is why we are also open about what we are not and what we do not promise.
+    items:
+      - id: not-a-school
+        title: We do not claim to be a school
+        body:
+          - Until our legal model is confirmed, we do not claim to be a school, nor that taking part in the community by itself fulfils compulsory school attendance. The For parents page explains how the formal side works.
+        link:
+          to: parents
+          hash: how-it-works-formally
+          label: How it works formally
+      - id: no-accreditation
+        title: No Montessori accreditation, no Hejný certification
+        body:
+          - We are inspired by Montessori principles and Hejný mathematics. That does not make us an accredited Montessori institution, and we hold no certification for the Hejný method.
+      - id: no-promises
+        title: We do not promise results
+        body:
+          - We do not promise exceptional results, above-average grades, or that our way suits every child. We do promise to follow your child closely and to talk openly with you about how they are doing.
+      - id: not-against-schools
+        title: We are not against ordinary schools
+        body:
+          - Many children are happy in an ordinary school and learn well there. We offer a different path for families who prefer a smaller group and learning through discovery.
+  cta:
+    status: needs-review
+    title: Would you like to see it in person?
+    text: You will learn most at a personal meeting. Send us a message or fill in a short application. An application is an expression of interest, not a confirmation of a place.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Arrange a meeting

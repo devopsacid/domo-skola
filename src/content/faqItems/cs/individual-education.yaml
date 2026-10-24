@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
+id: individual-education
+category: legal
+order: 9
+featuredOnHome: false
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED: general description of Slovak individual education (approved by the head of the school of enrolment, conditions on who provides it, periodic examination). Check against the current school act before verified."
+dependsOnFacts: [settings.legalModel]
+question: "Co je individuální vzdělávání?"
+answer: |-
+  Při individuálním vzdělávání se dítě neučí ve třídě své školy, ale jinde. Na Slovensku o povolení žádá rodič ředitele školy, ve které je dítě zapsané. Zákon přitom stanovuje podmínky, například kdo vzdělávání zajišťuje.
+
+  Škola pak pravidelně ověřuje, co se dítě naučilo, obvykle formou přezkoušení, a vydává vysvědčení. Jde o obecný popis slovenských pravidel, ne o právní poradenství. V Česku se pravidla liší.
+pendingNote: "Zda a jak bude naše komunita s individuálním vzděláváním pracovat, zatím ověřujeme."

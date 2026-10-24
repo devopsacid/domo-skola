@@ -1,0 +1,105 @@
+# A day in our community (docs/ia.md §2.3, brief §5.3). Working Slovak copy: needs-review.
+# The rhythm itself comes from src/content/daySchedule (illustrative, no confirmed times).
+key: day
+status: needs-review
+reviewNote: "L4 draft copy (owner request 2026-10-24). Everything is an illustrative example; times, meals, outdoor time and attendance stay pending in settings.operations. No group size or staff ratio is stated."
+seo:
+  title: Deň v komunite
+  description: Ilustračný príklad, ako môže vyzerať deň v našej komunite. Pokojný rytmus, samostatná aj vedená práca v malých skupinách, čas vonku, tvorenie, oddych a spoločné zhrnutie.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Deň v komunite
+    title: Ako môže vyzerať jeden deň
+    lead: Deň má pokojný a predvídateľný rytmus, v ktorom sa strieda sústredená práca, pohyb, hra a rozhovor. Deti vedia, čo ich čaká, a v rámci toho majú priestor vybrať si, čomu sa budú venovať. Na tejto stránke je ilustračný príklad, nie potvrdený rozvrh.
+  rhythm:
+    status: needs-review
+    eyebrow: Rytmus dňa
+    title: Od ranného kruhu po spoločné zhrnutie
+    intro: Poradie častí dňa sa môže meniť podľa počasia, projektu alebo nálady skupiny. Časy doplníme, keď budú potvrdené.
+  aspects:
+    status: needs-review
+    reviewNote: "Describes intended practice as examples (owner to confirm)."
+    eyebrow: Čo deň obsahuje
+    title: Čo sa počas dňa môže diať
+    intro: Osem vecí, ktoré by mali mať v dni svoje miesto. Ich konkrétna podoba sa môže líšiť.
+    items:
+      - kind: rhythm
+        title: Rytmus dňa
+        text: Opakujúci sa rytmus dáva deťom istotu. Vedia, čo príde, a môžu sa sústrediť na prácu, nie na to, čo bude ďalej.
+      - kind: independent_guided
+        title: Samostatná aj vedená práca
+        text: Časť dňa si dieťa volí prácu samo. Inokedy pracuje v malej skupine so sprievodcom, ktorý predstaví novú tému alebo pomôcku.
+      - kind: outdoor
+        title: Učenie vonku
+        text: Vonku sa dá merať, pozorovať, počítať aj hrať. Príroda je pre nás aj učebňou, nielen miestom na prestávku.
+      - kind: creative
+        title: Tvorivé činnosti
+        text: Kreslenie, stavanie, hudba či dramatizácia. Tvorenie často vychádza z projektu, na ktorom deti práve pracujú.
+      - kind: rest
+        title: Čas na oddych
+        text: Po sústredenej práci treba vydýchnuť. V dni by malo byť miesto na ticho, čítanie alebo voľnú hru.
+      - kind: social
+        title: Spolu s ostatnými
+        text: Hra, spoločné chvíle, dohody v skupine a riešenie sporov. Aj to sú situácie, v ktorých sa deti učia.
+      - kind: math_language
+        title: Matematika a jazyk
+        text: Úlohy z Hejného prostredí, čítanie, písanie a rozprávanie. Samostatne, vo dvojiciach aj v skupine.
+      - kind: reflection
+        title: Spoločné zhrnutie
+        text: Na konci dňa sa deti vrátia k tomu, čo sa im podarilo, čo ich prekvapilo a čo chcú skúsiť nabudúce.
+  people:
+    status: needs-review
+    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times). Packing list and handover are intentions, not promises."
+    id: kto-je-s-detmi
+    eyebrow: Kto je s deťmi
+    title: Sprievodca, malé skupiny a dobré oblečenie
+    intro:
+      - Deň stojí na dospelých, ktorí deti poznajú, a na jasných dohodách, ktoré deti chápu.
+    items:
+      - id: sprievodca-v-dni
+        title: Sprievodca počas dňa
+        body:
+          - Sprievodca nemá stáť celý deň pred tabuľou. Ráno víta deti, počas samostatnej práce chodí od jedného k druhému, pozoruje a ponúka ďalší krok. Pri vedenej práci si sadne k malej skupinke a predstaví novú tému.
+          - Keď dieťa uviazne, nepovie mu hneď odpoveď. Spýta sa, čo už skúšalo, a pomôže mu nájsť ďalší krok samo.
+      - id: male-skupiny-v-dni
+        title: Malé skupiny a spoločné chvíle
+        body:
+          - Veľa práce chceme robiť v malých skupinkách alebo vo dvojiciach, ktoré sa počas dňa menia. Ranný kruh, čas vonku a záverečné zhrnutie chceme mať spolu, aby sa celá skupina stretla.
+          - Pravidlá, ako sa k sebe správať a ako sa starať o pomôcky, chceme vytvárať spolu s deťmi a vracať sa k nim, keď treba.
+      - id: vonku-za-kazdeho-pocasia
+        title: Vonku aj keď prší
+        body:
+          - Von chceme chodiť každý deň, pokiaľ je to bezpečné. Pomôže, keď má dieťa oblečenie, ktoré sa môže zašpiniť, a náhradné veci. Čo presne pribaliť, chceme rodičom povedať vopred.
+      - id: prichod-a-odchod
+        title: Príchod a odchod
+        body:
+          - Ráno chceme mať čas na krátke odovzdanie, keď môžete sprievodcovi povedať, ako sa dieťa vyspalo alebo čo ho trápi. Pri odchode vám chceme povedať, ak sa počas dňa stalo niečo dôležité.
+  practical:
+    status: needs-review
+    id: prakticke-informacie
+    eyebrow: Prakticky
+    title: Čo ešte potvrdzujeme
+    intro:
+      - Tieto informácie zverejníme, keď budú potvrdené. Ak ich potrebujete poznať skôr, napíšte nám.
+    items:
+      - id: cas-strava-dochadzka
+        title: Čas, strava a dochádzka
+        facts:
+          - label: Začiatok a koniec dňa
+            path: settings.operations.hours
+          - label: Strava
+            path: settings.operations.meals
+          - label: Čas vonku
+            path: settings.operations.outdoorTime
+          - label: Dochádzka
+            path: settings.operations.attendance
+        link:
+          to: contact
+          label: Opýtajte sa nás
+  cta:
+    status: needs-review
+    title: Príďte sa pozrieť, ako deň naozaj plynie
+    text: Pri návšteve uvidíte prostredie aj pomôcky a môžete sa opýtať na všetko, čo vás zaujíma.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie

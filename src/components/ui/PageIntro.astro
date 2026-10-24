@@ -1,0 +1,42 @@
+---
+/**
+ * Content page opening (system.md §3.3, §6.3): breadcrumbs, eyebrow, the page h1
+ * (--step-4) and the lead. The `aside` slot holds an honesty label or in-page nav.
+ */
+import type { Locale } from '../../i18n/routes';
+import type { ContentStatus } from '../status/mode';
+import Reviewable from '../status/Reviewable.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+
+interface Props {
+  locale: Locale;
+  status: ContentStatus;
+  name: string;
+  eyebrow: string;
+  title: string;
+  lead: string;
+  /** Breadcrumb label of the current page; defaults to the title. */
+  crumb?: string;
+  trail?: { href: string; label: string }[];
+  class?: string;
+}
+const { locale, status, name, eyebrow, title, lead, crumb, trail, class: className } = Astro.props;
+---
+
+<div class:list={['page-intro', className]}>
+  <div class="container">
+    <Breadcrumbs locale={locale} trail={trail} current={crumb ?? title} />
+  </div>
+  <Reviewable locale={locale} status={status} name={name} quiet class="container page-intro__inner">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="page-intro__title">{title}</h1>
+    <p class="page-intro__lead">{lead}</p>
+    {
+      Astro.slots.has('default') && (
+        <div class="page-intro__aside">
+          <slot />
+        </div>
+      )
+    }
+  </Reviewable>
+</div>

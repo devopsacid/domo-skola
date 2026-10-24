@@ -1,0 +1,36 @@
+---
+/**
+ * In-page navigation: anchor chips that wrap (no horizontal scroll strip, system.md
+ * §6.7), each at least 44 px tall. Used by long pages and the FAQ categories.
+ */
+interface Props {
+  label: string;
+  items: { href: string; label: string }[];
+  class?: string;
+}
+const { label, items, class: className } = Astro.props;
+const slug = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+// Unique on the page: the label plus the first target, so two lists never share an id.
+const id = `toc-${slug(label)}-${slug(items[0]?.href ?? 'empty')}`;
+---
+
+<nav class:list={['toc', className]} aria-labelledby={id}>
+  <p class="toc__label" id={id}>{label}</p>
+  <ul class="toc__list">
+    {
+      items.map((i) => (
+        <li>
+          <a class="chip" href={i.href}>
+            {i.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
