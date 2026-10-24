@@ -22,9 +22,11 @@ export const PAGE_KEYS = [
   'privacy',
   'cookies',
   'legal',
-  '404',
 ] as const;
 export type PageKey = (typeof PAGE_KEYS)[number];
+
+/** Cloudflare Pages serves only a root 404.html: one language-neutral page linking to /sk/, /cs/, /en/. */
+export const NOT_FOUND_PATH = '/404.html';
 
 export const SLUG_PLACEHOLDER = '<slug>';
 
@@ -71,7 +73,6 @@ export const ROUTES: Record<PageKey, Record<Locale, string>> = {
     cs: '/cs/pravni-informace/',
     en: '/en/legal/',
   },
-  '404': { sk: '/sk/404.html', cs: '/cs/404.html', en: '/en/404.html' },
 };
 
 /** Path for a page key in a locale. `post` requires the post slug. */
@@ -148,7 +149,8 @@ export function hreflangAlternates(page: AlternatesInput, site: string): Alterna
       });
     }
   }
-  const def = out.find((a) => a.hreflang === DEFAULT_LOCALE) ?? out[0];
+  // x-default is always the SK URL; never fall back to another locale.
+  const def = out.find((a) => a.hreflang === DEFAULT_LOCALE);
   if (def) out.push({ hreflang: 'x-default', href: def.href });
   return out;
 }
