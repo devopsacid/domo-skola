@@ -55,10 +55,13 @@ export const MAX_URLS = 3;
 const CONTROL = new RegExp('[\\u0000-\\u001F\\u007F-\\u009F]', 'g');
 const CONTROL_EXCEPT_NEWLINE = new RegExp('[\\u0000-\\u0009\\u000B-\\u001F\\u007F-\\u009F]', 'g');
 /* eslint-enable no-control-regex */
+// Several listed characters are combining or joining marks on purpose.
+/* eslint-disable no-misleading-character-class */
 const INVISIBLE = new RegExp(
   '[\\p{Cf}\\u00AD\\u034F\\u061C\\u115F\\u1160\\u3164\\u180B-\\u180E\\uFE00-\\uFE0F\\u{E0000}-\\u{E007F}]',
   'gu',
 );
+/* eslint-enable no-misleading-character-class */
 
 export function normalizeLine(value: string): string {
   return value

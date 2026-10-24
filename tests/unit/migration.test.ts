@@ -218,8 +218,8 @@ describe('0001_init.sql', () => {
         .run(NOW, NOW),
     ).toThrow();
     db.prepare(
-      "INSERT INTO marketing_consents(id, email, locale, purpose, consent_text_version, granted_at, source, inquiry_id) VALUES('m1','j@example.sk','sk','newsletter','v1',?,'contact','i1')",
-    ).run(NOW);
+      "INSERT INTO marketing_consents(id, email, locale, purpose, consent_text_version, granted_at, source, inquiry_id, retain_until) VALUES('m1','j@example.sk','sk','newsletter','v1',?,'contact','i1',?)",
+    ).run(NOW, LATER);
     db.prepare('DELETE FROM contact_inquiries WHERE id=?').run('i1');
     expect(db.prepare('SELECT count(*) c FROM email_deliveries').get()).toEqual({ c: 0 });
     expect(db.prepare('SELECT inquiry_id FROM marketing_consents').get()).toEqual({
