@@ -1,0 +1,139 @@
+/*
+ * Island-only additions to the form classes in src/styles/forms.css (no inline styles, CSP-safe).
+ */
+
+.forms-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.forms-actions > .btn-block {
+  width: auto;
+}
+
+@media (max-width: 39.99rem) {
+  .forms-actions > .btn-block {
+    width: 100%;
+  }
+}
+
+.error-summary > p {
+  margin-block-start: var(--space-2xs);
+}
+
+.error-summary > .forms-actions {
+  margin-block-start: var(--space-s);
+}
+
+/* Focus lands on panels and headings programmatically; show the ring there too. */
+.error-summary:focus,
+.form-step__title:focus,
+.success-panel__title:focus {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* ------------------------------------------------- Enrolment steps --- */
+
+.form-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.form-step__title {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+  line-height: var(--leading-tight);
+}
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.stepper__bar {
+  margin-block-start: 0;
+}
+
+.stepper__item button[disabled] {
+  cursor: default;
+}
+
+/* ------------------------------------------------------- Review ------- */
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+}
+
+.review__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-m);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-s);
+  background-color: var(--color-surface);
+}
+
+.review__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.review__title {
+  font-size: var(--step-0);
+  font-weight: var(--weight-bold);
+}
+
+.review__edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--color-link);
+  font-weight: var(--weight-bold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.review__list {
+  display: grid;
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+.review__row {
+  display: grid;
+  gap: var(--space-3xs);
+}
+
+.review__row dt {
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+.review__row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+@media (min-width: 40rem) {
+  .review__row {
+    grid-template-columns: minmax(10rem, 14rem) 1fr;
+    gap: var(--space-s);
+  }
+}
