@@ -36,7 +36,10 @@ describe('contact request', () => {
   });
   it('normalises fields on the way through', () => {
     const r = validateContact(req({ parent_name: '  Jana   Nová ', email: ' JANA@Example.SK ' }));
-    expect(r.ok && r.data.fields).toMatchObject({ parent_name: 'Jana Nová', email: 'jana@example.sk' });
+    expect(r.ok && r.data.fields).toMatchObject({
+      parent_name: 'Jana Nová',
+      email: 'jana@example.sk',
+    });
   });
   it.each(['parent_name', 'email', 'region', 'subject', 'message'])('%s is required', (k) => {
     expect(codes({ [k]: undefined })).toEqual({ [k]: 'required' });
@@ -86,7 +89,8 @@ describe('contact request', () => {
   });
   it('a filled honeypot still parses (the handler decides), and hp may be omitted', () => {
     expect(validateContact(req({}, { hp: 'bot' })).ok).toBe(true);
-    const { hp: _hp, ...noHp } = req();
+    const noHp: Record<string, unknown> = req();
+    delete noHp.hp;
     expect(validateContact(noHp).ok).toBe(true);
   });
   it('rejects non-object bodies with a field code, not a throw', () => {

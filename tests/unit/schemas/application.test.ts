@@ -78,14 +78,20 @@ describe('application full submission', () => {
   });
   it('validates enums', () => {
     expect(codes({ preferred_language: 'de' })).toEqual({ preferred_language: 'invalid_option' });
-    expect(codes({ current_arrangement: 'homeschool' })).toEqual({ current_arrangement: 'invalid_option' });
-    expect(codes({ preferred_next_step: 'email' })).toEqual({ preferred_next_step: 'invalid_option' });
+    expect(codes({ current_arrangement: 'homeschool' })).toEqual({
+      current_arrangement: 'invalid_option',
+    });
+    expect(codes({ preferred_next_step: 'email' })).toEqual({
+      preferred_next_step: 'invalid_option',
+    });
     expect(codes({ region: 'x' })).toEqual({ region: 'invalid_option' });
   });
   it('validates grade 1-4 and school year format', () => {
     expect(codes({ intended_grade: 5 })).toEqual({ intended_grade: 'invalid_option' });
     expect(codes({ intended_grade: '2' })).toEqual({});
-    expect(codes({ intended_school_year: '2027-28' })).toEqual({ intended_school_year: 'school_year_invalid' });
+    expect(codes({ intended_school_year: '2027-28' })).toEqual({
+      intended_school_year: 'school_year_invalid',
+    });
   });
   it('the child name is a short first/preferred name, no digits-only identifiers', () => {
     expect(codes({ child_name: '010101/1234' })).toEqual({ child_name: 'name_invalid' });
@@ -98,7 +104,9 @@ describe('application full submission', () => {
     expect(codes({ marketing_consent: false })).toEqual({});
   });
   it('drops unknown (sensitive) keys', () => {
-    const r = validateApplication(req({ birth_number: '010101/1234', diagnosis: 'x', child_surname: 'N' }));
+    const r = validateApplication(
+      req({ birth_number: '010101/1234', diagnosis: 'x', child_surname: 'N' }),
+    );
     expect(r.ok && Object.keys(r.data.fields)).toEqual(
       expect.not.arrayContaining(['birth_number', 'diagnosis', 'child_surname']),
     );
@@ -141,7 +149,11 @@ describe('per-step validation', () => {
     expect(validateApplicationStep(2, { ...valid, email: 'bad' }).ok).toBe(true);
   });
   it('step 3 checks next step and free-text limits', () => {
-    const r = validateApplicationStep(3, { ...valid, preferred_next_step: undefined, questions: 'a'.repeat(2001) });
+    const r = validateApplicationStep(3, {
+      ...valid,
+      preferred_next_step: undefined,
+      questions: 'a'.repeat(2001),
+    });
     expect(!r.ok && r.fields).toEqual({ preferred_next_step: 'required', questions: 'too_long' });
   });
   it('step 4 checks privacy and marketing consent', () => {

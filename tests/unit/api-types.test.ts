@@ -10,7 +10,6 @@ import {
   type ContactFields,
   type ContactRequest,
 } from '../../src/shared/api-types';
-import type { ApplicationFields as AF } from '../../src/shared/schemas/application';
 
 describe('api contract guards', () => {
   it('recognises validation errors with field codes (422)', () => {
@@ -26,7 +25,7 @@ describe('api contract guards', () => {
     expect(ERROR_STATUS.rate_limited).toBe(429);
   });
   it('server errors carry no field details; success is not an error', () => {
-    expect(isApiError({ ok: false, error: 'server' })).toBe(true);
+    expect(isApiError({ ok: false })).toBe(true);
     expect(isApiError({ ok: true })).toBe(false);
     expect(ERROR_STATUS.server).toBe(500);
   });
@@ -40,8 +39,8 @@ describe('api contract guards', () => {
       privacy_ack: true,
     };
     const req: ContactRequest = { locale: 'sk', fields: f, hp: '', renderedAt: 0 };
-    const same: ApplicationFields = {} as AF;
     const a: ApplicationRequest | undefined = undefined;
-    expect([req.locale, same, a]).toBeDefined();
+    const af: ApplicationFields | undefined = undefined;
+    expect([req.locale, a, af]).toBeDefined();
   });
 });

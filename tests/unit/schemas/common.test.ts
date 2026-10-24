@@ -163,12 +163,18 @@ describe('schoolYearField', () => {
   it('accepts consecutive years in YYYY/YYYY', () => {
     expect(f.safeParse('2026/2027').success).toBe(true);
   });
-  it.each(['2026/2028', '2026-2027', '26/27', '2026/27', '2027/2026', '1999/2000', '2026/2027 ', 'x'])(
-    'rejects %j',
-    (bad) => {
-      expect(codeOf(f, bad)).toBe('school_year_invalid');
-    },
-  );
+  it.each([
+    '2026/2028',
+    '2026-2027',
+    '26/27',
+    '2026/27',
+    '2027/2026',
+    '1999/2000',
+    '2026/2027 ',
+    'x',
+  ])('rejects %j', (bad) => {
+    expect(codeOf(f, bad)).toBe('school_year_invalid');
+  });
   it('reports required', () => {
     expect(codeOf(f, undefined)).toBe('required');
     expect(codeOf(f, '')).toBe('required');
