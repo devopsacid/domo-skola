@@ -189,12 +189,12 @@ a:hover {
   background-color: var(--color-surface);
   color: var(--color-link);
   font-weight: var(--weight-bold);
-  box-shadow: var(--shadow-m);
-  transform: translateY(calc(-100% - var(--space-s)));
+  transform: translateY(calc(-100% - var(--space-xl)));
 }
 
 .skip-link:focus,
 .skip-link:focus-visible {
+  box-shadow: var(--shadow-m);
   transform: none;
 }
 

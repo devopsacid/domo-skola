@@ -73,7 +73,7 @@
 
 /* In-flight submit: aria-disabled keeps it focusable and announced. */
 .btn:disabled,
-.btn[aria-disabled="true"] {
+.btn[aria-disabled='true'] {
   cursor: not-allowed;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .btn.is-loading::before {
-  content: "";
+  content: '';
   flex: none;
   width: 1em;
   height: 1em;

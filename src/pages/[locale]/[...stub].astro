@@ -1,0 +1,72 @@
+---
+/**
+ * TEMPORARY stubs (L2) so the header, menu and footer links resolve before the real
+ * pages exist. L3/L4 delete a key from getStaticPaths (or this file) when they add the page.
+ * Always noindex.
+ */
+import { LOCALES, localePath, type Locale, type PageKey } from '../../i18n/routes';
+import Base from '../../layouts/Base.astro';
+import NotePending from '../../components/status/NotePending.astro';
+import { CHROME } from '../../components/site/strings';
+
+type StubKey = Extract<
+  PageKey,
+  'approach' | 'day' | 'parents' | 'enrol' | 'contact' | 'faq' | 'blog' | 'privacy' | 'cookies' | 'legal'
+>;
+
+const TITLES: Record<StubKey, Record<Locale, string>> = {
+  approach: { sk: CHROME.sk.nav.approach, cs: CHROME.cs.nav.approach, en: CHROME.en.nav.approach },
+  day: { sk: CHROME.sk.nav.day, cs: CHROME.cs.nav.day, en: CHROME.en.nav.day },
+  parents: { sk: CHROME.sk.nav.parents, cs: CHROME.cs.nav.parents, en: CHROME.en.nav.parents },
+  enrol: { sk: CHROME.sk.ctaEnrol, cs: CHROME.cs.ctaEnrol, en: CHROME.en.ctaEnrol },
+  contact: { sk: CHROME.sk.nav.contact, cs: CHROME.cs.nav.contact, en: CHROME.en.nav.contact },
+  faq: { sk: CHROME.sk.nav.faq, cs: CHROME.cs.nav.faq, en: CHROME.en.nav.faq },
+  blog: { sk: 'Blog', cs: 'Blog', en: 'Blog' },
+  privacy: { sk: CHROME.sk.privacy, cs: CHROME.cs.privacy, en: CHROME.en.privacy },
+  cookies: { sk: CHROME.sk.cookies, cs: CHROME.cs.cookies, en: CHROME.en.cookies },
+  legal: { sk: CHROME.sk.legal, cs: CHROME.cs.legal, en: CHROME.en.legal },
+};
+
+const SOON: Record<Locale, string> = {
+  sk: 'Túto stránku pripravujeme.',
+  cs: 'Tuto stránku připravujeme.',
+  en: 'This page is being prepared.',
+};
+
+export function getStaticPaths() {
+  // Remove a key here when its real page lands (getStaticPaths is hoisted: keep it self-contained).
+  const keys = [
+    'approach',
+    'day',
+    'parents',
+    'enrol',
+    'contact',
+    'faq',
+    'blog',
+    'privacy',
+    'cookies',
+    'legal',
+  ] as const;
+  return LOCALES.flatMap((locale) =>
+    keys.map((key) => ({
+      params: { locale, stub: localePath(key, locale).slice(`/${locale}/`.length, -1) },
+      props: { key },
+    })),
+  );
+}
+
+const locale = Astro.params.locale as Locale;
+const { key } = Astro.props as { key: StubKey };
+const title = TITLES[key][locale];
+---
+
+<Base locale={locale} title={title} page={{ key, locale }} noindex>
+  <section class="section">
+    <div class="container stack stack-l">
+      <h1>{title}</h1>
+      <NotePending locale={locale} kind="pending">
+        <p>{SOON[locale]}</p>
+      </NotePending>
+    </div>
+  </section>
+</Base>

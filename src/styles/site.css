@@ -20,10 +20,18 @@
   height: 2.25rem;
 }
 
-.mark__pebble { fill: var(--mark-pebble); }
-.mark__clearing { fill: var(--mark-clearing); }
-.mark__meadow { fill: var(--mark-meadow); }
-.mark__sun { fill: var(--mark-sun); }
+.mark__pebble {
+  fill: var(--mark-pebble);
+}
+.mark__clearing {
+  fill: var(--mark-clearing);
+}
+.mark__meadow {
+  fill: var(--mark-meadow);
+}
+.mark__sun {
+  fill: var(--mark-sun);
+}
 
 /* Inverse lock-up on forest / night (brand.md §4). */
 .surface-forest .mark,
@@ -158,7 +166,7 @@
 }
 
 .nav-inline a:hover,
-.nav-inline a[aria-current="page"] {
+.nav-inline a[aria-current='page'] {
   color: var(--color-link-hover);
   text-decoration-line: underline;
   text-decoration-thickness: 2px;
@@ -195,7 +203,7 @@
   text-underline-offset: 0.35em;
 }
 
-.lang-switch a[aria-current="true"] {
+.lang-switch a[aria-current='true'] {
   color: var(--color-heading);
   text-decoration-line: underline;
   text-decoration-color: var(--color-accent-text);
@@ -217,7 +225,7 @@
   line-height: var(--leading-ui);
 }
 
-.lang-switch--full a[aria-current="true"] {
+.lang-switch--full a[aria-current='true'] {
   font-weight: var(--weight-bold);
 }
 
@@ -296,7 +304,7 @@
 }
 
 .nav-drawer a:hover,
-.nav-drawer a[aria-current="page"] {
+.nav-drawer a[aria-current='page'] {
   color: var(--color-link-hover);
   text-decoration-line: underline;
   text-decoration-thickness: 2px;

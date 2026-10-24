@@ -12,25 +12,32 @@ interface Props {
   kind: 'illustrative' | 'proposed' | 'pending';
   /** Override the default label text (e.g. a CMS-provided disclaimer title). */
   label?: string;
+  /** Inline label only (phrasing content, no explanation). */
   inline?: boolean;
   class?: string;
 }
 const { locale, kind, label, inline = false, class: className } = Astro.props;
 const text = label ?? chrome(locale).status[kind];
-const hasBody = Astro.slots.has('default');
+const hasBody = !inline && Astro.slots.has('default');
 ---
 
-<aside
-  class:list={['note-pending', 'on-light', inline && 'note-pending--inline', className]}
-  role="note"
-  data-kind={kind}
->
-  <p class="note-pending__label">{text}</p>
-  {
-    hasBody && (
-      <div class="note-pending__body">
-        <slot />
-      </div>
-    )
-  }
-</aside>
+{
+  inline ? (
+    <span
+      class:list={['note-pending', 'on-light', 'note-pending--inline', className]}
+      role="note"
+      data-kind={kind}
+    >
+      <span class="note-pending__label">{text}</span>
+    </span>
+  ) : (
+    <aside class:list={['note-pending', 'on-light', className]} role="note" data-kind={kind}>
+      <p class="note-pending__label">{text}</p>
+      {hasBody && (
+        <div class="note-pending__body">
+          <slot />
+        </div>
+      )}
+    </aside>
+  )
+}

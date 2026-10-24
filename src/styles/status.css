@@ -32,6 +32,7 @@
 
 .note-pending--inline {
   display: inline-block;
+  max-width: 100%;
   padding: var(--space-3xs) var(--space-xs);
   border-width: var(--border-hairline);
 }
@@ -76,11 +77,12 @@
 /* Preview-only review markers around needs-review / draft blocks. */
 .review-block {
   position: relative;
+  padding: var(--space-2xs);
   outline: var(--border-strong) dashed var(--color-review-outline);
-  outline-offset: var(--space-2xs);
+  outline-offset: 0;
 }
 
-.review-block[data-status="draft"] {
+.review-block[data-status='draft'] {
   outline-color: var(--color-review-draft-bg);
 }
 
@@ -101,13 +103,14 @@
   letter-spacing: 0.02em;
 }
 
-.review-badge[data-status="draft"] {
+.review-badge[data-status='draft'] {
   background-color: var(--color-review-draft-bg);
   color: var(--color-review-draft-text);
 }
 
 .review-badge--inline {
   margin-block-end: 0;
+  margin-inline-end: var(--space-3xs);
   vertical-align: 0.1em;
 }
 

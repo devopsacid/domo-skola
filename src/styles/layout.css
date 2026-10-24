@@ -23,7 +23,7 @@
   padding-block: var(--space-2xl);
 }
 
-.section + .section:not([class*="surface-"]),
+.section + .section:not([class*='surface-']),
 .section.surface-sage + .section.surface-sage,
 .section.surface-sun + .section.surface-sun,
 .section.surface-clay + .section.surface-clay,
@@ -41,12 +41,24 @@
   gap: var(--stack-gap);
 }
 
-.stack-2xs { --stack-gap: var(--space-2xs); }
-.stack-xs { --stack-gap: var(--space-xs); }
-.stack-m { --stack-gap: var(--space-m); }
-.stack-l { --stack-gap: var(--space-l); }
-.stack-xl { --stack-gap: var(--space-xl); }
-.stack-2xl { --stack-gap: var(--space-2xl); }
+.stack-2xs {
+  --stack-gap: var(--space-2xs);
+}
+.stack-xs {
+  --stack-gap: var(--space-xs);
+}
+.stack-m {
+  --stack-gap: var(--space-m);
+}
+.stack-l {
+  --stack-gap: var(--space-l);
+}
+.stack-xl {
+  --stack-gap: var(--space-xl);
+}
+.stack-2xl {
+  --stack-gap: var(--space-2xl);
+}
 
 /* Horizontal group that wraps (button pairs, chips, meta lines). */
 .cluster {
@@ -57,12 +69,28 @@
   gap: var(--cluster-gap);
 }
 
-.cluster-2xs { --cluster-gap: var(--space-2xs); }
-.cluster-s { --cluster-gap: var(--space-s); }
-.cluster-m { --cluster-gap: var(--space-m); }
+:is(ul, ol).cluster {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
-.measure { max-width: var(--measure); }
-.measure-narrow { max-width: var(--measure-narrow); }
+.cluster-2xs {
+  --cluster-gap: var(--space-2xs);
+}
+.cluster-s {
+  --cluster-gap: var(--space-s);
+}
+.cluster-m {
+  --cluster-gap: var(--space-m);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+.measure-narrow {
+  max-width: var(--measure-narrow);
+}
 
 /* Long-form text: flow spacing, lists and heading rhythm (headings sit closer to
  * what follows than to what precedes, system.md §5.1). */
@@ -101,9 +129,17 @@
   max-width: var(--measure);
 }
 
-.text-muted { color: var(--color-text-muted); }
-.text-small { font-size: var(--step--1); line-height: 1.5; }
-.text-fine { font-size: var(--step--2); line-height: 1.5; }
+.text-muted {
+  color: var(--color-text-muted);
+}
+.text-small {
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+.text-fine {
+  font-size: var(--step--2);
+  line-height: 1.5;
+}
 
 .eyebrow {
   color: var(--color-accent-text);
@@ -124,10 +160,22 @@
   max-width: 8em;
 }
 
-.heading-4 { font-size: var(--step-4); line-height: var(--leading-tight); }
-.heading-3 { font-size: var(--step-3); line-height: var(--leading-heading); }
-.heading-2 { font-size: var(--step-2); line-height: var(--leading-heading); }
-.heading-1 { font-size: var(--step-1); line-height: var(--leading-heading); }
+.heading-4 {
+  font-size: var(--step-4);
+  line-height: var(--leading-tight);
+}
+.heading-3 {
+  font-size: var(--step-3);
+  line-height: var(--leading-heading);
+}
+.heading-2 {
+  font-size: var(--step-2);
+  line-height: var(--leading-heading);
+}
+.heading-1 {
+  font-size: var(--step-1);
+  line-height: var(--leading-heading);
+}
 
 /* ------------------------------------------- Section heading (§6.3) ---- */
 
@@ -184,7 +232,20 @@
   overflow: hidden;
 }
 
-.ratio-4x3 { aspect-ratio: 4 / 3; }
-.ratio-16x9 { aspect-ratio: 16 / 9; }
-.ratio-1x1 { aspect-ratio: 1; }
-.ratio-36x10 { aspect-ratio: 36 / 10; }
+.ratio-4x3 {
+  aspect-ratio: 4 / 3;
+}
+.ratio-16x9 {
+  aspect-ratio: 16 / 9;
+}
+.ratio-1x1 {
+  aspect-ratio: 1;
+}
+.ratio-36x10 {
+  aspect-ratio: 36 / 10;
+}
+
+/* Buttons keep their intrinsic width inside a stack. */
+.stack > .btn {
+  align-self: flex-start;
+}

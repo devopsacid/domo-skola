@@ -70,6 +70,7 @@ const canonical = page && site ? site + switcherHref(page, locale) : undefined;
     {robotsNoindex && <meta name="robots" content="noindex, nofollow" />}
     {canonical && <link rel="canonical" href={canonical} />}
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#f8f5ed" />
     <meta name="color-scheme" content="light" />
     <link

@@ -55,24 +55,60 @@
   border-radius: var(--radius-s);
 }
 
-.swatch__chip--cream { background-color: var(--palette-cream); }
-.swatch__chip--paper { background-color: var(--palette-paper); }
-.swatch__chip--cream-2 { background-color: var(--palette-cream-2); }
-.swatch__chip--sage-100 { background-color: var(--palette-sage-100); }
-.swatch__chip--sage { background-color: var(--palette-sage); }
-.swatch__chip--yellow-100 { background-color: var(--palette-yellow-100); }
-.swatch__chip--yellow { background-color: var(--palette-yellow); }
-.swatch__chip--clay-100 { background-color: var(--palette-clay-100); }
-.swatch__chip--terracotta { background-color: var(--palette-terracotta); }
-.swatch__chip--clay { background-color: var(--palette-clay); }
-.swatch__chip--clay-700 { background-color: var(--palette-clay-700); }
-.swatch__chip--forest { background-color: var(--palette-forest); }
-.swatch__chip--forest-700 { background-color: var(--palette-forest-700); }
-.swatch__chip--forest-900 { background-color: var(--palette-forest-900); }
-.swatch__chip--charcoal { background-color: var(--palette-charcoal); }
-.swatch__chip--ink-2 { background-color: var(--palette-ink-2); }
-.swatch__chip--red { background-color: var(--palette-red); }
-.swatch__chip--green { background-color: var(--palette-green); }
+.swatch__chip--cream {
+  background-color: var(--palette-cream);
+}
+.swatch__chip--paper {
+  background-color: var(--palette-paper);
+}
+.swatch__chip--cream-2 {
+  background-color: var(--palette-cream-2);
+}
+.swatch__chip--sage-100 {
+  background-color: var(--palette-sage-100);
+}
+.swatch__chip--sage {
+  background-color: var(--palette-sage);
+}
+.swatch__chip--yellow-100 {
+  background-color: var(--palette-yellow-100);
+}
+.swatch__chip--yellow {
+  background-color: var(--palette-yellow);
+}
+.swatch__chip--clay-100 {
+  background-color: var(--palette-clay-100);
+}
+.swatch__chip--terracotta {
+  background-color: var(--palette-terracotta);
+}
+.swatch__chip--clay {
+  background-color: var(--palette-clay);
+}
+.swatch__chip--clay-700 {
+  background-color: var(--palette-clay-700);
+}
+.swatch__chip--forest {
+  background-color: var(--palette-forest);
+}
+.swatch__chip--forest-700 {
+  background-color: var(--palette-forest-700);
+}
+.swatch__chip--forest-900 {
+  background-color: var(--palette-forest-900);
+}
+.swatch__chip--charcoal {
+  background-color: var(--palette-charcoal);
+}
+.swatch__chip--ink-2 {
+  background-color: var(--palette-ink-2);
+}
+.swatch__chip--red {
+  background-color: var(--palette-red);
+}
+.swatch__chip--green {
+  background-color: var(--palette-green);
+}
 
 .type-sample {
   display: grid;
@@ -88,10 +124,19 @@
   font-size: var(--step--2);
 }
 
-.type-step--2 { font-size: var(--step--2); }
-.type-step--1 { font-size: var(--step--1); }
-.type-step-0 { font-size: var(--step-0); }
-.type-step-1 { font-size: var(--step-1); line-height: 1.5; }
+.type-step--2 {
+  font-size: var(--step--2);
+}
+.type-step--1 {
+  font-size: var(--step--1);
+}
+.type-step-0 {
+  font-size: var(--step-0);
+}
+.type-step-1 {
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
 
 .space-row {
   display: flex;
@@ -111,13 +156,37 @@
   background-color: var(--color-deco-clay);
 }
 
-.space-bar--3xs { width: var(--space-3xs); }
-.space-bar--2xs { width: var(--space-2xs); }
-.space-bar--xs { width: var(--space-xs); }
-.space-bar--s { width: var(--space-s); }
-.space-bar--m { width: var(--space-m); }
-.space-bar--l { width: var(--space-l); }
-.space-bar--xl { width: var(--space-xl); }
-.space-bar--2xl { width: var(--space-2xl); }
-.space-bar--3xl { width: var(--space-3xl); }
-.space-bar--section { width: var(--space-section); }
+.space-bar--3xs {
+  width: var(--space-3xs);
+}
+.space-bar--2xs {
+  width: var(--space-2xs);
+}
+.space-bar--xs {
+  width: var(--space-xs);
+}
+.space-bar--s {
+  width: var(--space-s);
+}
+.space-bar--m {
+  width: var(--space-m);
+}
+.space-bar--l {
+  width: var(--space-l);
+}
+.space-bar--xl {
+  width: var(--space-xl);
+}
+.space-bar--2xl {
+  width: var(--space-2xl);
+}
+.space-bar--3xl {
+  width: var(--space-3xl);
+}
+.space-bar--section {
+  width: var(--space-section);
+}
+
+.gallery-subhead {
+  margin-block: var(--space-xl) var(--space-s);
+}
