@@ -1,0 +1,410 @@
+/*
+ * Admin app styles (L7). Plain CSS over the shared tokens, compiled to an external file (no inline
+ * styles, CSP-safe). Form and button classes come from src/styles; only admin layout lives here.
+ */
+
+.admin-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.admin-header {
+  border-block-end: var(--border-hairline) solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.admin-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-s) var(--space-l);
+  width: min(100% - 2 * var(--grid-gutter), var(--container-max));
+  margin-inline: auto;
+  padding-block: var(--space-s);
+}
+
+.admin-header__title {
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: var(--weight-display-strong);
+  line-height: var(--leading-heading);
+}
+
+.admin-header__user {
+  flex: 1 1 14rem;
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+.admin-header__lang {
+  min-width: 11rem;
+}
+
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-m);
+  width: min(100% - 2 * var(--grid-gutter), var(--container-max));
+  margin-inline: auto;
+  padding-block-end: var(--space-2xs);
+}
+
+.admin-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  font-weight: var(--weight-bold);
+}
+
+.admin-nav a[aria-current='page'] {
+  color: var(--color-heading);
+  text-decoration-thickness: 3px;
+}
+
+.admin-main {
+  flex: 1 0 auto;
+  padding-block: var(--space-l);
+}
+
+.admin-main:focus {
+  outline: none;
+}
+
+.admin-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.admin-heading {
+  font-size: var(--step-3);
+}
+
+.admin-heading:focus {
+  outline: none;
+}
+
+.admin-heading:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* Result messages: always in the DOM so assistive tech announces changes. */
+.admin-flash {
+  min-height: 0;
+}
+
+.admin-flash--success,
+.admin-flash--error {
+  margin-block-end: var(--space-m);
+  padding: var(--space-xs) var(--space-s);
+  border-inline-start: 0.25rem solid currentColor;
+  border-radius: var(--radius-s);
+  font-weight: var(--weight-bold);
+}
+
+.admin-flash--success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.admin-flash--error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.admin-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  max-width: var(--measure);
+}
+
+.admin-loading,
+.admin-empty,
+.admin-count {
+  color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------- Filters -- */
+
+.admin-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  max-width: none;
+  padding: var(--space-m);
+}
+
+.admin-types {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.admin-types__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-2xs);
+}
+
+.admin-filters__grid {
+  display: grid;
+  gap: var(--space-m);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+
+.admin-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.admin-search .input {
+  flex: 1 1 14rem;
+  width: auto;
+}
+
+/* ------------------------------------------------------------ Tables -- */
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background-color: var(--color-surface);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  text-align: start;
+}
+
+.admin-table caption {
+  padding: var(--space-xs) var(--space-s);
+  font-weight: var(--weight-bold);
+  text-align: start;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: var(--space-xs) var(--space-s);
+  border-block-end: var(--border-hairline) solid var(--color-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.admin-table thead th {
+  background-color: var(--color-surface-sunk);
+  color: var(--color-heading);
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+
+.admin-table tbody th {
+  font-weight: var(--weight-bold);
+}
+
+.admin-table tbody tr:last-child > * {
+  border-block-end: 0;
+}
+
+.admin-table--narrow {
+  max-width: 32rem;
+}
+
+.admin-id {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.admin-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--step--2);
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------ Badges -- */
+
+.admin-badge {
+  display: inline-block;
+  padding: 0.125rem var(--space-2xs);
+  border: var(--border-hairline) solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-sunk);
+  color: var(--color-text);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+
+.admin-badge--new {
+  background-color: var(--color-surface-sun);
+}
+
+.admin-badge--accepted {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.admin-badge--closed {
+  background-color: var(--color-surface-sage);
+}
+
+.admin-badge--spam,
+.admin-badge--delivery-failed {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.admin-badge--delivery-sent {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.admin-badge--delivery-skipped {
+  background-color: var(--color-surface-sun);
+}
+
+/* ------------------------------------------------------------ Detail -- */
+
+.admin-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+}
+
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  padding: var(--space-m);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background-color: var(--color-surface);
+}
+
+.admin-panel > h2 {
+  font-size: var(--step-1);
+}
+
+.admin-panel--danger {
+  border-color: var(--color-error);
+}
+
+.admin-fields {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.admin-fields__row {
+  display: grid;
+  gap: var(--space-3xs);
+  padding-block-end: var(--space-xs);
+  border-block-end: var(--border-hairline) solid var(--color-border);
+}
+
+.admin-fields dt {
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+}
+
+.admin-fields dd {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 48rem) {
+  .admin-fields__row {
+    grid-template-columns: 14rem 1fr;
+    gap: var(--space-m);
+  }
+}
+
+.admin-inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-s);
+}
+
+.admin-inline-form .field {
+  flex: 1 1 14rem;
+  max-width: 24rem;
+}
+
+.admin-notes,
+.admin-deliveries {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-notes__body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.admin-delivery {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+  padding: var(--space-s);
+  border: var(--border-hairline) solid var(--color-border);
+  border-inline-start-width: 0.25rem;
+  border-radius: var(--radius-s);
+}
+
+.admin-delivery--failed {
+  border-inline-start-color: var(--color-error);
+}
+
+.admin-delivery--skipped {
+  border-inline-start-color: var(--color-draft-border);
+}
+
+.admin-delivery--sent {
+  border-inline-start-color: var(--color-success);
+}
+
+.admin-callout {
+  padding: var(--space-xs) var(--space-s);
+  border-radius: var(--radius-s);
+  background-color: var(--color-draft-bg);
+  color: var(--color-draft-text);
+  font-weight: var(--weight-bold);
+}
+
+@media (forced-colors: active) {
+  .admin-badge,
+  .admin-delivery,
+  .admin-panel {
+    border-color: CanvasText;
+  }
+}
+
+/* Replaces Astro's inline island style, which the CSP forbids (see astro.config.mjs). */
+astro-island,
+astro-slot,
+astro-static-slot {
+  display: contents;
+}
+
+.admin-noscript {
+  padding: var(--space-m);
+}

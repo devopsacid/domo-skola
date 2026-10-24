@@ -15,7 +15,7 @@
     "typecheck": "astro check && tsc -p functions/tsconfig.json",
     "test": "vitest run",
     "test:integration": "vitest run --config tests/integration/vitest.config.ts",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=desktop --project=mobile && playwright test --project=admin --workers=1",
     "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs",
     "mock-mail": "node tools/mock-mail/index.mjs",
     "dev:access": "node tools/dev-access-proxy/index.mjs",
