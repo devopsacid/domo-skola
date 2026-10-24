@@ -65,7 +65,7 @@ Only `/api/*` invokes Functions (`_routes.json`). Everything else is a static fi
    - The button is disabled and `aria-busy` is set during the request.
    - Network errors keep the entered data and offer a retry.
    - On success the island shows an inline success state, focuses its heading, and fires `contact_submit`.
-   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`. **Known gap (ADR-0001 A4.5):** the static page cannot read the query, so no message appears yet. The decided fix is a redirect to `?error=1#form-error` plus a static notice shown by `:target`.
+   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`. **No-JS failure message (ADR-0001 A4.5):** the failure redirect is `?error=1#form-error`, and the page always contains a static localized notice (`#form-error`) that CSS shows only with `:target`. With JS the island removes that notice and shows its own failure panel.
 3. **Function** (`src/server/handlers/contact.ts`) runs these steps in order:
    1. method, content type and size check
    2. Origin and `Sec-Fetch-Site` check (ADR-0001 D7)

@@ -3,9 +3,12 @@
  * container and the Preact renderer and check the contract with the server decoder (field names,
  * action, checkboxes, no pre-checked consent, phone flag, school-year options).
  */
+import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import preact from '@astrojs/preact/server.js';
 import { beforeAll, describe, expect, it } from 'vitest';
+
+import FormErrorNotice from '../../../src/pages/_forms/FormErrorNotice.astro';
 import ContactHost from '../fixtures/ContactHost.astro';
 import EnrolHost from '../fixtures/EnrolHost.astro';
 import { formStrings } from '../../../src/i18n/forms';
@@ -144,5 +147,21 @@ describe('contact server markup', () => {
     expect(html).toContain('href="/cs/ochrana-osobnich-udaju/"');
     for (const subject of ['general', 'visit', 'enrollment', 'other'])
       expect(html).toContain(`<option value="${subject}"`);
+  });
+});
+
+describe('static no-JS failure notice (ADR-0001 A4.5)', () => {
+  it('renders a focusable, localized block with id form-error and no role=alert', async () => {
+    const html = await container.renderToString(FormErrorNotice, { props: { locale: 'cs' } });
+    expect(html).toContain('id="form-error"');
+    expect(html).toContain('tabindex="-1"');
+    expect(html).not.toContain('role="alert"');
+    expect(html).not.toContain('style=');
+    expect(html).toContain(formStrings('cs').common.fail.generic.title);
+  });
+  it('is hidden by CSS unless targeted', () => {
+    const css = readFileSync('src/styles/forms.css', 'utf8');
+    expect(css).toMatch(/\.form-error-static\s*\{[^}]*display:\s*none/);
+    expect(css).toMatch(/\.form-error-static:target\s*\{[^}]*display:\s*block/);
   });
 });

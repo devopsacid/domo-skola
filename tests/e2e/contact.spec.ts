@@ -245,9 +245,9 @@ test('no-JS: a real form post works and lands on the localized sent page', async
   }
 });
 
-test('no-JS failure redirects back with ?error=1, which the island reports', async ({
+test('no-JS failure redirects to ?error=1#form-error, which shows the static notice', async ({
   request,
-  page,
+  browser,
 }) => {
   const r = await request.post('/api/contact', {
     maxRedirects: 0,
@@ -255,8 +255,25 @@ test('no-JS failure redirects back with ?error=1, which the island reports', asy
     data: 'locale=cs&email=x',
   });
   expect(r.status()).toBe(303);
-  expect(r.headers().location).toContain(`${ROUTES.contact.cs}?error=1`);
-  await page.goto(`${ROUTES.contact.cs}?error=1`);
+  expect(r.headers().location).toContain(`${ROUTES.contact.cs}?error=1#form-error`);
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const page = await ctx.newPage();
+  await page.goto(ROUTES.contact.cs);
+  await expect(page.locator('#form-error')).toBeHidden();
+  await page.goto(r.headers().location!);
+  const notice = page.locator('#form-error');
+  await expect(notice).toBeVisible();
+  await expect(notice).toContainText(ui('cs').common.fail.generic.title);
+  await expect(notice).toBeFocused();
+  await ctx.close();
+});
+
+test('with JS, ?error=1#form-error shows the failure alert once and removes the static notice', async ({
+  page,
+}) => {
+  await page.goto(`${ROUTES.contact.cs}?error=1#form-error`);
   await expect(page.getByRole('alert')).toContainText(ui('cs').common.fail.generic.title);
   await expect(page.getByRole('alert')).toBeFocused();
+  await expect(page.getByText(ui('cs').common.fail.generic.title)).toHaveCount(1);
+  await expect(page.locator('#form-error')).toHaveCount(0);
 });

@@ -11,6 +11,7 @@ import { verifiedValue } from '../../content-schemas';
 import { localePath, type Locale } from '../../i18n/routes';
 import { formPageStrings, formStrings } from '../../i18n/forms';
 import { formPageData } from './settings';
+import FormErrorNotice from './FormErrorNotice.astro';
 
 interface Props {
   locale: Locale;
@@ -49,6 +50,7 @@ const regionNames = regions.filter((r) => r.value !== 'other').map((r) => r.labe
 
       <div class="stack stack-l">
         <h2 class="heading-2">{p.formHeading}</h2>
+        <FormErrorNotice locale={locale} />
         <div class="form-panel">
           <div data-island="contact" data-props={JSON.stringify(formProps)}>
             <ContactForm {...formProps} />
