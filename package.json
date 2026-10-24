@@ -9,12 +9,12 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node tools/build-headers.mjs",
     "preview": "astro preview",
     "lint": "eslint .",
     "typecheck": "astro check",
     "test": "vitest run",
-    "check": "node -e \"console.log('check: stub, real checks arrive with L1')\""
+    "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

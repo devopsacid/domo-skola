@@ -1,0 +1,9 @@
+# Indexing of preview builds is blocked by X-Robots-Tag and <meta name="robots"> (PUBLIC_NOINDEX),
+# not here, so crawlers can still read those signals.
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /cms/
+
+# The Sitemap line is added by the SEO lane (L9) once the production domain is known.

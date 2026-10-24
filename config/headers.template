@@ -1,0 +1,36 @@
+# Template for dist/_headers. Rendered by tools/build-headers.mjs after `astro build`.
+# Placeholders: INLINE_SCRIPT_HASHES (script hashes) and ROBOTS_ALL (the robots header line while PUBLIC_NOINDEX is on;
+# otherwise the line is dropped), each in double braces. Every non-comment line stays on one line (limit 2000 chars).
+# Any CSP change is an ADR-0001 amendment (docs/adr/0001-stack.md D13, docs/architecture.md section 8).
+# Note: _headers does not apply to Pages Functions responses; functions/_middleware.ts sets those.
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'none'; script-src 'self'{{INLINE_SCRIPT_HASHES}}; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; manifest-src 'self'; object-src 'none'; upgrade-insecure-requests
+  {{ROBOTS_ALL}}
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/admin/*
+  ! Referrer-Policy
+  Referrer-Policy: no-referrer
+  ! X-Robots-Tag
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/cms/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com; font-src 'self'; connect-src 'self' blob: data: https://api.github.com; media-src blob:; frame-src blob:; manifest-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  ! X-Robots-Tag
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store

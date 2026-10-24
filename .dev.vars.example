@@ -1,0 +1,32 @@
+# Copy to .dev.vars (gitignored) for `wrangler pages dev`. Dummy values only; never commit real secrets.
+# Production secrets: `wrangler pages secret put <NAME>` via the secrets-manager flow (docs/architecture.md section 9).
+ENVIRONMENT=development
+SITE_URL=http://localhost:8788
+ALLOWED_ORIGINS=http://localhost:8788,http://localhost:4321
+ACCESS_TEAM_DOMAIN=dev.cloudflareaccess.com
+ACCESS_AUD=dev-aud-tag
+# Dev only (mock JWKS from tools/dev-access-proxy). Preflight fails if this is set in production.
+ACCESS_CERTS_URL=http://localhost:8790/certs
+EMAIL_PROVIDER=mock
+EMAIL_API_BASE=http://localhost:8791
+EMAIL_FROM=
+EMAIL_REPLY_TO=
+ADMIN_NOTIFY_TO=
+ADMIN_EMAIL_LOCALE=sk
+# Secrets
+EMAIL_API_KEY=dummy-email-api-key
+IP_HASH_SECRET=dummy-ip-hash-secret-change-me
+TURNSTILE_SECRET_KEY=
+GITHUB_OAUTH_CLIENT_SECRET=dummy-github-oauth-secret
+GITHUB_OAUTH_CLIENT_ID=dummy-github-oauth-id
+# Limits
+RATE_LIMIT_PER_10MIN=5
+RATE_LIMIT_PER_DAY=20
+RATE_LIMIT_EMAIL_PER_DAY=3
+# Retention (days). Dev values only; production values need legal review and are never invented here.
+RETENTION_DAYS_INQUIRY=30
+RETENTION_DAYS_APPLICATION=30
+RETENTION_DAYS_AFTER_CLOSE=30
+AUDIT_RETENTION_DAYS=30
+MARKETING_CONSENT_ENABLED=false
+ANALYTICS_UPSTREAM=
