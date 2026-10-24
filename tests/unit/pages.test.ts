@@ -85,6 +85,20 @@ const read = (dir: string, l: string) =>
     f: `${dir}/${l}/${f}`,
     text: readFileSync(join(root, dir, l, f), 'utf8'),
   }));
+const NEVER_VERIFIED = /^\s*status: verified\b/m;
+const NUMBER_WORDS =
+  '(?:dva|dve|dvaja|tri|traja|štyri|štyria|päť|šesť|sedem|osem|deväť|desať|jedenásť|dvanásť|pätnásť|dvadsať|' +
+  'dvě|tři|čtyři|pět|šest|sedm|osm|devět|deset|dvanáct|patnáct|dvacet|' +
+  'two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty)';
+const PEOPLE =
+  '(?:det[ií]|deti|d[eě]ti|dětí|children|kids|žiak\\w*|žák\\w*|pupils?|sprievod\\w*|průvod\\w*|guides?|adults?|dospel\\w*|dospěl\\w*)';
+const INVENTED_FACTS: Record<string, RegExp> = {
+  money: /€|\bEUR\b|\beur\b|Kč|\bCZK\b/,
+  'numeric group size': new RegExp(`\\b\\d+\\s*${PEOPLE}`, 'iu'),
+  'number-word group size': new RegExp(`(?<![\\p{L}])${NUMBER_WORDS}\\s+${PEOPLE}`, 'iu'),
+  'clock time': /\b(?:[01]?\d|2[0-3])[:.][0-5]\d\b/,
+  'phone number': /(?:\+\d{3}|\b0\d{3})[\s-]?\d{3}[\s-]?\d{3}\b/,
+};
 const L4_PAGES = ['approach', 'day', 'parents', 'faq', 'blog', 'privacy', 'cookies', 'legal'];
 
 describe('L4 draft copy', () => {
@@ -102,7 +116,8 @@ describe('L4 draft copy', () => {
 
   it('is never verified yet, and every reviewable entry carries a reviewNote', () => {
     for (const { f, text } of entries) {
-      expect(text, f).not.toMatch(/^status: verified$/m);
+      // Top-level and nested section statuses alike.
+      expect(text, f).not.toMatch(NEVER_VERIFIED);
       expect(text, f).toMatch(/^reviewNote: \S/m);
     }
   });
@@ -113,13 +128,31 @@ describe('L4 draft copy', () => {
     expect(ids('en')).toEqual(ids('sk'));
   });
 
-  it('states no prices, currencies or numeric group sizes', () => {
-    const money = /€|\bEUR\b|\beur\b|Kč|\bCZK\b/;
-    const groupSize = /\b\d+\s*(detí|dětí|children|žiakov|žáků|pupils)\b/i;
-    for (const { f, text } of entries) {
-      expect(text, f).not.toMatch(money);
-      expect(text, f).not.toMatch(groupSize);
-    }
+  it('states no prices, group sizes or ratios, clock times or phone numbers', () => {
+    for (const { f, text } of entries)
+      for (const [what, re] of Object.entries(INVENTED_FACTS)) expect(text, `${f}: ${what}`).not.toMatch(re);
+  });
+
+  it('has guards that catch what they are meant to catch', () => {
+    expect('    status: verified').toMatch(NEVER_VERIFIED);
+    expect('status: verified # x').toMatch(NEVER_VERIFIED);
+    expect('status: needs-review').not.toMatch(NEVER_VERIFIED);
+    const hits = (s: string) => Object.values(INVENTED_FACTS).some((re) => re.test(s));
+    for (const s of [
+      'Školné 120 € mesačne',
+      'v skupine je 12 detí',
+      'skupina má štyri deti',
+      'až osem dětí',
+      'twelve children per guide',
+      'two guides',
+      'začíname o 8:00',
+      'from 8.30',
+      'volajte +421 905 123 456',
+      'tel. 0905 123 456',
+    ])
+      expect(hits(s), s).toBe(true);
+    for (const s of ['Šesť vecí, na ktorých nám záleží', 'štyri prístupy', '1. až 4. ročník', 'brief §5.4', 'grades 1 to 4'])
+      expect(hits(s), s).toBe(false);
   });
 
   it('uses the one adult term (sprievodca / průvodce / guide), never "teacher", in the sample post too', () => {

@@ -7,6 +7,7 @@
  * Markdown; only paragraphs are rendered here, which keeps the home page free of a
  * Markdown runtime). Answers that depend on unverified facts (`pending`) get their
  * `pendingNote` and a contact link; both disappear once the facts are verified.
+ * `data-faq-text` marks the question and answer text, the only text the FAQ search reads.
  */
 interface Item {
   id: string;
@@ -42,7 +43,7 @@ const paragraphs = (text: string) =>
     items.map((item) => (
       <details class="faq-item" name={name} id={`${idPrefix}${item.id}`} data-faq-item>
         <summary class="faq-item__q">
-          <span class="faq-item__q-text">{item.question}</span>
+          <span class="faq-item__q-text" data-faq-text>{item.question}</span>
           <svg
             class="faq-item__icon"
             viewBox="0 0 20 20"
@@ -62,7 +63,7 @@ const paragraphs = (text: string) =>
         </summary>
         <div class="faq-item__a">
           {paragraphs(item.answer).map((p) => (
-            <p>{p}</p>
+            <p data-faq-text>{p}</p>
           ))}
           {item.pending && item.pendingNote && <p class="faq-item__pending">{item.pendingNote}</p>}
           {item.pending && pendingLink && (

@@ -7,8 +7,8 @@ import { byDate, isRenderable, translationMap } from './rules';
 export type PostEntry = CollectionEntry<'posts'>;
 
 /**
- * The locale folder of a post. Not the entry id: the glob loader uses a `slug` field as
- * the id when present, so ids are bare slugs; the file path keeps the locale folder.
+ * The locale folder of a post, read from the file path (content.config.ts also keeps it
+ * in the id; the path is the source both agree on).
  */
 export const localeOf = (filePath: string | undefined): Locale | undefined =>
   filePath?.match(/(?:^|\/)posts\/([a-z]{2})\//)?.[1] as Locale | undefined;

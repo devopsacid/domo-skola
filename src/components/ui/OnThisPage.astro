@@ -9,7 +9,15 @@ interface Props {
   class?: string;
 }
 const { label, items, class: className } = Astro.props;
-const id = `toc-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+const slug = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+// Unique on the page: the label plus the first target, so two lists never share an id.
+const id = `toc-${slug(label)}-${slug(items[0]?.href ?? 'empty')}`;
 ---
 
 <nav class:list={['toc', className]} aria-labelledby={id}>

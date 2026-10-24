@@ -20,15 +20,18 @@ function init(root: HTMLElement) {
   const none = root.querySelector<HTMLElement>('[data-faq-none]');
   const items = [...root.querySelectorAll<HTMLDetailsElement>('[data-faq-item]')];
   const cats = [...root.querySelectorAll<HTMLElement>('[data-faq-cat]')];
-  // Text-only elements whose text may be marked: question and answer paragraphs.
+  // Question and answer text only (`data-faq-text`): never the pending note, the contact
+  // link or review badges, so a search matches what the answer actually says.
   const marked = new Map<HTMLDetailsElement, { el: HTMLElement; text: string }[]>();
   for (const item of items) {
-    const els = [
-      ...item.querySelectorAll<HTMLElement>('.faq-item__q-text, .faq-item__a > p'),
-    ].filter((el) => el.children.length === 0);
+    const els = [...item.querySelectorAll<HTMLElement>('[data-faq-text]')].filter(
+      (el) => el.children.length === 0,
+    );
     marked.set(item, els.map((el) => ({ el, text: el.textContent ?? '' })));
   }
-  const haystack = new Map(items.map((i) => [i, i.textContent ?? '']));
+  const haystack = new Map(
+    items.map((i) => [i, (marked.get(i) ?? []).map((m) => m.text).join(' ')]),
+  );
   let filtering = false;
 
   function mark(el: HTMLElement, text: string, q: string[]) {
@@ -90,7 +93,12 @@ function init(root: HTMLElement) {
   }
 
   function openHash() {
-    const id = decodeURIComponent(location.hash.slice(1));
+    let id: string;
+    try {
+      id = decodeURIComponent(location.hash.slice(1));
+    } catch {
+      return; // malformed escape such as "#%E0": not one of our ids
+    }
     if (!id) return;
     const target = document.getElementById(id);
     if (!(target instanceof HTMLDetailsElement) || !items.includes(target)) return;

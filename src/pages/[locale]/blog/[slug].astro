@@ -1,7 +1,8 @@
 ---
 /**
  * Blog post route (docs/ia.md §2.8): one page per renderable post (components/blog/rules.ts).
- * Today every post is a draft outline, so no post page is built. The language switcher
+ * Draft outlines are never built; needs-review posts build only outside CONTENT_STRICT=1,
+ * and legal posts only once legalReviewedAt is set. The language switcher
  * and hreflang use the post's translationKey siblings; a missing translation goes to
  * that locale's blog index (routes.ts switcherHref).
  */
