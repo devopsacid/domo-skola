@@ -29,6 +29,11 @@ export function fact<T extends z.ZodType>(value: T) {
   });
 }
 
+/** The value of a fact only when verified; otherwise null (render "pending confirmation"). */
+export function verifiedValue<T>(f: { value: T | null; status: string } | null | undefined): T | null {
+  return f && f.status === 'verified' ? f.value : null;
+}
+
 const entry = { status: status.default('draft'), reviewNote };
 const image = z.string().optional();
 
