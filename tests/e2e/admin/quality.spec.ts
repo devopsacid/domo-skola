@@ -152,7 +152,26 @@ test.describe('CSP and Trusted Types', () => {
     expect(bad).toEqual([]);
   });
 
-  test("works under require-trusted-types-for 'script' with zero violations", async ({ page }) => {
+  test('the served /admin/ sends one CSP that enforces Trusted Types (ADR-0001 A4.3)', async ({
+    page,
+  }) => {
+    const res = await page.request.get(`/admin/?dev_user=${encodeURIComponent(ADMIN)}`);
+    const csp = res
+      .headersArray()
+      .filter((h) => h.name.toLowerCase() === 'content-security-policy');
+    expect(csp).toHaveLength(1);
+    expect(csp[0].value).toContain("script-src 'self';");
+    expect(csp[0].value).toContain("; require-trusted-types-for 'script'");
+    expect(csp[0].value).not.toMatch(/(^|;)\s*trusted-types\b/);
+    expect(csp[0].value).not.toContain('unsafe-');
+    // A public page does not carry the directive.
+    const pub = await page.request.get('/sk/');
+    expect(pub.headers()['content-security-policy']).not.toContain('require-trusted-types-for');
+  });
+
+  test("works under the served require-trusted-types-for 'script' with zero violations", async ({
+    page,
+  }) => {
     const bad: string[] = [];
     page.on('console', (m) => m.type() === 'error' && bad.push(m.text()));
     page.on('pageerror', (e) => bad.push(e.message));
@@ -161,21 +180,15 @@ test.describe('CSP and Trusted Types', () => {
         console.error(`VIOLATION ${e.violatedDirective} ${e.blockedURI} ${e.sample}`),
       ),
     );
-    // The trial header, added on top of what the edge sends (two policies intersect).
-    await page.route('**/admin/', async (route) => {
-      const res = await route.fetch();
-      const csp = res.headers()['content-security-policy'] ?? '';
-      await route.fulfill({
-        response: res,
-        headers: {
-          ...res.headers(),
-          'content-security-policy': `${csp}, require-trusted-types-for 'script'`,
-        },
-      });
-    });
     const app = await submitApplication();
     const id = idOf('applications', app.name);
+    const doc = page.waitForResponse(
+      (r) => new URL(r.url()).pathname === '/admin/' && r.status() === 200,
+    );
     await openAdmin(page, ADMIN);
+    expect((await doc).headers()['content-security-policy']).toContain(
+      "require-trusted-types-for 'script'",
+    );
     await expect(page.locator('tbody tr').first()).toBeVisible();
     await page.evaluate((i) => (location.hash = `#/record/application/${i}`), id);
     await page.getByLabel('Change status').selectOption('contacted');

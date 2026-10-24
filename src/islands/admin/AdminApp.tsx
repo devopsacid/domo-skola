@@ -9,7 +9,7 @@ import { DetailView } from './DetailView';
 import { detectLocale, label, makeT } from './i18n';
 import { ListView } from './ListView';
 import { RetentionView } from './RetentionView';
-import { canUi, guardRoute, parseRoute, type Route } from './state';
+import { canUi, guardRoute, parseRoute, resolveMe, type Route } from './state';
 import type { AdminRole } from './types';
 import { Loading } from './ui';
 import { useRecordList } from './useList';
@@ -56,7 +56,7 @@ export default function AdminApp() {
 
   const loadMe = useCallback(async () => {
     setMeState({ phase: 'loading' });
-    const res = await api.me();
+    const res = await resolveMe(() => api.me());
     if (res.ok) setMeState({ phase: 'ready', me: res.data });
     else {
       if (res.kind === 'unauthorized') onUnauthorized();

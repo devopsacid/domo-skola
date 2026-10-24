@@ -8,6 +8,7 @@ import {
   guardRoute,
   listReducer,
   parseRoute,
+  resolveMe,
   routeHash,
   searchText,
   setFilter,
@@ -194,5 +195,33 @@ describe('typed confirmation', () => {
   });
   it('shortens ids', () => {
     expect(shortId('0123456789abcdef')).toBe('01234567');
+  });
+});
+
+describe('resolveMe (A4.6: a network failure means signed out only when it repeats)', () => {
+  const ok = { ok: true as const, data: { email: 'a@b.test', role: 'admin' as const } };
+  const net = { ok: false as const, kind: 'network' as const, status: 0 };
+  const wait = async () => undefined;
+  it('passes a success through without retrying', async () => {
+    let calls = 0;
+    const r = await resolveMe(async () => (calls++, ok), wait);
+    expect(r).toEqual(ok);
+    expect(calls).toBe(1);
+  });
+  it('recovers when the retry succeeds', async () => {
+    const seq = [net, ok];
+    expect(await resolveMe(async () => seq.shift()!, wait)).toEqual(ok);
+  });
+  it('maps two network failures to unauthorized', async () => {
+    let calls = 0;
+    const r = await resolveMe(async () => (calls++, net), wait);
+    expect(r).toMatchObject({ ok: false, kind: 'unauthorized' });
+    expect(calls).toBe(2);
+  });
+  it('does not retry other failures', async () => {
+    let calls = 0;
+    const bad = { ok: false as const, kind: 'forbidden' as const, status: 403 };
+    expect(await resolveMe(async () => (calls++, bad), wait)).toEqual(bad);
+    expect(calls).toBe(1);
   });
 });

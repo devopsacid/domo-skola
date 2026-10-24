@@ -11,6 +11,7 @@ import EnrollmentForm from '../../islands/EnrollmentForm';
 import { localePath, type Locale } from '../../i18n/routes';
 import { formPageStrings, formStrings } from '../../i18n/forms';
 import { formPageData } from './settings';
+import FormErrorNotice from './FormErrorNotice.astro';
 
 interface Props {
   locale: Locale;
@@ -97,6 +98,7 @@ const formProps = {
                 <p>{p.waitlistNote}</p>
               </NotePending>
             )}
+            <FormErrorNotice locale={locale} />
             <div class="form-panel">
               <div data-island="enrol" data-props={JSON.stringify(formProps)}>
                 <EnrollmentForm {...formProps} />

@@ -156,11 +156,12 @@ test.describe('record actions as coordinator', () => {
   test('a failed e-mail can be resent', async ({ page }) => {
     await mailFail(503);
     const seed = await submitContact();
-    await mailFail(null);
     const id = idOf('contact_inquiries', seed.name);
+    // The Function sends after it has answered: restore the mock only once both sends have failed.
     await expect
       .poll(() => count('email_deliveries', `inquiry_id='${id}' AND status='failed'`))
       .toBe(2);
+    await mailFail(null);
     await openAdmin(page, COORDINATOR, `#/record/inquiry/${id}`);
     const failed = page.locator('[data-kind="sender_confirmation"][data-status="failed"]');
     await expect(failed).toBeVisible();

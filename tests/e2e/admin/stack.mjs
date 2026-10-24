@@ -79,8 +79,12 @@ child.stdout.on('data', (d) => process.env.E2E_VERBOSE && process.stdout.write(d
 child.stderr.on('data', (d) => process.env.E2E_VERBOSE && process.stderr.write(d));
 
 const stop = async () => {
+  child.removeAllListeners('exit'); // the crash handler below must not fire for a requested stop
+  const exited = new Promise((r) => (child.exitCode !== null ? r() : child.once('exit', r)));
   child.kill('SIGTERM');
-  await Promise.all([proxy.close(), mail.close()]);
+  const killer = setTimeout(() => child.kill('SIGKILL'), 8000);
+  await Promise.all([proxy.close(), mail.close(), exited]);
+  clearTimeout(killer);
   process.exit(0);
 };
 process.on('SIGTERM', stop);

@@ -201,8 +201,8 @@ Facts that shape this ADR:
 
 ### D13. Security headers and strict CSP from `_headers`, with build-time hashes
 - **Decision:**
-  - **Generation:** `tools/build-headers.mjs` runs after `astro build`. It reads `config/headers.template`, scans `dist/**/*.html`, computes SHA-256 hashes for every executable inline `<script>` and writes `dist/_headers`. Islands are mounted by external modules (A4.1), so no page should need a hash. Today's only hashes are the Astro runtime scripts on `/admin/`, until the admin moves to a mount module. After that the limit becomes 0 (A4.4).
-  - **Fail conditions:** the build fails on any inline `<style>`, any `style=` attribute, any inline event-handler attribute, any external origin, or more than 6 distinct inline-script hashes. JSON-LD `type="application/ld+json"` blocks are data and are exempt.
+  - **Generation:** `tools/build-headers.mjs` runs after `astro build`. It reads `config/headers.template`, scans `dist/**/*.html`, rejects every executable inline `<script>` (no hashes; islands are mounted by external modules, A4.1 and A4.4) and writes `dist/_headers`.
+  - **Fail conditions:** the build fails on any inline `<style>`, any `style=` attribute, any inline event-handler attribute, any external origin, or any executable inline script (no hashes since A4.4). JSON-LD `type="application/ld+json"` blocks are data and are exempt.
   - **Why not Astro's `security.csp`:** it is not enabled, because a second, meta policy would intersect with the header (F4).
   - **Functions:** `functions/_middleware.ts` sets the same headers on every Function response (F3), plus `Cache-Control: no-store`.
   - **Path classes:** public, `/admin/*`, `/cms/*`, and form pages if Turnstile is on. The policies are listed in `docs/architecture.md` §8.
@@ -285,7 +285,7 @@ Facts that shape this ADR:
 | `@axe-core/playwright` | 4.13.0 | devDependency | accessibility checks inside e2e (D14) |
 
 - **E2E layout:** `playwright.config.ts` defines three projects. `desktop` (1280 px) and `mobile` (Pixel 5 at 360 px, only tests tagged `@mobile`) cover the forms against `wrangler pages dev` with local D1 and `tools/mock-mail`, booted by `tests/e2e/global-setup.ts`. `admin` runs `tests/e2e/admin/` serially against `tests/e2e/admin/stack.mjs` behind the dev Access proxy, with one shared D1. `pnpm test:e2e` runs the forms projects, then the admin project with `--workers=1`. It needs `pnpm build` first and installed Playwright browsers (only Chromium is used).
-- **Open decision: does e2e join the CI gate?** Recommendation: yes, as a required job once it is green in CI, but not in the five-command local gate. A lane that touches `src/islands/**`, `src/pages/**`, `src/server/**`, `functions/**` or the headers also runs `pnpm build && pnpm test:e2e` before review. The CI job is not ready yet. `.github/workflows/ci.yml` job `e2e` switches itself on now that `playwright.config.ts` exists, but it never builds `dist/` (it neither runs `pnpm build` nor downloads the `dist` artifact from `verify`), so it will fail (devops follow-up, `docs/plan.md` §1).
+- **Open decision: does e2e join the CI gate?** Recommendation: yes, as a required job once it is green in CI, but not in the five-command local gate. A lane that touches `src/islands/**`, `src/pages/**`, `src/server/**`, `functions/**` or the headers also runs `pnpm build && pnpm test:e2e` before review. The CI job `e2e` in `.github/workflows/ci.yml` now installs, runs `pnpm build`, installs Chromium and runs `pnpm test:e2e`; it becomes a required check once it has been green in CI.
 
 **A4.3 Trusted Types on `/admin/*`.**
 - **Context:** L7 ran `tests/e2e/admin/quality.spec.ts` with `require-trusted-types-for 'script'` added as a second policy on the `/admin/` document. It got zero violations across the list, detail, status change and audit views. The app creates no Trusted Types policy.
@@ -294,7 +294,7 @@ Facts that shape this ADR:
   - Only Chromium was tested. Browsers without Trusted Types support ignore the directive, so it is defence in depth, not a gate.
   - The trial header was injected by Playwright on top of what `wrangler pages dev` sends. Wrangler's `_headers` emulation is not proof of production behaviour, so verify on the preview with `curl -I`.
   - Do not rely on how a second `Content-Security-Policy` from the `/admin/*` rule combines with the `/*` one. Use `! Content-Security-Policy` in `/admin/*`, as `/cms/*` already does, followed by the full public policy plus `; require-trusted-types-for 'script'`. That gives one policy, and the result does not depend on how Pages merges headers.
-- **Follow-up (devops; not done by this amendment):** add that block to `config/headers.template`, teach `tools/lib/headers.mjs` and `tools/check-dist.mjs` to assert that `/admin/*` sends exactly one CSP containing `require-trusted-types-for 'script'` and that no other path sends it, and replace the route override in `quality.spec.ts` with an assertion on the served header.
+- **Follow-up (devops; done in lane/a4-islands):** add that block to `config/headers.template`, teach `tools/lib/headers.mjs` and `tools/check-dist.mjs` to assert that `/admin/*` sends exactly one CSP containing `require-trusted-types-for 'script'` and that no other path sends it, and replace the route override in `quality.spec.ts` with an assertion on the served header.
 
 **A4.4 Consequences for D13.** Hashes are a fallback, not the plan. After A4.1 step 4, the build fails on any executable inline script. JSON-LD stays exempt.
 

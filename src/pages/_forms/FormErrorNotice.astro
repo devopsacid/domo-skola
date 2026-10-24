@@ -1,0 +1,21 @@
+---
+/**
+ * Static no-JS failure notice (ADR-0001 A4.5). The server redirects a failed no-JS post to
+ * `<form page>?error=1#form-error`; this block is hidden by CSS and shown only by `:target`, which also
+ * scrolls to it and moves focus to it (tabindex="-1"). The form islands remove it when they take over
+ * (they show their own failure panel), so the message never appears twice.
+ */
+import { formStrings } from '../../i18n/forms';
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const generic = formStrings(locale).common.fail.generic;
+---
+
+<section id="form-error" class="error-summary form-error-static" tabindex="-1" aria-labelledby="form-error-title">
+  <h2 class="error-summary__title" id="form-error-title">{generic.title}</h2>
+  <p>{generic.text}</p>
+</section>

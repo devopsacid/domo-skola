@@ -360,6 +360,21 @@
   line-height: 1.5;
 }
 
+/* No-JS failure notice (ADR-0001 A4.5): hidden until the redirect's #form-error fragment targets it. */
+.form-error-static {
+  display: none;
+  max-width: 40rem;
+}
+
+.form-error-static:target {
+  display: block;
+}
+
+.form-error-static:focus {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
 .success-panel {
   padding: var(--space-l);
   border-inline-start: 0.25rem solid var(--color-success);

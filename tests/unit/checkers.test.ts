@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { createHash, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -192,12 +192,11 @@ describe('check-size', () => {
 });
 
 describe('check-dist', () => {
-  const inline = 'var a=1';
-  const hashOf = (s: string) => 'sha256-' + createHash('sha256').update(s).digest('base64');
-  const good = (hashes: string[] = [hashOf(inline)], noindex = true) =>
+  const good = (noindex = true) =>
     mk({
-      'sk/index.html': `<html><body><script>${inline}</script></body></html>`,
-      _headers: renderHeaders(template, { hashes, noindex }),
+      'sk/index.html':
+        '<html><body><script type="module" src="/_astro/a.js"></script></body></html>',
+      _headers: renderHeaders(template, { noindex }),
       _redirects: '/ /sk/ 301\n',
       '_routes.json': '{}',
       'robots.txt': 'x',
@@ -205,11 +204,33 @@ describe('check-dist', () => {
   it('passes a coherent dist', () => {
     expect(run('check-dist.mjs', good()).code).toBe(0);
   });
-  it('fails when a hash is missing from, or extra in, the CSP', () => {
-    expect(run('check-dist.mjs', good([])).out).toContain('hash missing');
-    expect(run('check-dist.mjs', good([hashOf(inline), 'sha256-AAAA'])).out).toContain(
-      'no matching inline script',
+  it('fails on an inline script in built html, and on a hash or nonce in the CSP', () => {
+    const d = good();
+    writeFileSync(join(d, 'sk/index.html'), '<html><body><script>var a=1</script></body></html>');
+    expect(run('check-dist.mjs', d).out).toContain('/sk/: inline script');
+    const h = good();
+    const p = join(h, '_headers');
+    writeFileSync(
+      p,
+      readFileSync(p, 'utf8').replace("script-src 'self';", "script-src 'self' 'sha256-AAAA';"),
     );
+    expect(run('check-dist.mjs', h).out).toContain('script hash or nonce');
+  });
+  it('fails when /admin/* loses its Trusted Types policy or it leaks elsewhere', () => {
+    const d = good();
+    const p = join(d, '_headers');
+    const text = readFileSync(p, 'utf8');
+    writeFileSync(p, text.replace("; require-trusted-types-for 'script'", ''));
+    expect(run('check-dist.mjs', d).out).toContain('require-trusted-types-for');
+    const e = good();
+    writeFileSync(
+      join(e, '_headers'),
+      text.replace(
+        "style-src 'self'; img-src 'self' data:;",
+        "style-src 'self'; require-trusted-types-for 'script'; img-src 'self' data:;",
+      ),
+    );
+    expect(run('check-dist.mjs', e).out).toContain('must');
   });
   it('fails when unsafe-inline leaks outside /cms/*', () => {
     const d = good();
@@ -221,15 +242,12 @@ describe('check-dist', () => {
     expect(run('check-dist.mjs', d).out).toContain('unsafe-inline');
   });
   it('fails when robots header contradicts PUBLIC_NOINDEX', () => {
-    expect(run('check-dist.mjs', good(undefined, false)).code).toBe(1);
-    expect(run('check-dist.mjs', good(undefined, false), { PUBLIC_NOINDEX: 'false' }).code).toBe(0);
+    expect(run('check-dist.mjs', good(false)).code).toBe(1);
+    expect(run('check-dist.mjs', good(false), { PUBLIC_NOINDEX: 'false' }).code).toBe(0);
   });
   it('fails on a planted inline style in built html', () => {
     const d = good();
-    writeFileSync(
-      join(d, 'sk/index.html'),
-      '<html><body style="x:y"><script>var a=1</script></body></html>',
-    );
+    writeFileSync(join(d, 'sk/index.html'), '<html><body style="x:y"></body></html>');
     expect(run('check-dist.mjs', d).out).toContain('style attribute');
   });
 });
@@ -238,7 +256,7 @@ describe('check-dist strict-output gate', () => {
   const base = (html: string, extra: Record<string, string> = {}) =>
     mk({
       'sk/index.html': html,
-      _headers: renderHeaders(template, { hashes: [], noindex: true }),
+      _headers: renderHeaders(template, { noindex: true }),
       _redirects: '/ /sk/ 301\n',
       '_routes.json': '{}',
       'robots.txt': 'x',

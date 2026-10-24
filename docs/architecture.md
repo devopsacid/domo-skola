@@ -65,7 +65,7 @@ Only `/api/*` invokes Functions (`_routes.json`). Everything else is a static fi
    - The button is disabled and `aria-busy` is set during the request.
    - Network errors keep the entered data and offer a retry.
    - On success the island shows an inline success state, focuses its heading, and fires `contact_submit`.
-   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`. **Known gap (ADR-0001 A4.5):** the static page cannot read the query, so no message appears yet. The decided fix is a redirect to `?error=1#form-error` plus a static notice shown by `:target`.
+   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`. **No-JS failure message (ADR-0001 A4.5):** the failure redirect is `?error=1#form-error`, and the page always contains a static localized notice (`#form-error`) that CSS shows only with `:target`. With JS the island removes that notice and shows its own failure panel.
 3. **Function** (`src/server/handlers/contact.ts`) runs these steps in order:
    1. method, content type and size check
    2. Origin and `Sec-Fetch-Site` check (ADR-0001 D7)
@@ -314,15 +314,15 @@ X-Frame-Options: DENY
 
 **Public pages (`/*`):**
 ```
-default-src 'none'; script-src 'self' {{INLINE_SCRIPT_HASHES}}; style-src 'self'; img-src 'self' data:;
+default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:;
 font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none';
 manifest-src 'self'; object-src 'none'; upgrade-insecure-requests
 ```
 
-`{{INLINE_SCRIPT_HASHES}}` is meant to be empty. Islands load from external modules (ADR-0001 A4.1). Today the only hashes are the two Astro runtime scripts on `/admin/`. They go away when `AdminApp` moves to a mount module, and the hash limit then drops to 0 (A4.4).
+There are no script hashes: islands load from external modules (ADR-0001 A4.1) and `tools/build-headers.mjs` fails the build on any executable inline `<script>` (JSON-LD data blocks are exempt; ADR-0001 A4.4). `tools/check-dist.mjs` re-scans the built HTML and rejects any hash or nonce in the CSP.
 
 **Other path classes:**
-- **`/admin/*`:** `! Content-Security-Policy`, then the public policy plus `; require-trusted-types-for 'script'` (enforced, with no `trusted-types` directive because the app creates no policy; ADR-0001 A4.3). Also `Referrer-Policy: no-referrer`, `X-Robots-Tag: noindex, nofollow` and `Cache-Control: no-store`. **Pending devops:** `config/headers.template`, `tools/lib/headers.mjs` and `tools/check-dist.mjs` do not emit or assert this yet.
+- **`/admin/*`:** `! Content-Security-Policy`, then the public policy plus `; require-trusted-types-for 'script'` (enforced, with no `trusted-types` directive because the app creates no policy; ADR-0001 A4.3). Also `Referrer-Policy: no-referrer`, `X-Robots-Tag: noindex, nofollow` and `Cache-Control: no-store`. Done: `config/headers.template` emits the block, and `adminCspProblems()` in `tools/lib/headers.mjs` (run by `renderHeaders` and `tools/check-dist.mjs`) asserts that `/admin/*` detaches the inherited CSP, sends exactly one CSP equal to the `/*` policy plus the directive, has no `trusted-types` allow-list, and that no other path sends the directive. `tests/e2e/admin/quality.spec.ts` checks the header as served by `wrangler pages dev`.
 - **`/cms/*`:** `! Content-Security-Policy`, then Sveltia's policy:
   ```
   script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com;

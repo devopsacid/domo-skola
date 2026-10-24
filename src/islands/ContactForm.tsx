@@ -102,12 +102,14 @@ export default function ContactForm({
       setValues((v) => ({ ...v, subject }));
     }
     if (params.get('error')) {
-      // The no-JS post failed and was redirected back here.
+      // The no-JS post failed and was redirected back here. This panel replaces the static notice.
+      document.getElementById('form-error')?.remove();
       setFailure({ kind: 'generic' });
       requestFocus('failure');
       params.delete('error');
       const q = params.toString();
-      history.replaceState(null, '', location.pathname + (q ? `?${q}` : '') + location.hash);
+      // Drop ?error=1 and #form-error so a reload shows a clean form.
+      history.replaceState(null, '', location.pathname + (q ? `?${q}` : ''));
     }
   }, []);
 
@@ -137,10 +139,8 @@ export default function ContactForm({
     setValues(next);
     if (attempted && errors[name]) revalidate(name, next);
   };
-  // Errors are added on submit only and cleared while typing (setValue). Validating on blur would insert
-  // error text between mousedown and mouseup and make the button jump away from the click.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onBlur = (_name: string) => undefined;
+  // Errors are added on submit only and cleared while typing (setValue); there is deliberately no
+  // validate-on-blur, because inserting error text between mousedown and mouseup makes a button jump away.
 
   const labels = contact.fields as Record<string, { label: string; help: string }>;
   const err = (name: string) =>
@@ -294,7 +294,6 @@ export default function ContactForm({
         autoComplete="name"
         maxLength={120}
         onValue={(v) => setValue('parent_name', v)}
-        onBlur={onBlur('parent_name')}
       />
       <div class="field-row">
         <TextInput
@@ -305,7 +304,6 @@ export default function ContactForm({
           value={str('email')}
           maxLength={254}
           onValue={(v) => setValue('email', v)}
-          onBlur={onBlur('email')}
         />
         <TextInput
           {...meta('phone', true)}
@@ -315,7 +313,6 @@ export default function ContactForm({
           value={str('phone')}
           maxLength={32}
           onValue={(v) => setValue('phone', v)}
-          onBlur={onBlur('phone')}
         />
       </div>
       <div class="field-row">
@@ -325,7 +322,6 @@ export default function ContactForm({
           options={regions}
           placeholder={common.select}
           onValue={(v) => setValue('region', v)}
-          onBlur={onBlur('region')}
         />
         <Select
           {...meta('subject')}
@@ -333,7 +329,6 @@ export default function ContactForm({
           options={subjectOptions}
           placeholder={common.select}
           onValue={(v) => setValue('subject', v)}
-          onBlur={onBlur('subject')}
         />
       </div>
       <TextArea
@@ -341,7 +336,6 @@ export default function ContactForm({
         value={str('message')}
         maxLength={4000}
         onValue={(v) => setValue('message', v)}
-        onBlur={onBlur('message')}
       />
 
       <Honeypot value={hp} onValue={setHp} />

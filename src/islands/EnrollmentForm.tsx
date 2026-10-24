@@ -120,12 +120,14 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
     setEnhanced(true);
     const params = new URLSearchParams(location.search);
     if (params.get('error')) {
-      // The no-JS post failed and was redirected back here.
+      // The no-JS post failed and was redirected back here. This panel replaces the static notice.
+      document.getElementById('form-error')?.remove();
       setFailure({ kind: 'generic' });
       requestFocus('failure');
       params.delete('error');
       const q = params.toString();
-      history.replaceState(null, '', location.pathname + (q ? `?${q}` : '') + location.hash);
+      // Drop ?error=1 and #form-error so a reload shows a clean form.
+      history.replaceState(null, '', location.pathname + (q ? `?${q}` : ''));
     }
   }, []);
 
@@ -171,10 +173,8 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
     setValues(next);
     if (attempted && errors[name]) revalidate(name, next);
   };
-  // Errors are added on submit only and cleared while typing (setValue). Validating on blur would insert
-  // error text between mousedown and mouseup and make the button jump away from the click.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onBlur = (_name: string) => undefined;
+  // Errors are added on submit only and cleared while typing (setValue); there is deliberately no
+  // validate-on-blur, because inserting error text between mousedown and mouseup makes a button jump away.
 
   const goTo = (n: ApplicationStep) => {
     setStep(n);
@@ -293,7 +293,6 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
       maxLength={extra.maxLength}
       value={str(name)}
       onValue={(v) => setValue(name, v)}
-      onBlur={onBlur(name)}
     />
   );
   const area = (name: string) => (
@@ -303,7 +302,6 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
       maxLength={2000}
       value={str(name)}
       onValue={(v) => setValue(name, v)}
-      onBlur={onBlur(name)}
     />
   );
 
@@ -357,7 +355,6 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
           options={regions}
           placeholder={common.select}
           onValue={(v) => setValue('region', v)}
-          onBlur={onBlur('region')}
         />
       </div>
       <RadioGroup
@@ -387,7 +384,6 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
           options={years.map((y) => ({ value: y, label: y }))}
           placeholder={common.select}
           onValue={(v) => setValue('intended_school_year', v)}
-          onBlur={onBlur('intended_school_year')}
         />
       ) : (
         textField('intended_school_year', { maxLength: 20 })
@@ -398,7 +394,6 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
         options={arrangementOptions}
         placeholder={common.select}
         onValue={(v) => setValue('current_arrangement', v)}
-        onBlur={onBlur('current_arrangement')}
       />
     </section>
   );

@@ -1,8 +1,6 @@
 // Pure helpers for tools/build-headers.mjs (unit tested in tests/unit/build-headers.test.ts).
-import { createHash } from 'node:crypto';
 import { tokenize } from './html.mjs';
 
-export const MAX_SCRIPT_HASHES = 6;
 export const MAX_RULES = 100;
 export const MAX_LINE = 2000;
 
@@ -22,12 +20,12 @@ const EMBEDS = new Set(['iframe', 'object', 'embed', 'frame', 'frameset']);
  * Scan one HTML document.
  * @param {string} html
  * @param {{ allowInlineStyle?: boolean, cms?: boolean, rootRedirect?: boolean }} [opts]
- *   cms: the /cms/ page (own CSP: inline style allowed, inline scripts not hashed but rejected).
+ *   cms: the /cms/ page (own CSP: inline style allowed).
+ * Every executable inline script is a violation (ADR-0001 A4.4); JSON-LD and other data blocks are exempt.
  *   rootRedirect: dist/index.html, the only page allowed a relative meta refresh.
- * @returns {{ hashes: string[], violations: string[] }}
+ * @returns {{ violations: string[] }}
  */
 export function scanHtml(html, opts = {}) {
-  const hashes = [];
   const violations = [];
   const allowStyle = opts.allowInlineStyle || opts.cms;
   const { tags, errors } = tokenize(html);
@@ -40,9 +38,11 @@ export function scanHtml(html, opts = {}) {
       if (ref !== undefined) {
         if (EXTERNAL.test(ref)) violations.push(`external script: ${ref}`);
       } else if (!(t.get('type') && DATA_TYPES.test(t.get('type').trim()))) {
-        if (opts.cms) violations.push('inline script on a /cms/ page (script-src is self only)');
-        else if (t.body !== undefined)
-          hashes.push('sha256-' + createHash('sha256').update(t.body, 'utf8').digest('base64'));
+        violations.push(
+          opts.cms
+            ? 'inline script on a /cms/ page (script-src is self only)'
+            : 'inline script (script-src is self only; mount islands from an external module, ADR-0001 A4.1)',
+        );
       }
     }
     if (name === 'style' && !allowStyle) violations.push('inline <style> element');
@@ -83,21 +83,16 @@ export function scanHtml(html, opts = {}) {
     for (const k of ['action', 'formaction'])
       if (EXTERNAL.test(t.get(k) ?? '')) violations.push(`external ${k} on <${name}>: ${t.get(k)}`);
   }
-  return { hashes, violations };
+  return { violations };
 }
 
 /**
  * Render the template.
  * @param {string} template
- * @param {{ hashes: string[], noindex: boolean }} o
+ * @param {{ noindex: boolean }} o
  */
-export function renderHeaders(template, { hashes, noindex }) {
-  const uniq = [...new Set(hashes)].sort();
-  if (uniq.length > MAX_SCRIPT_HASHES)
-    throw new Error(`${uniq.length} distinct inline-script hashes (max ${MAX_SCRIPT_HASHES})`);
-  const hashText = uniq.map((h) => ` '${h}'`).join('');
-  let out = template.replaceAll('{{INLINE_SCRIPT_HASHES}}', hashText);
-  out = out
+export function renderHeaders(template, { noindex }) {
+  const out = template
     .split('\n')
     .flatMap((line) => {
       if (line.trim() === '{{ROBOTS_ALL}}')
@@ -108,6 +103,8 @@ export function renderHeaders(template, { hashes, noindex }) {
   const left = out.match(/\{\{[A-Z_]+\}\}/);
   if (left) throw new Error(`unresolved placeholder ${left[0]}`);
   validateHeadersFile(out);
+  const bad = adminCspProblems(parseHeadersFile(out));
+  if (bad.length) throw new Error(bad.join('; '));
   return out;
 }
 
@@ -139,4 +136,39 @@ export function parseHeadersFile(text) {
     }
   }
   return blocks;
+}
+
+const TT_FOR = "require-trusted-types-for 'script'";
+
+/**
+ * ADR-0001 A4.3: /admin/* sends exactly one CSP (the inherited one is detached), equal to the /* policy plus
+ * require-trusted-types-for 'script', with no trusted-types allow-list; no other path sends that directive.
+ * @param {{ path: string, headers: { name: string, value: string, detach: boolean }[] }[]} blocks
+ * @returns {string[]} problems
+ */
+export function adminCspProblems(blocks) {
+  const problems = [];
+  const csps = (b) =>
+    b?.headers.filter((h) => h.name.toLowerCase() === 'content-security-policy') ?? [];
+  const pub = csps(blocks.find((b) => b.path === '/*')).find((h) => !h.detach)?.value ?? '';
+  const admin = blocks.find((b) => b.path === '/admin/*');
+  if (!admin) return ['_headers has no /admin/* block'];
+  const list = csps(admin);
+  if (!list[0]?.detach)
+    problems.push('/admin/* must detach the inherited Content-Security-Policy first');
+  const own = list.filter((h) => !h.detach);
+  if (own.length !== 1) problems.push(`/admin/* must set exactly one CSP (found ${own.length})`);
+  else {
+    if (!own[0].value.includes(TT_FOR)) problems.push(`/admin/* CSP lacks ${TT_FOR}`);
+    if (own[0].value !== `${pub}; ${TT_FOR}`)
+      problems.push("/admin/* CSP must be the /* policy plus require-trusted-types-for 'script'");
+    if (/(^|;)\s*trusted-types\b/.test(own[0].value))
+      problems.push(
+        '/admin/* CSP must not carry a trusted-types allow-list (no policy is created)',
+      );
+  }
+  for (const b of blocks)
+    if (b.path !== '/admin/*' && csps(b).some((h) => h.value.includes('require-trusted-types-for')))
+      problems.push(`${b.path} must not send require-trusted-types-for (admin only)`);
+  return problems;
 }

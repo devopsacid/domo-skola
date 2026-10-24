@@ -5,7 +5,26 @@
  */
 import type { AdminRole, RecordListItem, RecordQuery, RecordType } from './types';
 import { APPLICATION_STATUSES, INQUIRY_STATUSES } from '../../shared/enums';
-import { isRecordId, type ApiFailure } from './api';
+import { isRecordId, type ApiFailure, type ApiResult } from './api';
+
+// ---- session check ------------------------------------------------------------
+
+/**
+ * Loads /me. An expired Access session can end in a cross-origin redirect that `fetch` reports as a
+ * network error (ADR-0001 A4.6). One failure may be a blip, so it is retried once; two in a row are
+ * treated as "signed out" so the sign-in-again screen appears.
+ */
+export async function resolveMe<T>(
+  fetchMe: () => Promise<ApiResult<T>>,
+  wait: () => Promise<void> = () => new Promise((r) => setTimeout(r, 1000)),
+): Promise<ApiResult<T>> {
+  const first = await fetchMe();
+  if (first.ok || first.kind !== 'network') return first;
+  await wait();
+  const second = await fetchMe();
+  if (!second.ok && second.kind === 'network') return { ok: false, kind: 'unauthorized', status: 0 };
+  return second;
+}
 
 // ---- roles -------------------------------------------------------------------
 

@@ -163,6 +163,8 @@ export function createApi(fetchImpl: FetchLike = (i, init) => fetch(i, init)) {
         return { ok: false, kind: 'network', status: 0 };
       }
       if (!res.ok) return failure(res);
+      // A followed Access redirect ends in an HTML login page with status 200: never save it as the CSV.
+      if (res.redirected) return { ok: false, kind: 'unauthorized', status: 401 };
       const blob = await res.blob();
       return {
         ok: true,

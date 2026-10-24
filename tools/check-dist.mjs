@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { tokenize } from './lib/html.mjs';
 import { detectProduction } from './lib/preflight.mjs';
 import { fail, urlOf, walk } from './lib/fs.mjs';
-import { parseHeadersFile, scanHtml } from './lib/headers.mjs';
+import { adminCspProblems, parseHeadersFile, scanHtml } from './lib/headers.mjs';
 import { isNoindex } from './lib/noindex.mjs';
 
 const dist = resolve(process.argv[2] ?? 'dist');
@@ -54,8 +54,11 @@ if (!problems.length) {
     if (val(block(p), 'X-Robots-Tag') !== 'noindex, nofollow')
       problems.push(`${p} must always be noindex`);
 
-  // Independent recomputation of inline-script hashes from the built HTML.
-  const expected = new Set();
+  problems.push(...adminCspProblems(blocks));
+  if (/'sha256-|'nonce-/.test(csp))
+    problems.push('/* CSP carries a script hash or nonce (A4.4: none allowed)');
+
+  // Independent re-scan of the built HTML: no inline script, style or other CSP-hostile markup anywhere.
   for (const f of walk(dist).filter((x) => x.endsWith('.html'))) {
     const url = urlOf(dist, f);
     const r = scanHtml(readFileSync(f, 'utf8'), {
@@ -63,13 +66,7 @@ if (!problems.length) {
       rootRedirect: url === '/',
     });
     for (const v of r.violations) problems.push(`${url}: ${v}`);
-    if (!url.startsWith('/cms/')) r.hashes.forEach((h) => expected.add(h));
   }
-  const actual = new Set([...csp.matchAll(/'(sha256-[A-Za-z0-9+/=]+)'/g)].map((m) => m[1]));
-  for (const h of expected)
-    if (!actual.has(h)) problems.push(`inline script hash missing from CSP: ${h}`);
-  for (const h of actual)
-    if (!expected.has(h)) problems.push(`CSP carries a hash with no matching inline script: ${h}`);
 }
 
 // Strict-output gate: CONTENT_STRICT=1 or a production build must ship no dev pages, placeholders or stubs.

@@ -387,12 +387,12 @@ describe('POST /api/contact', () => {
     it('303s to the form with ?error=1 on validation failure', async () => {
       const res = await contact(formPost('/api/contact', form({ email: 'bad' })));
       expect(res.status).toBe(303);
-      expect(res.headers.get('Location')).toBe('/cs/kontakt/?error=1');
+      expect(res.headers.get('Location')).toBe('/cs/kontakt/?error=1#form-error');
       expect(await inquiries()).toHaveLength(0);
     });
     it('only "on" ticks a checkbox', async () => {
       const res = await contact(formPost('/api/contact', form({ privacy_ack: 'true' })));
-      expect(res.headers.get('Location')).toBe('/cs/kontakt/?error=1');
+      expect(res.headers.get('Location')).toBe('/cs/kontakt/?error=1#form-error');
     });
     it('treats a repeated key as bad request', async () => {
       const res = await contact(
@@ -403,7 +403,7 @@ describe('POST /api/contact', () => {
         ]),
       );
       expect(res.status).toBe(303);
-      expect(res.headers.get('Location')).toBe('/sk/kontakt/?error=1');
+      expect(res.headers.get('Location')).toBe('/sk/kontakt/?error=1#form-error');
     });
     it('ignores a posted elapsedMs', async () => {
       await contact(formPost('/api/contact', form({ elapsedMs: '1' })));
@@ -606,6 +606,6 @@ describe('POST /api/applications', () => {
     expect(ok.headers.get('Location')).toBe('/en/apply/submitted/');
     expect((await applications())[0]).toMatchObject({ intended_grade: 2, suspected_spam: 0 });
     const bad = await apply(formPost('/api/applications', { ...params, privacy_ack: '' }));
-    expect(bad.headers.get('Location')).toBe('/en/apply/?error=1');
+    expect(bad.headers.get('Location')).toBe('/en/apply/?error=1#form-error');
   });
 });

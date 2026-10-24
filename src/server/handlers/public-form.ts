@@ -115,7 +115,7 @@ async function run(
     headers: Record<string, string> = {},
   ) =>
     mode === 'form' && error !== 'origin'
-      ? redirect(`${localePath(meta.formPage, pageLocale)}?error=1`)
+      ? redirect(`${localePath(meta.formPage, pageLocale)}?error=1#form-error`)
       : publicError(error, extra, headers);
   const success = () =>
     mode === 'form'
