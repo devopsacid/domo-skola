@@ -1,11 +1,10 @@
 ---
 /**
- * /admin/: a static shell for the AdminApp island (client-only; nothing is rendered on the server).
+ * /admin/: a static shell for the AdminApp island (client-only; the module in src/islands/admin/mount.ts renders into the empty element, ADR-0001 A4.1).
  * Behind Cloudflare Access; the headers for /admin/* (no-store, no-referrer, noindex) come from
  * config/headers.template. The page is always noindex, independent of PUBLIC_NOINDEX.
  */
 import '../../styles/index.css';
-import AdminApp from '../../islands/admin/AdminApp';
 import en from '../../i18n/ui/en/admin.json';
 import sk from '../../i18n/ui/sk/admin.json';
 ---
@@ -22,9 +21,13 @@ import sk from '../../i18n/ui/sk/admin.json';
     <meta name="color-scheme" content="light" />
   </head>
   <body>
-    <AdminApp client:only="preact" />
+    <div data-island="admin"></div>
     <noscript>
       <p class="admin-noscript">{sk['app.noscript']} {en['app.noscript']}</p>
     </noscript>
   </body>
 </html>
+
+<script>
+  import '../../islands/admin/mount';
+</script>
