@@ -51,14 +51,15 @@ const good: [string, string, string][] = [
 
 describe('ESLint import boundaries (negative)', () => {
   for (const [name, path, code] of bad)
+    // The first lintText loads the whole flat config; on a busy machine that alone can pass 5 s.
     it(`rejects: ${name}`, async () => {
       expect(await violations(path, code)).toBeGreaterThan(0);
-    });
+    }, 30_000);
 });
 
 describe('ESLint import boundaries (positive)', () => {
   for (const [name, path, code] of good)
     it(`allows: ${name}`, async () => {
       expect(await violations(path, code)).toBe(0);
-    });
+    }, 30_000);
 });
