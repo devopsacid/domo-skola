@@ -107,4 +107,33 @@ describe('dev-access-proxy', () => {
       }),
     ).rejects.toThrow(/local/i);
   });
+  it('rejects a foreign Host header on the proxy and on the certs server', async () => {
+    const up = await upstream();
+    const p = await startDevAccessProxy({ ...opts, target: `http://127.0.0.1:${up.port}`, port: 0, certsPort: 0, defaultEmail: 'a@b.test' });
+    closers.push(p.close);
+    const get = (url: string, host: string) =>
+      new Promise<number>((resolve, reject) => {
+        const u = new URL(url);
+        const r = http.request({ host: '127.0.0.1', port: Number(u.port), path: u.pathname, headers: { host } }, (res) => {
+          res.resume();
+          resolve(res.statusCode ?? 0);
+        });
+        r.on('error', reject);
+        r.end();
+      });
+    const pp = new URL(p.url).port;
+    const cp = new URL(p.certsUrl).port;
+    expect(await get(p.url + '/x', `evil.example:${pp}`)).toBe(403);
+    expect(await get(p.url + '/x', `localhost:${pp}`)).toBe(200);
+    expect(await get(p.certsUrl, `evil.example:${cp}`)).toBe(403);
+    expect(await get(p.certsUrl, `127.0.0.1:${cp}`)).toBe(200);
+    expect(up.seen).toHaveLength(1); // the rejected request never reached the upstream
+  });
+  it('refuses a non-loopback bind host', async () => {
+    for (const host of ['0.0.0.0', '::', '10.0.0.4']) {
+      await expect(
+        startDevAccessProxy({ ...opts, target: 'http://127.0.0.1:1', port: 0, certsPort: 0, host, defaultEmail: 'a@b.test' }),
+      ).rejects.toThrow(/loopback/i);
+    }
+  });
 });

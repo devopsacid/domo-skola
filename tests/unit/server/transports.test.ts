@@ -33,6 +33,7 @@ describe('brevo transport', () => {
     const headers = new Headers(calls[0]?.init.headers);
     expect(headers.get('api-key')).toBe('KEY');
     expect(headers.get('content-type')).toBe('application/json');
+    expect(calls[0]?.init.redirect).toBe('error');
     const body = JSON.parse(String(calls[0]?.init.body));
     expect(body).toMatchObject({
       sender: { email: 'noreply@skola.example', name: 'Domoškola' },

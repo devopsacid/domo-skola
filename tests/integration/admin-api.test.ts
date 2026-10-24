@@ -189,10 +189,25 @@ describe('POST /api/admin/records/search (search terms stay out of URLs)', () =>
       400,
     );
     expect(
-      (await api('admin', 'POST', '/api/admin/records/search', { type: 'inquiry', q: { $ne: 1 } }))
+      (await api('admin', 'POST', '/api/admin/records/search', { type: 'inquiry' }))
         .status,
     ).toBe(200);
-    expect(await audit()).toHaveLength(0);
+    expect(await audit()).toHaveLength(1); // only the text search is audited; the filter-only listing is not
+  });
+
+  it('audits the fact of a text search, never its text', async () => {
+    await seedApplication(f.db);
+    await api('coord', 'POST', '/api/admin/records/search', { type: 'application', q: 'petra@example.cz', status: 'new', grade: 1 });
+    const [a] = await audit();
+    expect(a).toMatchObject({ action: 'search', subject_type: 'bulk', subject_id: null, actor_email: 'coord@example.test' });
+    expect(JSON.parse(String(a?.details))).toEqual({ type: 'application', filters: { status: 'new', grade: 1, include_spam: false }, q: true });
+    expect(String(a?.details)).not.toContain('petra');
+  });
+
+  it('GET listing rejects a q parameter (search terms stay out of URLs)', async () => {
+    const res = await api('admin', 'GET', '/api/admin/records?type=inquiry&q=jana');
+    expect(res.status).toBe(400);
+    expect(await json(res)).toEqual({ ok: false, error: 'bad_request' });
   });
 });
 
@@ -485,6 +500,7 @@ describe('POST /api/admin/export (admin only, audited)', () => {
     const csv = await res.text();
     expect(csv).toContain(`"'=HYPERLINK(""http://evil"",""x"")"`);
     expect(csv).toContain("'@cmd|calc");
+    expect(csv).toContain(',+421900111222,'); // a plain phone number is not apostrophe-prefixed
     expect(csv).toContain("'-2+3");
     expect(csv).toContain('"line1\nline2, ""quoted"""');
     expect(csv.split('\r\n').filter(Boolean)).toHaveLength(1 + 2); // header + 2 (spam hidden)
@@ -523,7 +539,7 @@ describe('POST /api/admin/export (admin only, audited)', () => {
 });
 
 describe('DELETE record', () => {
-  it('hard-deletes, cascades notes and deliveries, unlinks consents and audits', async () => {
+  it('hard-deletes, cascades notes, deliveries and marketing consents, and audits', async () => {
     const r = await seedInquiry(f.db);
     await f.db
       .prepare(
@@ -548,13 +564,20 @@ describe('DELETE record', () => {
     expect(await rows(f.db, 'SELECT * FROM contact_inquiries')).toHaveLength(0);
     expect(await rows(f.db, 'SELECT * FROM notes')).toHaveLength(0);
     expect(await rows(f.db, 'SELECT * FROM email_deliveries')).toHaveLength(0);
-    expect(await rows(f.db, 'SELECT inquiry_id FROM marketing_consents')).toEqual([
-      { inquiry_id: null },
-    ]);
+    expect(await rows(f.db, 'SELECT * FROM marketing_consents')).toHaveLength(0); // erasure leaves no email behind
     const [a] = await audit();
     expect(a).toMatchObject({ action: 'delete', subject_type: 'inquiry', subject_id: r.id });
     expect(String(a?.details ?? '')).not.toMatch(/Jana|example/);
     expect((await api('admin', 'DELETE', `/api/admin/records/inquiry/${r.id}`)).status).toBe(404);
+  });
+});
+
+describe('request bodies', () => {
+  it('rejects an oversized JSON body before parsing it', async () => {
+    const r = await seedInquiry(f.db);
+    const res = await api('admin', 'POST', `/api/admin/records/inquiry/${r.id}/notes`, { body: 'x'.repeat(70_000) });
+    expect(res.status).toBe(400);
+    expect(await audit()).toHaveLength(0);
   });
 });
 

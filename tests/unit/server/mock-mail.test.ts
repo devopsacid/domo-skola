@@ -1,3 +1,4 @@
+import http from 'node:http';
 import { afterEach, describe, expect, it } from 'vitest';
 import { startMockMail } from '../../../tools/mock-mail/server.mjs';
 
@@ -74,5 +75,28 @@ describe('mock-mail', () => {
   it('binds to loopback only', async () => {
     const url = await boot();
     expect(url).toMatch(/^http:\/\/127\.0\.0\.1:\d+$/);
+  });
+  it('rejects a foreign Host header (DNS rebinding) and accepts localhost and 127.0.0.1', async () => {
+    const url = await boot();
+    const port = Number(new URL(url).port);
+    const get = (host: string) =>
+      new Promise<number>((resolve, reject) => {
+        const r = http.request({ host: '127.0.0.1', port, path: '/messages', headers: { host } }, (res) => {
+          res.resume();
+          resolve(res.statusCode ?? 0);
+        });
+        r.on('error', reject);
+        r.end();
+      });
+    expect(await get(`evil.example:${port}`)).toBe(403);
+    expect(await get(`localhost.evil.example:${port}`)).toBe(403);
+    expect(await get('localhost:1')).toBe(403);
+    expect(await get(`localhost:${port}`)).toBe(200);
+    expect(await get(`127.0.0.1:${port}`)).toBe(200);
+  });
+  it('refuses a non-loopback bind host', async () => {
+    for (const host of ['0.0.0.0', '::', '192.168.1.5', 'example.com']) {
+      await expect(startMockMail({ port: 0, host })).rejects.toThrow(/loopback/i);
+    }
   });
 });

@@ -84,22 +84,38 @@ describe('D1 rate limiter', () => {
     expect(((await res.json()) as { retry_after: number }).retry_after).toBeGreaterThan(600);
   });
 
-  it('limits the recipient address separately from the IP', async () => {
+  it('over the recipient limit: stores, skips the confirmation, still notifies the admin, answers 201', async () => {
     const env = { ...f.env, RATE_LIMIT_PER_10MIN: '100' };
+    await fetch(`${f.mail.url}/messages`, { method: 'DELETE' });
     for (let i = 0; i < 3; i++)
       expect((await send(`198.51.100.${10 + i}`, {}, env)).status).toBe(201);
     const res = await send('198.51.100.20', {}, env);
-    expect(res.status).toBe(429);
-    expect(((await res.json()) as { error: string }).error).toBe('rate_limited');
-    const other = await send(
-      '198.51.100.21',
-      { fields: { ...contactFields(), email: 'other@example.sk' } },
-      env,
+    expect(res.status).toBe(201);
+    expect(await res.json()).toEqual({ ok: true });
+    expect(await rows(f.db, 'SELECT * FROM contact_inquiries')).toHaveLength(4);
+    const del = await rows(
+      f.db,
+      "SELECT status, last_error_code FROM email_deliveries WHERE kind = 'sender_confirmation' ORDER BY created_at, id",
     );
+    expect(del.filter((d) => d.status === 'skipped')).toEqual([
+      { status: 'skipped', last_error_code: 'recipient_limit' },
+    ]);
+    const mails = ((await (await fetch(`${f.mail.url}/messages`)).json()) as { messages: { tag: string }[] }).messages;
+    expect(mails.filter((m) => m.tag === 'sender_confirmation')).toHaveLength(3);
+    expect(mails.filter((m) => m.tag === 'admin_notification')).toHaveLength(4);
+    const other = await send('198.51.100.21', { fields: { ...contactFields(), email: 'other@example.sk' } }, env);
     expect(other.status).toBe(201);
-    expect(
-      await rows(f.db, 'SELECT * FROM contact_inquiries WHERE email = ?', 'jana@example.sk'),
-    ).toHaveLength(3);
+    expect(await rows(f.db, "SELECT id FROM email_deliveries WHERE last_error_code = 'recipient_limit'")).toHaveLength(1);
+  });
+
+  it('counts only queued confirmations: suspected spam neither checks nor increments', async () => {
+    const env = { ...f.env, RATE_LIMIT_PER_10MIN: '100' };
+    for (let i = 0; i < 5; i++) await send(`198.51.100.${60 + i}`, { elapsedMs: 100 }, env);
+    expect(await rows(f.db, "SELECT * FROM rate_limits WHERE key LIKE 'rcpt:%'")).toHaveLength(0);
+    // and a limited recipient does not stop spam from being stored as spam
+    expect((await send('198.51.100.70', {}, env)).status).toBe(201);
+    const [r] = await rows<{ count: number }>(f.db, "SELECT count FROM rate_limits WHERE key LIKE 'rcpt:%'");
+    expect(r?.count).toBe(1);
   });
 
   it('stores only hashes: no raw IP or email in rate_limits', async () => {
@@ -174,5 +190,22 @@ describe('D1 rate limiter', () => {
     expect((await send('198.51.100.50', { hp: 'x' }, env)).status).toBe(429);
     const rc = await rows(f.db, "SELECT * FROM rate_limits WHERE key LIKE 'rcpt:%'");
     expect(rc).toHaveLength(0);
+  });
+
+  it('fails closed with 400 when CF-Connecting-IP is absent outside development', async () => {
+    const mk = () => {
+      const r = post('/api/contact', contactBody());
+      r.headers.delete('CF-Connecting-IP');
+      return r;
+    };
+    const run = async (environment: string) => {
+      const ctx = makeCtx();
+      return handleContact(mk(), { ...f.env, ENVIRONMENT: environment }, ctx, { ...fixedClock(), settings: testSettings() });
+    };
+    const res = await run('preview');
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ ok: false, error: 'bad_request' });
+    expect(await rows(f.db, 'SELECT * FROM contact_inquiries')).toHaveLength(0);
+    expect((await run('development')).status).toBe(201);
   });
 });

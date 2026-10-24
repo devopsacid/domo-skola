@@ -17,7 +17,7 @@ describe('parseConfig', () => {
   it('parses a valid environment with defaults', () => {
     const c = parseConfig(base);
     expect(c.allowedOrigins).toEqual(['http://localhost:8788', 'http://localhost:4321']);
-    expect(c.rateLimit).toEqual({ per10min: 5, perDay: 20, emailPerDay: 3 });
+    expect(c.rateLimit).toEqual({ per10min: 5, perDay: 20, emailPerDay: 3, eventsPerMin: 60 });
     expect(c.retention).toEqual({
       inquiryDays: 30,
       applicationDays: 60,
@@ -59,6 +59,9 @@ describe('parseConfig', () => {
     }
     expect(() => parseConfig({ ...base, RETENTION_DAYS_INQUIRY: '-1' })).toThrow(ConfigError);
     expect(() => parseConfig({ ...base, RETENTION_DAYS_INQUIRY: '1.5' })).toThrow(ConfigError);
+    for (const k of ['RETENTION_DAYS_INQUIRY', 'RETENTION_DAYS_APPLICATION', 'RETENTION_DAYS_AFTER_CLOSE', 'AUDIT_RETENTION_DAYS']) {
+      expect(() => parseConfig({ ...base, [k]: '0' }), k).toThrow(ConfigError);
+    }
     expect(() => parseConfig({ ...base, EMAIL_PROVIDER: 'carrier-pigeon' })).toThrow(ConfigError);
   });
   it('refuses ACCESS_CERTS_URL in production and mock mail in production', () => {

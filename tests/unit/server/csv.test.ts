@@ -48,3 +48,16 @@ describe('toCsv', () => {
     expect(toCsv(['=a'], [])).toBe("'=a\r\n");
   });
 });
+
+describe('phone numbers', () => {
+  it('are not apostrophe-prefixed when the whole value looks like a phone number', () => {
+    for (const p of ['+421 900 123 456', '+420601234567', '0900/123.456', '(02) 5555 1234']) {
+      expect(escapeCsvCell(p)).toBe(p);
+    }
+  });
+  it('keep the escape for everything else that starts with a formula character', () => {
+    for (const v of ['+1', '+421 900 1', '-2+3', '=1234567', '+421900123456=1', '@1234567', '+4219001234567890123456789012345678']) {
+      expect(escapeCsvCell(v).startsWith("'") || escapeCsvCell(v).startsWith('"\'')).toBe(true);
+    }
+  });
+});

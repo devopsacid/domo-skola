@@ -142,7 +142,7 @@ describe('Pages Functions wiring', () => {
     expect(bad.status).toBe(403);
     expect((await fetch(`${base}/api/contact`)).status).toBe(405);
     expect((await fetch(`${base}/api/applications`)).status).toBe(405);
-    expect((await fetch(`${base}/api/application`)).status).toBe(405);
+    expect((await fetch(`${base}/api/application`)).status).toBe(404); // no alias (ADR A1)
   });
 
   it('verifies a real Access-style JWT in workerd against the certs endpoint', async () => {
