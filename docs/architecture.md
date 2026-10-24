@@ -88,7 +88,7 @@ Error responses use `{ok:false, error, fields?}`:
 | 403 | `origin` |
 | 409 | `closed` (enrollment only) |
 | 422 | `validation` (with `fields: {path: code}`) |
-| 429 | `rate_limited` (with `Retry-After`) |
+| 429 | `rate_limited` (with `Retry-After`; per-IP limiter only, never the recipient limit, see §4.6 item 8) |
 | 500 | `server` |
 
 Log lines carry `request_id`, route, outcome and duration only.
@@ -96,24 +96,27 @@ Log lines carry `request_id`, route, outcome and duration only.
 ### 4.2 Enrollment form (`/api/applications`)
 Same pipeline, with these differences:
 - **Island:** a 4-step stepper with a progress indicator (`<ol>` with `aria-current="step"`). Each step validates its own sub-schema before advancing. The step-4 review links back to each step. A draft is kept in `sessionStorage` (cleared on success, never in `localStorage`). Without JS, all fieldsets render as one long form.
-- **Server:** `intended_school_year` must be in `settings.schoolYear.applicationYears`, and `settings.enrollment.availability` must not be `closed`, which returns 409. Both values come from the build-time settings JSON bundled into the Function. `privacy_ack` must be `true`. `marketing_consent` is optional and accepted only when `MARKETING_CONSENT_ENABLED=true`.
+- **Server:** `intended_school_year` must be in `settings.schoolYear.applicationYears`, and `settings.enrollment.availability` must not be `closed`, which returns 409. Both values come from the build-time settings JSON bundled into the Function. Only a `verified` value gates: an unset, empty or unverified `applicationYears` applies no restriction, and only a verified `closed` returns 409 (`open`, `waitlist`, unset and unverified all accept). The island derives its year options with the same `verifiedValue()` rule, so client and server never disagree (§4.6 item 9). `privacy_ack` must be `true`. `marketing_consent` is optional and accepted only when `MARKETING_CONSENT_ENABLED=true`.
 - **Success:** the island navigates to `/<locale>/<enrol-submitted>/`, which shows the brief §7 text and its CS and EN equivalents. The event `enroll_submit` fires.
 - **Email:** the confirmation goes out in `preferred_language` and contains no child data. The admin notification includes the grade but not the child's name.
 
 ### 4.3 Admin (`/api/admin/*`)
+The contract is `src/shared/admin-api.ts` (added by L5b, additive to the frozen form contract in §4.5). L7 builds on it; changes after L7 starts need a coordinated PR, as in plan §5 risk 4.
+
 1. **Access edge:** a valid session is required. Otherwise the user is redirected to the IdP login.
-2. **`functions/api/admin/_middleware.ts`:**
-   - verifies the `Cf-Access-Jwt-Assertion` JWT (ADR-0001 D8)
-   - loads `admin_users` by email; unknown or disabled gets 403
-   - attaches `{email, role}`
-   - enforces the CSRF rules (D7)
-3. **Handlers:** check the permission matrix (§6), run parameterized queries and write `audit_log` in the same `db.batch`.
+2. **`functions/api/admin/_middleware.ts`** (body: `authenticateAdmin` in `src/server/admin/router.ts`), in this order:
+   - verifies the `Cf-Access-Jwt-Assertion` JWT (ADR-0001 D8); missing or invalid gets 401
+   - enforces the CSRF rules (D7); failure gets 403 `origin`
+   - loads `admin_users` by email; unknown or disabled gets 403 `forbidden`
+   - attaches `{email, role}` to `context.data`
+3. **Dispatch:** `functions/api/admin/[[path]].ts` calls `routeAdmin`, which owns the route table and checks the permission matrix (§6) before any handler runs. It fails closed without an identity. Handlers run parameterized queries and write `audit_log` in the same `db.batch`.
 4. **Responses:** `Cache-Control: no-store`, `X-Robots-Tag: noindex`.
 
 | Endpoint | Purpose |
 |---|---|
 | `GET /api/admin/me` | Current user and role |
-| `GET /api/admin/records?type=inquiry\|application&status=&region=&grade=&q=&cursor=` | List, keyset-paginated. Search is `LIKE` on name and email, escaped |
+| `GET /api/admin/records?type=inquiry\|application&status=&region=&grade=&include_spam=&cursor=&limit=` | List, keyset-paginated. No `q`: a `q` parameter is rejected with 400 (§6: no PII in query strings) |
+| `POST /api/admin/records/search` | Same filters plus `q` in a JSON body. Search is `LIKE` on name and email, escaped |
 | `GET /api/admin/records/:type/:id` | Detail view (audited as `view`) |
 | `PATCH /api/admin/records/:type/:id/status` | Change status |
 | `POST /api/admin/records/:type/:id/notes` | Add a note |
@@ -123,6 +126,19 @@ Same pipeline, with these differences:
 | `POST /api/admin/retention/purge` | Delete those records |
 | `DELETE /api/admin/records/:type/:id` | Delete one record |
 | `GET /api/admin/audit?cursor=` | Audit log |
+
+Admin errors use `{ok:false, error, fields?}` (`ADMIN_ERROR_STATUS` in `src/shared/admin-api.ts`):
+
+| Status | `error` | Meaning |
+|---|---|---|
+| 400 | `bad_request` | malformed body, filter or cursor |
+| 401 | `unauthorized` | missing or invalid Access JWT |
+| 403 | `origin` | CSRF check failed (D7) |
+| 403 | `forbidden` | email not in `admin_users`, disabled, or role lacks the permission |
+| 404 | `not_found` | unknown route or record |
+| 409 | `conflict` | per endpoint: resend of a delivery that is not `failed`; export over the row cap |
+| 422 | `validation` | with `fields` (status value, note body) |
+| 500 | `server` | config, DB or unexpected error |
 
 ### 4.4 CMS
 1. The editor opens `/cms/` and passes Access.
@@ -144,6 +160,27 @@ The contract is `src/shared/schemas/{common,contact,application}.ts`, `src/share
 - **No-JS decoding:** a server-only decoder (`src/server/forms/urlencoded.ts`) turns `URLSearchParams` into the JSON shape: checkbox fields listed in the shared `CHECKBOX_FIELDS` become `true` only for the value `on`, and are absent otherwise; a repeated key is `bad_request`; `elapsedMs` is absent. All other coercion (grade string to number, blank to `undefined`) stays in the schemas, which keep rejecting `"on"` on the JSON path.
 - **D1 triggers:** `audit_log_no_update` (`BEFORE UPDATE … RAISE(ABORT)`) applies with `wrangler d1 migrations apply --local` (wrangler 4.152.0: 25 statements, the update fails with `SQLITE_CONSTRAINT_TRIGGER`). L5b's D1 integration tests re-assert it, and L11 confirms it on the preview database.
 
+### 4.6 Backend decisions (L5b sign-off, 2026-10-24)
+
+Decisions on the deviations flagged by lane L5b (`lane/l5b-backend` at 4b3873a). ADR-0001 amendments are cited as A1–A3 (ADR-0001 "Amendments"). Items marked **owner** keep the implemented behaviour until the owner answers (plan §6).
+
+| # | Topic | Decision | Reason |
+|---|---|---|---|
+| 1 | Integration tests | Accepted: `getPlatformProxy` (real workerd D1), migrations applied by `wrangler d1 migrations apply --local`, plus a `wrangler pages dev` end-to-end test (ADR-0001 A1) | Every `@cloudflare/vitest-pool-workers` release up to 0.23.0 peers on `vitest ^4.1.0`; the repo is on Vitest 5 |
+| 2 | `/api/application` alias | Dropped; `/api/applications` is the only path | Not in the contract; a second public write endpoint is extra surface with no caller |
+| 3 | Admin routing | Accepted: one `_middleware.ts` plus a catch-all `[[path]].ts`, route table in `src/server/admin/router.ts` (§5) | One place for routes and the role check; it is the router ADR-0001 D1 anticipates for a Workers move |
+| 4 | Search | `POST /api/admin/records/search` is the only way to send `q`; `GET /api/admin/records` rejects `q` with 400 | §6 forbids PII in query strings; keeping both invites L7 to use the leaky one |
+| 5 | Names in the list | **Owner.** Until answered, list rows carry no name or email (§6) | Showing the parent's name un-audited in every list is a data-minimisation trade-off for the data controller |
+| 6 | Typecheck coverage | `pnpm typecheck` also runs `tsc -p functions/tsconfig.json`; CI inherits it through the script | `functions/**` is deployed code and currently unchecked |
+| 7 | Suspected-spam notification | Kept: no confirmation, admin notification with the `[Suspected spam]` prefix and no Reply-To | The heuristics have false positives (no-JS, missing `elapsedMs`), the notification goes only to `ADMIN_NOTIFY_TO`, and the per-IP limiter bounds the volume |
+| 8 | Recipient limit | Changed: over the limit, the submission is stored and the sender confirmation is recorded as `skipped` (`last_error_code = recipient_limit`); the admin notification is still sent. The counter counts confirmations queued, not submissions (ADR-0001 A2) | D6 limits confirmations to stop mail-bombing; rejecting a real parent's fourth form loses a lead, and a 429 tells an attacker the address is being targeted |
+| 9 | Availability and school years | Accepted with one change: only `verified` facts gate (`verifiedValue()`); unset, empty or unverified means no restriction; only a verified `closed` gives 409 (§4.2) | Gating on an unconfirmed fact would be acting on an invented value, and the island must use the same rule |
+| 10 | Consent retention | Accepted as interim: `marketing_consents.retain_until` equals the linked record's initial `retain_until`; the purge also removes consents that are withdrawn, orphaned, or linked to a record that is itself due, so a consent never outlives its record. **Owner/legal** before `MARKETING_CONSENT_ENABLED=true` | Consent has its own legal basis; its period, and whether proof of withdrawal is kept, are legal questions (plan §6 q7, q8) |
+| 11, 13, 14 | — | Not raised in the L5b hand-off; no decision | — |
+| 12 | Close and reopen | Accepted: closing sets `closed_at = now`, `retain_until = now + RETENTION_DAYS_AFTER_CLOSE`; reopening clears `closed_at` and sets `retain_until = now + RETENTION_DAYS_INQUIRY` or `RETENTION_DAYS_APPLICATION` (§7) | Reopening resumes active processing, so the active period restarts; the periods themselves stay under legal review |
+| 15 | `/api/e` client IP | Accepted default: forwards the user agent, never the client IP. **Owner/legal** if analytics is enabled | Without the IP, Plausible-style unique-visitor counts collapse; the trade-off belongs to the analytics decision (plan §6 q9) |
+| 16 | Admin error codes | Accepted: 401, 403 (`origin`, `forbidden`), 404, 409 (§4.3) | `conflict` is unambiguous per endpoint, so L7 can map it to a message without a new code |
+
 ## 5. Functions routing (`functions/`)
 
 ```
@@ -153,10 +190,11 @@ functions/
   api/applications.ts            onRequestPost → handlers/applications
   api/e.ts                       analytics proxy (only when PUBLIC_ANALYTICS_PROVIDER=plausible; otherwise 404)
   api/cms-auth/auth.ts, callback.ts
-  api/admin/_middleware.ts       Access JWT + role + CSRF
-  api/admin/me.ts, records/index.ts, records/[type]/[id].ts, records/[type]/[id]/{status,notes,resend}.ts,
-  api/admin/export.ts, retention/index.ts, retention/purge.ts, audit.ts
+  api/admin/_middleware.ts       Access JWT + CSRF + role (authenticateAdmin)
+  api/admin/[[path]].ts          catch-all → routeAdmin (src/server/admin/router.ts: route table + permission matrix)
 ```
+
+The admin API uses one catch-all instead of one file per route (§4.6 item 3). Every admin route is declared in `ROUTES` in `src/server/admin/router.ts` with its method, path pattern and permission; a new route goes there, never in a new file under `functions/api/admin/`. There is no `/api/application` alias (§4.6 item 2). `functions/tsconfig.json` is part of `pnpm typecheck` (§4.6 item 6).
 
 ## 6. Admin authorization model
 
@@ -175,8 +213,8 @@ functions/
 | View audit log | no | yes |
 
 - Managing `admin_users` is done with documented `wrangler d1 execute` SQL in v1 (ADR-0001 D8).
-- Suspected-spam records are hidden by default behind a filter toggle.
-- PII appears only in detail views and exports, never in list query strings or logs.
+- Suspected-spam records are hidden by default behind a filter toggle (`include_spam`).
+- PII appears only in detail views and exports, never in list rows, query strings or logs. A search term is PII, so it travels only in the body of `POST /api/admin/records/search` (§4.6 item 4). Whether list rows may show the parent's name is an open owner question (§4.6 item 5).
 
 ## 7. D1 data model
 
@@ -219,7 +257,8 @@ marketing_consents(                      -- separate legal basis; never a condit
   granted_at TEXT NOT NULL, source CHECK(contact|application),
   inquiry_id NULL REFERENCES contact_inquiries ON DELETE SET NULL,
   application_id NULL REFERENCES applications ON DELETE SET NULL,
-  withdrawn_at TEXT NULL, withdrawal_channel TEXT NULL)
+  withdrawn_at TEXT NULL, withdrawal_channel TEXT NULL,
+  retain_until TEXT NOT NULL)            -- interim: the linked record's initial retain_until (§4.6 item 10)
 
 email_deliveries(                        -- no recipient address, no body
   id TEXT PK, kind CHECK(sender_confirmation|admin_notification),
@@ -250,6 +289,8 @@ Indexes:
 **Retention:**
 - On insert, `retain_until = created_at + RETENTION_DAYS_INQUIRY` (or `RETENTION_DAYS_APPLICATION`).
 - When the status becomes `closed`, `closed_at = now` and `retain_until = now + RETENTION_DAYS_AFTER_CLOSE`.
+- When a `closed` record is reopened (any other status), `closed_at = NULL` and `retain_until = now + RETENTION_DAYS_INQUIRY` (or `RETENTION_DAYS_APPLICATION`). Other status changes leave `retain_until` alone.
+- `marketing_consents` rows are purged when past `retain_until`, withdrawn, orphaned by a record deletion, or linked to a record past its own `retain_until` (`src/server/db/retention.ts`; §4.6 item 10).
 - Deleting a submission is a hard delete. Notes and deliveries cascade, and consents are unlinked.
 - The audit entry keeps only the ID and action.
 - `audit_log` rows older than `AUDIT_RETENTION_DAYS` are purged by the same retention action.
@@ -286,7 +327,9 @@ manifest-src 'self'; object-src 'none'; upgrade-insecure-requests
   connect-src 'self' blob: data: https://api.github.com; media-src blob:; frame-src blob:; manifest-src blob:;
   frame-ancestors 'none'
   ```
-  Exact hosts are confirmed by a CSP-violation e2e test in Phase 7. Also `X-Robots-Tag: noindex`.
+  Exact hosts are confirmed by a CSP-violation e2e test in Phase 7. Also `X-Robots-Tag: noindex, nofollow` and `Cache-Control: no-store`.
+- **COOP for the CMS OAuth popup:** `/cms/*` (in `_headers`) and `/api/cms-auth/*` (in `src/server/security.ts`, since `_headers` does not apply to Functions, ADR-0001 F3) send `Cross-Origin-Opener-Policy: same-origin-allow-popups` instead of `same-origin`, so the GitHub OAuth popup keeps its opener and can `postMessage` the token back (§4.4). Every other path keeps `same-origin`.
+- **`/dev/*`:** always gets `X-Robots-Tag: noindex, nofollow`, independent of `PUBLIC_NOINDEX`. The gallery is built only with `DEV_PAGES`, which the preflight forbids in production.
 - **Form pages, only if Turnstile is on:** add `https://challenges.cloudflare.com` to `script-src` and `frame-src`.
 - **Caching:** `/_astro/*` and `/fonts/*` get `Cache-Control: public, max-age=31536000, immutable`.
 
