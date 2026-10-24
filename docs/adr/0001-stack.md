@@ -49,10 +49,10 @@ Facts that shape this ADR:
   - Security headers for API responses must be set in code (F3).
 
 ### D2. Islands with Preact 10.x
-- **Decision:** Preact 10.x through `@astrojs/preact` 6.x, with `@preact/signals` for form state. The islands are:
-  - `ContactForm` and `EnrollmentForm` (`client:visible`)
-  - `FaqSearch` (`client:idle`)
-  - `AdminApp` (`client:only="preact"`, on `/admin/` only)
+- **Decision:** Preact 10.x through `@astrojs/preact` 6.x, with ~~`@preact/signals`~~ plain hooks for form state. Islands are mounted without Astro `client:*` directives, by an external module (amendment A4.1, which supersedes the directives below). The islands are:
+  - `ContactForm` and `EnrollmentForm` (~~`client:visible`~~ hydrated on load)
+  - `FaqSearch` (~~`client:idle`~~; prefer a plain module, A4.1)
+  - `AdminApp` (~~`client:only="preact"`~~ rendered by a mount module, on `/admin/` only; until then `client:only` with the strip hook, A4.1)
   - the consent banner, only if GA4 is ever chosen (D12)
 
   Mobile navigation uses `<details>` or a tiny external module script, not an island. JS budgets:
@@ -201,12 +201,12 @@ Facts that shape this ADR:
 
 ### D13. Security headers and strict CSP from `_headers`, with build-time hashes
 - **Decision:**
-  - **Generation:** `tools/build-headers.mjs` runs after `astro build`. It reads `config/headers.template`, scans `dist/**/*.html`, computes SHA-256 hashes for every executable inline `<script>` (the Astro island bootstrap) and writes `dist/_headers`.
+  - **Generation:** `tools/build-headers.mjs` runs after `astro build`. It reads `config/headers.template`, scans `dist/**/*.html`, computes SHA-256 hashes for every executable inline `<script>` and writes `dist/_headers`. Islands are mounted by external modules (A4.1), so no page should need a hash. Today's only hashes are the Astro runtime scripts on `/admin/`, until the admin moves to a mount module. After that the limit becomes 0 (A4.4).
   - **Fail conditions:** the build fails on any inline `<style>`, any `style=` attribute, any inline event-handler attribute, any external origin, or more than 6 distinct inline-script hashes. JSON-LD `type="application/ld+json"` blocks are data and are exempt.
   - **Why not Astro's `security.csp`:** it is not enabled, because a second, meta policy would intersect with the header (F4).
   - **Functions:** `functions/_middleware.ts` sets the same headers on every Function response (F3), plus `Cache-Control: no-store`.
   - **Path classes:** public, `/admin/*`, `/cms/*`, and form pages if Turnstile is on. The policies are listed in `docs/architecture.md` §8.
-  - **Trusted Types:** `require-trusted-types-for 'script'` is trialled on `/admin/*` in Phase 7 and kept only if zero violations occur.
+  - **Trusted Types:** ~~trialled on `/admin/*` in Phase 7~~ the L7 trial had zero violations, so `require-trusted-types-for 'script'` is enforced on `/admin/*` as one replaced policy (A4.3).
 - **Consequences:** the "Constraints for design" in `docs/architecture.md` follow from this decision.
 
 ### D14. Testing
@@ -218,7 +218,7 @@ Facts that shape this ADR:
   - both forms end to end at the handler level: limiter, honeypot, origin
   - Access JWT verification against a test JWKS
   - the role matrix, audit writes, retention purge and CSV export
-- **E2E:** Playwright 1.6x against the built site served by `wrangler pages dev dist`, so the real `_headers`, `_redirects` and Functions are in play, with local D1, the mock mail server and the dev Access proxy. Covers:
+- **E2E:** Playwright 1.6x (1.64.0, projects and CI status in A4.2) against the built site served by `wrangler pages dev dist`, so the real `_headers`, `_redirects` and Functions are in play, with local D1, the mock mail server and the dev Access proxy. Covers:
   - both forms in SK, CS and EN, including the no-JS fallback, validation errors and recovery
   - admin flows
   - zero CSP violations and zero requests to other origins
@@ -257,6 +257,57 @@ Facts that shape this ADR:
   - A search term travels only in the JSON body of `POST /api/admin/records/search`; `GET /api/admin/records` rejects `q`. The search is a read, so it is exempt from "mutations only" but still meets the D7 checks for `POST` (`application/json`, `Origin`, `Sec-Fetch-Site`).
   - Errors add 401 `unauthorized`, 403 `origin` and `forbidden`, 404 `not_found` and 409 `conflict` (`docs/architecture.md` §4.3).
 - **Consequences:** L7 builds only against `src/shared/admin-api.ts`. Changing it after L7 starts needs a coordinated PR (plan §5 risk 4). The remaining L5b decisions are in `docs/architecture.md` §4.6.
+
+### A4. Island mounting, e2e tooling and Trusted Types (L6 and L7 sign-off, 2026-10-24; amends D2, D13 and D14)
+
+**A4.1 Island mounting.**
+- **Context:** Astro's island runtime (`client:*` directives) emits `<style>astro-island,astro-slot,astro-static-slot{display:contents}</style>` before the first island, plus inline bootstrap `<script>`s. `style-src 'self'` forbids the style, and `tools/build-headers.mjs` rejects it. The two lanes solved this in two ways:
+  - **L6 (forms):** no Astro directive. `src/pages/_forms/ContactPage.astro` and `EnrolPage.astro` render the Preact component at build time inside `<div data-island="contact|enrol" data-props="…">`, which is a complete no-JS form. One external module per form (`src/islands/forms/mount-contact.ts`, `mount-enrol.ts`, both through `mountIsland()` in `src/islands/forms/mount.ts`) calls `hydrate()` with the same props. The result has no inline script or style and no hash. Hydration is eager on load, not on visibility. `@preact/signals` is not used; the islands use plain hooks.
+  - **L7 (admin):** `<AdminApp client:only="preact" />` in `src/pages/admin/index.astro`, so the Astro runtime is used. The `stripIslandStyle` build hook in `astro.config.mjs` removes that exact inline style literal after the build. It fails closed: if Astro changes the literal, the hook stops matching and build-headers rejects the inline style. The `display:contents` rule ships in `src/islands/admin/admin.css`. The runtime's two inline scripts are the only inline-script hashes in today's build (only `dist/admin/index.html` contains `<script>`). They are inserted into the `/*` policy, so every public page also allows them.
+- **Options:** (a) keep both patterns; (b) make the L7 pattern (Astro directives plus the strip hook) canonical; (c) make the L6 pattern (build-time render plus an external mount module) canonical and move the admin to it.
+- **Decision:** (c). **Canonical for every future island** (FAQ search, consent banner): no `client:*` directive. Render at build time inside `<div data-island="<name>" data-props="…">`, then hydrate from one external module through a shared mount helper. A client-only island such as `AdminApp` uses the same helper with `render()` into an empty `data-island` element instead of `hydrate()`. If an enhancement needs no component state, prefer a plain TypeScript module over a Preact island. FAQ search (`docs/design/system.md` §6.7) is that case: it filters static `<details>` markup, so it should stay within the 10 KB content-page budget.
+- **What must move** (follow-up for frontend-dev, which owns `src/islands/**`, and developer, which owns `astro.config.mjs`):
+  1. Move `mountIsland()` from `src/islands/forms/mount.ts` to a shared place (`src/islands/mount.ts`) and add a `render` mode.
+  2. Mount `AdminApp` with `src/islands/admin/mount.ts` from a `<script>` module tag in `src/pages/admin/index.astro`, and remove `client:only`.
+  3. Remove the `stripIslandStyle` hook and the `astro-island` rule in `admin.css`.
+  4. devops: lower the inline-script hash limit in `tools/lib/headers.mjs` from 6 to 0, so any executable inline script fails the build, and drop `{{INLINE_SCRIPT_HASHES}}`.
+
+  Until step 2 lands, the strip hook stays. If any page other than `/admin/` ever emits `astro-island`, the `display:contents` rule must first move to `src/styles/global.css` (web-designer), because `admin.css` loads only on `/admin/`.
+- **Consequences:** progressive enhancement is uniform. Every island has server-rendered HTML that works without JS, except the admin, which is JS-only by design (D8). The CSP never needs hashes. One less build hook depends on an Astro-internal string. Losing `client:visible` and `client:idle` deferral is acceptable: the module scripts are deferred, and the size budgets in D2 still apply. D2's directive list and `@preact/signals` are superseded by this amendment.
+
+**A4.2 Dependencies (pinned exact).**
+
+| Package | Version | Kind | Role |
+|---|---|---|---|
+| `preact` | 10.29.8 | dependency | island runtime (D2) |
+| `@astrojs/preact` | 6.0.6 | devDependency | renders Preact components at build time (the L6 pattern needs only that) and compiles JSX |
+| `@playwright/test` | 1.64.0 | devDependency | e2e runner (D14) |
+| `@axe-core/playwright` | 4.13.0 | devDependency | accessibility checks inside e2e (D14) |
+
+- **E2E layout:** `playwright.config.ts` defines three projects. `desktop` (1280 px) and `mobile` (Pixel 5 at 360 px, only tests tagged `@mobile`) cover the forms against `wrangler pages dev` with local D1 and `tools/mock-mail`, booted by `tests/e2e/global-setup.ts`. `admin` runs `tests/e2e/admin/` serially against `tests/e2e/admin/stack.mjs` behind the dev Access proxy, with one shared D1. `pnpm test:e2e` runs the forms projects, then the admin project with `--workers=1`. It needs `pnpm build` first and installed Playwright browsers (only Chromium is used).
+- **Open decision: does e2e join the CI gate?** Recommendation: yes, as a required job once it is green in CI, but not in the five-command local gate. A lane that touches `src/islands/**`, `src/pages/**`, `src/server/**`, `functions/**` or the headers also runs `pnpm build && pnpm test:e2e` before review. The CI job is not ready yet. `.github/workflows/ci.yml` job `e2e` switches itself on now that `playwright.config.ts` exists, but it never builds `dist/` (it neither runs `pnpm build` nor downloads the `dist` artifact from `verify`), so it will fail (devops follow-up, `docs/plan.md` §1).
+
+**A4.3 Trusted Types on `/admin/*`.**
+- **Context:** L7 ran `tests/e2e/admin/quality.spec.ts` with `require-trusted-types-for 'script'` added as a second policy on the `/admin/` document. It got zero violations across the list, detail, status change and audit views. The app creates no Trusted Types policy.
+- **Decision:** enforce `require-trusted-types-for 'script'` on `/admin/*`. Do not add a `trusted-types` directive: it only allow-lists policy names, and no policy is created. This replaces the "trial in Phase 7" in D13.
+- **Caveats:**
+  - Only Chromium was tested. Browsers without Trusted Types support ignore the directive, so it is defence in depth, not a gate.
+  - The trial header was injected by Playwright on top of what `wrangler pages dev` sends. Wrangler's `_headers` emulation is not proof of production behaviour, so verify on the preview with `curl -I`.
+  - Do not rely on how a second `Content-Security-Policy` from the `/admin/*` rule combines with the `/*` one. Use `! Content-Security-Policy` in `/admin/*`, as `/cms/*` already does, followed by the full public policy plus `; require-trusted-types-for 'script'`. That gives one policy, and the result does not depend on how Pages merges headers.
+- **Follow-up (devops; not done by this amendment):** add that block to `config/headers.template`, teach `tools/lib/headers.mjs` and `tools/check-dist.mjs` to assert that `/admin/*` sends exactly one CSP containing `require-trusted-types-for 'script'` and that no other path sends it, and replace the route override in `quality.spec.ts` with an assertion on the served header.
+
+**A4.4 Consequences for D13.** Hashes are a fallback, not the plan. After A4.1 step 4, the build fails on any executable inline script. JSON-LD stays exempt.
+
+**A4.5 No-JS failure message (known gap).**
+- **Context:** on a no-JS failure, `src/server/handlers/public-form.ts` redirects (303) to the form page with `?error=1`. The page is static and has no script, so it cannot read the query, and `docs/architecture.md` §4.1's promised "generic localized message" never appears.
+- **Options:** (a) the server redirects to `?error=1#form-error`, and the form page always renders a hidden notice `<div id="form-error" tabindex="-1">` that CSS shows with `#form-error:target`. The backend lane changes the redirect; frontend-dev and web-designer own the notice markup and CSS. (b) Amend §4.1 to say that the message appears only with JS.
+- **Decision:** (a). It is one line on the server plus a static notice. It needs no JS and no CSP change, and the fragment also scrolls the notice into view. Keep `?error=1` for logs. Field-level errors stay JS-only. Without JS, the browser's native constraint validation (`required`, `type`, `maxlength`) is the first line of defence. Until (a) ships, the gap stays open and L10 tests for it.
+
+**A4.6 Admin follow-ups (L7 review; not blocking).**
+1. In `src/islands/admin/api.ts`, the CSV export path must check `res.redirected`, as the JSON path does. Otherwise an Access login page could be saved as the CSV.
+2. 401 detection against real Cloudflare Access is unverified. An expired session can give a cross-origin 302 to the IdP, which `fetch` may surface as a network error, not as `redirected` or 401. Verify on the preview with Access, and map that network error to the sign-in-again screen if needed.
+3. The list has no sort controls because the API has no sorting (A3). Adding them needs a contract change (plan §5 risk 4).
+4. q13 is unchanged: names appear only in the detail view (`docs/architecture.md` §4.6 item 5).
 
 ## Gaps: parts of the brief this stack cannot meet as written, and the fix
 
