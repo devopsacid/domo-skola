@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: enrolment-how
+category: enrollment
+order: 11
+featuredOnHome: false
+status: needs-review
+reviewNote: "Mirrors the proposed process (home §J); availability and dates stay pending until settings.enrollment is verified."
+dependsOnFacts: [settings.enrollment]
+question: "How does applying work?"
+answer: |-
+  You fill in a short application or write to us. We get back to you, arrange an introductory conversation and invite you and your child to see the environment. Then we decide on the next steps together.
+
+  An application is an expression of interest, not a confirmation of a place. It does not commit you to anything.
+pendingNote: "We are still confirming the admission process and dates."

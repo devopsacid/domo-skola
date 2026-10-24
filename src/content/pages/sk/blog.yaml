@@ -1,0 +1,49 @@
+# Blog / knowledge centre (docs/ia.md §2.8, brief §9). Working Slovak copy: needs-review.
+# Articles live in src/content/posts; the 8 §9 concepts are draft outlines (never rendered).
+key: blog
+status: needs-review
+reviewNote: "L4 working copy: blog index, empty state and post template labels."
+seo:
+  title: Blog
+  description: Články o vzdelávaní na prvom stupni. Rešpektujúci prístup, Montessori, Hejného matematika, konštruktivistické učenie a výber vzdelávacieho prostredia.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Blog
+    title: Články o učení a vzdelávaní
+    lead: Píšeme o tom, ako sa deti učia, a o otázkach, ktoré rieši každý rodič budúceho prváka.
+  empty:
+    status: needs-review
+    title: Prvé články pripravujeme
+    text: Medzitým nájdete veľa odpovedí na stránke o našom prístupe a v častých otázkach.
+    links:
+      - to: approach
+        label: Náš prístup
+      - to: faq
+        label: Časté otázky
+      - to: day
+        label: Deň v komunite
+  taxonomy:
+    status: needs-review
+    label: Témy
+    clusters:
+      respectful: Rešpektujúci prístup
+      montessori: Montessori
+      hejny: Hejného matematika
+      constructivism: Konštruktivistické učenie
+      choosing: Výber školy
+      legal: Právne otázky
+      independence: Samostatnosť
+  post:
+    status: needs-review
+    published: Publikované
+    updated: Aktualizované
+    editorial: Redakcia
+    related: Súvisiace články
+    back: Všetky články
+  cta:
+    status: needs-review
+    title: Chcete to zažiť naživo?
+    text: Najlepšie je prísť sa pozrieť a porozprávať sa. Začať môžete krátkou prihláškou alebo správou.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie

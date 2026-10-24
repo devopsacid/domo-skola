@@ -1,0 +1,128 @@
+# Privacy notice (docs/ia.md §2.9). Czech placeholder translation, needs-review and LEGAL REVIEW.
+key: privacy
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. Czech placeholder translation of the placeholder structure; controller, legal bases, retention and processors are settings facts."
+seo:
+  title: Ochrana osobních údajů
+  description: Jak zpracováváme osobní údaje z kontaktního formuláře a z přihlášky, za jakým účelem, jak dlouho a jaká máte práva.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Právní dokumenty
+    title: Ochrana osobních údajů
+    lead: Zde vysvětlujeme, jaké osobní údaje od vás získáváme, proč je potřebujeme, jak dlouho je uchováváme a jaká máte práva.
+    draftNote: Tento text je pracovní návrh. Správce, právní základy, doby uchování a zpracovatele doplníme po právní kontrole. Do té doby je u nich uvedeno, že informaci zatím ověřujeme.
+  spravce:
+    status: needs-review
+    id: spravce
+    title: Kdo zpracovává vaše údaje
+    intro:
+      - Správce je ten, kdo rozhoduje o tom, proč a jak se vaše osobní údaje zpracovávají.
+    items:
+      - id: udaje-spravce
+        title: Správce
+        facts:
+          - label: Název
+            path: settings.dataController.name
+          - label: Adresa
+            path: settings.dataController.address
+          - label: IČO
+            path: settings.dataController.companyId
+          - label: E-mail
+            path: settings.dataController.email
+          - label: Pověřenec (pokud je jmenován)
+            path: settings.dataController.dpoContact
+  jakeUdaje:
+    status: needs-review
+    id: jake-udaje
+    title: Jaké údaje zpracováváme a proč
+    intro:
+      - Shromažďujeme jen údaje, které potřebujeme, abychom vám mohli odpovědět a domluvit další postup.
+    items:
+      - id: kontaktni-formular
+        title: Zpráva z kontaktního formuláře
+        body:
+          - Když nám napíšete, zpracováváme vaše jméno, e-mailovou adresu, telefonní číslo (pokud ho uvedete), region, téma a text zprávy. Potřebujeme je, abychom vám mohli odpovědět.
+      - id: prihlaska
+        title: Přihláška (projev zájmu)
+        body:
+          - V přihlášce zpracováváme údaje o vás (jméno, e-mail, telefon, obec, region a preferovaný jazyk) a o dítěti (jméno, ročník a školní rok, o který máte zájem, a pokud ji uvedete, současnou formu vzdělávání). Zpracováváme také odpovědi, které nám napíšete o svých očekáváních.
+          - Údaje používáme k tomu, abychom se s vámi spojili a domluvili další postup. Přihláška je projevem zájmu, ne potvrzením přijetí.
+      - id: technicke-udaje
+        title: Technické údaje
+        body:
+          - Při návštěvě stránek se zpracovávají technické údaje potřebné k jejich doručení a k ochraně formulářů před zneužitím, například IP adresa. Podrobnosti doplníme po právní kontrole.
+      - id: marketing
+        if: marketingEnabled
+        title: Novinky (jen se souhlasem)
+        body:
+          - Pokud nám k tomu dáte samostatný souhlas, můžeme vám posílat novinky. Souhlas je dobrovolný a můžete ho kdykoli odvolat.
+  pravniZaklad:
+    status: needs-review
+    id: pravni-zaklad
+    title: Na jakém právním základě
+    intro:
+      - Pro každý účel platí samostatný právní základ. Určí ho správce po právní kontrole.
+    items:
+      - id: zaklady
+        title: Právní základy podle účelu
+        facts:
+          - label: Odpověď na vaši zprávu
+            path: settings.privacy.legalBases.inquiry
+          - label: Zpracování přihlášky
+            path: settings.privacy.legalBases.application
+      - id: zaklad-marketing
+        if: marketingEnabled
+        title: Novinky
+        facts:
+          - label: Zasílání novinek
+            path: settings.privacy.legalBases.marketing
+  jakDlouho:
+    status: needs-review
+    id: jak-dlouho
+    title: Jak dlouho údaje uchováváme
+    items:
+      - id: lhuty
+        title: Doby uchování
+        body:
+          - Po uplynutí doby údaje vymažeme.
+        facts:
+          - label: Zprávy z kontaktního formuláře
+            path: settings.privacy.retentionDays.inquiry
+            unit: days
+          - label: Přihlášky
+            path: settings.privacy.retentionDays.application
+            unit: days
+          - label: Po uzavření komunikace
+            path: settings.privacy.retentionDays.afterClose
+            unit: days
+          - label: Záznamy o přístupu k údajům
+            path: settings.privacy.retentionDays.audit
+            unit: days
+  kdoMaPristup:
+    status: needs-review
+    id: kdo-ma-pristup
+    title: Kdo má k údajům přístup
+    intro:
+      - K údajům mají přístup jen pověření lidé z komunity. Technické služby, například hosting a odesílání e-mailů, nám poskytují zpracovatelé.
+    items:
+      - id: zpracovatele
+        title: Zpracovatelé
+        show: processors
+  vasePrava:
+    status: needs-review
+    id: vase-prava
+    title: Vaše práva
+    items:
+      - id: prava
+        title: Jaká práva máte
+        list:
+          - požádat o přístup ke svým údajům,
+          - požádat o jejich opravu nebo výmaz,
+          - požádat o omezení zpracování,
+          - vznést námitku proti zpracování,
+          - na přenositelnost údajů,
+          - kdykoli odvolat souhlas, pokud údaje zpracováváme na jeho základě,
+          - podat stížnost u dozorového úřadu.
+        body:
+          - Svá práva můžete uplatnit e-mailem u správce. Kontakt najdete výše.

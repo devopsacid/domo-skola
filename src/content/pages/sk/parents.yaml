@@ -1,0 +1,203 @@
+# For parents (docs/ia.md §2.4, brief §5.4). Working Slovak copy: needs-review.
+# Facts (venue, fees, operations, legal model) come from settings and show only when verified.
+key: parents
+status: needs-review
+reviewNote: "L4 draft copy (owner request 2026-10-24). The 'formal' group and the legal-status block must pass a LEGAL REVIEW against current Slovak school law before they can be verified; they must never assert which legal form applies to the community."
+seo:
+  title: Pre rodičov
+  description: Praktické informácie pre rodičov detí 1. až 4. ročníka. Ročníky, dochádzanie, spolupráca s rodinou, postup prihlásenia a ako vo všeobecnosti funguje zápis do školy a individuálne vzdelávanie.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Pre rodičov
+    title: Praktické informácie pre rodičov
+    lead: Všetko, čo potrebujete vedieť pred prvým stretnutím. Čo ešte potvrdzujeme, otvorene označujeme a doplníme, len čo to bude isté.
+  basics:
+    status: needs-review
+    id: zakladne-informacie
+    eyebrow: Základné informácie
+    title: Pre koho a odkiaľ
+    items:
+      - id: rocniky-a-vek
+        title: Ročníky a vek
+        body:
+          - Komunita je určená deťom 1. až 4. ročníka základnej školy, teda približne vo veku 6 až 10 rokov. Deti rôzneho veku sa môžu učiť spolu, každé však pracuje na svojich cieľoch.
+      - id: dostupnost
+        title: Odkiaľ k nám deti chodia
+        body:
+          - Radi privítame rodiny z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša. Sme jedna komunita, nie sieť pobočiek v každom meste. Kde sa budeme stretávať, zverejníme po potvrdení.
+          - Ak bývate ďalej, oplatí sa myslieť na dochádzanie vopred. Ak by ste radi vozili deti spolu s inou rodinou z vášho okolia, povedzte nám to pri prvom stretnutí.
+        facts:
+          - label: Miesto
+            path: settings.venue.name
+          - label: Obec
+            path: settings.venue.municipality
+          - label: Dochádzanie
+            path: settings.venue.commuteNotes
+  learning:
+    status: needs-review
+    reviewNote: "Learning structure and goals describe intended practice; formal assessment depends on the legal model (pendingNote)."
+    id: ucenie
+    eyebrow: Učenie
+    title: Ako je učenie usporiadané
+    items:
+      - id: struktura-ucenia
+        title: Štruktúra učenia
+        body:
+          - Deň sa strieda medzi samostatnou prácou s pomôckami, prácou v malých skupinách so sprievodcom, projektmi a časom vonku. Jasné ciele, pravidelný rytmus a dohodnuté pravidlá dávajú slobode pevný rámec.
+          - Sloboda u nás neznamená, že si dieťa robí, čo chce. Znamená, že si v pripravenom prostredí vyberá, ako a v akom poradí sa dostane k cieľu.
+        link:
+          to: day
+          label: Ako môže vyzerať jeden deň
+      - id: vzdelavacie-ciele
+        title: Vzdelávacie ciele
+        body:
+          - Chceme, aby deti učivu prvého stupňa rozumeli, nielen si ho zapamätali. Čítanie s porozumením, písanie, počítanie a poznávanie sveta okolo seba sú pre nás rovnako dôležité ako samostatnosť, chuť sa učiť a schopnosť spolupracovať.
+        pendingNote: Ako sa naše ciele viažu na štátny vzdelávací program a na požiadavky školy, v ktorej bude dieťa zapísané, zatiaľ potvrdzujeme.
+        dependsOnFacts: [settings.legalModel]
+      - id: sledovanie-pokroku
+        title: Ako sledujeme pokrok
+        body:
+          - Pokrok chceme sledovať priebežne, pozorovaním, zbieraním prác dieťaťa a rozhovormi s ním. S vami sa o ňom chceme rozprávať pravidelne a konkrétne, nad tým, čo dieťa naozaj urobilo.
+        pendingNote: Ako bude prebiehať formálne hodnotenie a preskúšanie, závisí od školy, v ktorej bude dieťa zapísané. Túto časť zatiaľ potvrdzujeme.
+        dependsOnFacts: [settings.legalModel]
+        link:
+          to: approach
+          hash: pokrok
+          label: Viac o sledovaní pokroku
+  family:
+    status: needs-review
+    reviewNote: "Communication form and frequency are not decided (owner). Cooperation with a registered school depends on settings.legalModel."
+    id: spolupraca
+    eyebrow: Spolupráca s rodinou
+    title: Rodičia ako partneri
+    intro:
+      - Vzdelávanie dieťaťa je spoločná vec rodiny a komunity. Chceme, aby ste vedeli, čo sa deje, a aby ste sa mohli ozvať, keď vás niečo trápi.
+    items:
+      - id: komunikacia
+        title: Komunikácia s rodičmi
+        body:
+          - Chceme byť s vami v pravidelnom kontakte, napríklad krátkymi správami o tom, na čom dieťa pracuje, a osobnými rozhovormi nad jeho prácami. Konkrétnu formu a frekvenciu ešte upresňujeme.
+          - Ak sa niečo deje doma alebo v skupine, je lepšie povedať si to skôr. Na krátky rozhovor je priestor aj pri príchode a odchode.
+      - id: zapojenie
+        title: Ako sa môžete zapojiť
+        body:
+          - Niektorí rodičia radi prídu ukázať svoju prácu, remeslo alebo záľubu, iní pomôžu pri výlete či projekte. Je to ponuka, nie povinnosť.
+          - Chceme sa stretávať aj ako rodičia, napríklad na spoločných stretnutiach, kde sa rozprávame o tom, ako sa komunite darí a čo by sme chceli zmeniť.
+      - id: spolupraca-so-skolou
+        title: Spolupráca so školou, v ktorej je dieťa zapísané
+        body:
+          - Ak bude dieťa zapísané v inej škole, chceme s ňou spolupracovať tak, aby ste mali jasno v tom, čo škola očakáva, a aby dieťa bolo dobre pripravené.
+        pendingNote: S ktorou školou a v akej forme budeme spolupracovať, zatiaľ potvrdzujeme.
+        dependsOnFacts: [settings.legalModel]
+        link:
+          to: parents
+          hash: pravny-status
+          label: Právny a organizačný status
+      - id: dochadzka
+        title: Očakávaná dochádzka
+        body:
+          - Pravidelná dochádzka pomáha dieťaťu zapojiť sa do skupiny a do spoločných projektov. Ako často a v ktoré dni sa budeme stretávať, zverejníme po potvrdení.
+        facts:
+          - label: Dochádzka
+            path: settings.operations.attendance
+  practical:
+    status: needs-review
+    reviewNote: "Meals, outdoor time and fees stay pending until their settings facts are verified; fees render only when settings.fees is verified and visible."
+    id: prakticky
+    eyebrow: Prakticky
+    title: Strava, pobyt vonku, poplatky a návšteva
+    items:
+      - id: strava-a-vonku
+        title: Strava a pobyt vonku
+        body:
+          - Čas vonku je pre nás dôležitou súčasťou učenia, nielen prestávkou. Chceme chodiť von každý deň, pokiaľ je to bezpečné, preto sa hodí oblečenie, ktoré sa môže zašpiniť.
+        facts:
+          - label: Strava
+            path: settings.operations.meals
+          - label: Čas vonku
+            path: settings.operations.outdoorTime
+      - id: poplatky
+        title: Školné a poplatky
+        facts:
+          - label: Poplatky
+            path: settings.fees
+            pending: Informácie o poplatkoch doplníme
+        link:
+          to: contact
+          label: Opýtajte sa na náklady
+      - id: navsteva
+        title: Návšteva komunity
+        body:
+          - Najlepší spôsob, ako zistiť, či je to miesto pre vaše dieťa, je prísť sa pozrieť. Termín návštevy alebo úvodného stretnutia si dohodneme individuálne. Pripravte si otázky, radi na ne odpovieme.
+        link:
+          to: contact
+          query: subject=visit
+          label: Dohodnúť si návštevu
+  admission:
+    status: needs-review
+    id: prijimanie
+    eyebrow: Prihlásenie
+    title: Orientačný postup prijímania
+    intro: Takto si predstavujeme cestu od prvého kontaktu po dohodu o ďalších krokoch. Ide nám o to, aby ste sa rozhodovali bez tlaku a s dostatkom informácií.
+    note: Postup ešte upresňujeme. Prihláška je prejavom záujmu, nie potvrdením prijatia.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie
+  formal:
+    status: needs-review
+    reviewNote: "LEGAL REVIEW REQUIRED: general description of Slovak rules (enrolment in a school in the network, individual education approved by the head of that school, periodic examination). Check against the current school act before verified. Never states which route the community uses; that is settings.legalModel."
+    id: ako-to-funguje-formalne
+    eyebrow: Formálna stránka
+    title: Ako to funguje formálne
+    intro:
+      - Prihláška do komunity a zápis do školy sú dve rôzne veci. Tu stručne a všeobecne vysvetľujeme, ako to na Slovensku zvyčajne funguje. Nejde o právne poradenstvo, podrobnosti vždy overte v škole.
+    items:
+      - id: zapis-v-skole
+        title: Dieťa je vždy zapísané v škole
+        body:
+          - Povinná školská dochádzka sa na Slovensku plní v škole, ktorá je zaradená do siete škôl. Aj keď sa dieťa učí inde, má svoju školu, v ktorej je zapísané a ktorá je zodpovedná za jeho hodnotenie.
+          - Zápis do školy robia rodičia, podľa pravidiel a termínov, ktoré určuje škola a obec.
+      - id: individualne-vzdelavanie
+        title: Individuálne vzdelávanie
+        body:
+          - Pri individuálnom vzdelávaní sa dieťa neučí v triede svojej školy, ale inde. O povolenie žiada rodič riaditeľa školy, v ktorej je dieťa zapísané. Zákon pri tom kladie podmienky, napríklad na to, kto vzdelávanie zabezpečuje.
+          - Škola potom pravidelne overuje, čo sa dieťa naučilo, zvyčajne formou preskúšania. Na jeho základe dostáva dieťa vysvedčenie.
+      - id: co-to-znamena-u-nas
+        title: Čo to znamená u nás
+        body:
+          - Prihláškou na tomto webe prejavujete záujem o komunitu. Formálne kroky voči škole, napríklad zápis alebo žiadosť, robí rodič. Chceme vám pomôcť zorientovať sa v tom, čo a kedy treba urobiť.
+        pendingNote: Ktorú z týchto ciest bude naša komunita využívať a s ktorou školou bude spolupracovať, zatiaľ potvrdzujeme. Kým to nebude isté, nič z toho nesľubujeme.
+        dependsOnFacts: [settings.legalModel]
+  legal:
+    status: needs-review
+    reviewNote: "LEGAL REVIEW REQUIRED: the three general descriptions must be checked against current Slovak school law before verified. Never state which form applies; that is settings.legalModel."
+    id: pravny-status
+    eyebrow: Právny a organizačný status
+    title: Domoškola, škola a individuálne vzdelávanie
+    intro:
+      - Domoškola nie je automaticky to isté ako registrovaná základná škola. Aby ste sa mohli rozhodnúť s istotou, vysvetľujeme rozdiel medzi tromi formami, s ktorými sa môžete stretnúť.
+      - Ktorá z nich platí pre našu komunitu, zverejníme až po potvrdení a právnej kontrole.
+    formsTitle: Tri rôzne formy
+    forms:
+      - key: registered_school
+        title: Registrovaná základná škola
+        text: Škola zaradená do siete škôl. Dieťa je v nej zapísané, plní v nej povinnú školskú dochádzku a dostáva od nej vysvedčenie.
+      - key: community_group
+        title: Komunitná vzdelávacia skupina
+        text: Skupina detí a dospelých, ktorí sa spolu pravidelne učia. Sama osebe nie je školou a nevydáva vysvedčenia. Dieťa musí byť popri nej zapísané v niektorej škole.
+      - key: individual_education
+        title: Individuálne (domáce) vzdelávanie
+        text: Dieťa sa vzdeláva mimo vyučovania v triede, so súhlasom školy, v ktorej je zapísané. Škola overuje, čo sa naučilo, spravidla formou preskúšania.
+    formsNote: Ide o všeobecný popis na lepšiu orientáciu, nie o právne poradenstvo. Podmienky určujú platné predpisy a škola, v ktorej je dieťa zapísané.
+    ourModelTitle: Ako je usporiadaná naša komunita
+    ourModelPending: Právny model upresníme. Kým nebude potvrdený, netvrdíme, že sme škola, že máme akreditáciu, ani že účasť v komunite sama osebe plní povinnú školskú dochádzku.
+    partnersTitle: Spolupracujúce školy
+    responsibilitiesTitle: Čo je na rodičoch
+    responsibilitiesPending: Aké povinnosti budú mať rodičia, napríklad voči škole, v ktorej je dieťa zapísané, zverejníme spolu s právnym modelom.
+    contactLink: Opýtajte sa nás na podrobnosti
+  cta:
+    status: needs-review
+    title: Máte ďalšie otázky?
+    text: Radi sa s vami porozprávame osobne. Na stretnutí sa dozviete viac, ako sa dá napísať na webe.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie

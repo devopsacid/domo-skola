@@ -1,12 +1,14 @@
-# English placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), English draft copy (needs-review).
 id: difference-traditional
 category: philosophy
 order: 1
 featuredOnHome: true
 status: needs-review
-reviewNote: "Answer describes the intended practice; \"menšia skupina\" (smaller group) wording awaits the owner (group size not confirmed). Legal part stays in pendingNote until settings.legalModel is verified."
+reviewNote: "Intended practice (owner to confirm); 'menšia skupina' has no number until a group size is decided. Legal part stays in pendingNote until settings.legalModel is verified."
 dependsOnFacts: [settings.legalModel]
 question: "How is a home-education community different from a traditional school?"
 answer: |-
-  The main difference is how children learn: in a smaller group, through discovery, with hands-on materials and in projects, each at their own pace. The learning goals for the first years of primary school still matter to us.
+  Mainly in the way children learn. They learn in a smaller group, through discovery, with hands-on materials and projects, and each child moves at their own pace. The adult is a guide who observes and helps, not someone who lectures at the front all day.
+
+  The learning goals for the first four grades still matter to us. We do not see ordinary schools as worse; we offer a different path for families it suits better.
 pendingNote: "We are still confirming how the community is organised legally and which school it works with. We will publish this on the For parents page."

@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
+id: parents-participation
+category: parents
+order: 17
+featuredOnHome: false
+status: needs-review
+reviewNote: "Participation examples are intended practice (owner to confirm); parents' formal duties depend on the legal model."
+dependsOnFacts: [settings.legalModel]
+question: "Musí se rodiče zapojovat?"
+answer: |-
+  Rodiče bereme jako partnery. Důležité jsou pro nás pravidelné rozhovory o tom, jak se dítěti daří, a otevřená komunikace, když se něco děje.
+
+  Další zapojení je nabídka, ne povinnost. Můžete například dětem ukázat svou práci nebo řemeslo, pomoct s výletem či projektem nebo přijít na společné setkání rodičů.
+pendingNote: "Co bude pro rodiče povinné, například vůči škole, ve které je dítě zapsané, zatím ověřujeme."

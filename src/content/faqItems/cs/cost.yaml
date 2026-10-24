@@ -1,7 +1,7 @@
-# Czech placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
 id: cost
 category: costs
-order: 6
+order: 18
 featuredOnHome: true
 status: needs-review
 reviewNote: "No fee information until settings.fees is verified; owner to supply the wording."

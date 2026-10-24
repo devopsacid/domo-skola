@@ -1,0 +1,30 @@
+# FAQ page (docs/ia.md §2.7). English placeholder translation (not literal), needs-review: native review in L9.
+key: faq
+status: needs-review
+reviewNote: "English placeholder translation of the FAQ page chrome."
+seo:
+  title: Questions and answers
+  description: Answers to parents' questions about our home-education community, compulsory school attendance, applying, the daily routine, costs and travel from the Banská Bystrica, Ružomberok and Liptovský Mikuláš areas.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Questions
+    title: Questions and answers
+    lead: What parents ask us most often. If we are still confirming something, we will tell you openly.
+  search:
+    status: needs-review
+    label: Search the questions
+    hint: Type a word, for example "attendance" or "maths".
+    results: "Questions found: {n}"
+    noneTitle: We could not find that question
+    noneText: Try another word or ask us directly. We are also happy to answer in person.
+    ctaContact: Send us a message
+    ctaMeet: Arrange a meeting
+    categoriesLabel: Question topics
+    pendingLink: Send us a message
+  cta:
+    status: needs-review
+    title: Didn't find your answer?
+    text: Send us a message or arrange a meeting. We will answer everything we already know and tell you what we are still confirming.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Arrange a meeting

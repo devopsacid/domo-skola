@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: transfer-back
+category: legal
+order: 10
+featuredOnHome: false
+status: needs-review
+reviewNote: "LEGAL: no statement about transfer rules until the legal model is verified; the answer only describes support we intend to offer (owner to confirm)."
+dependsOnFacts: [settings.legalModel]
+question: "Can my child move back to a conventional school?"
+answer: |-
+  Yes, we expect that some children will move to another school. We will help you prepare, for example with an overview of what your child has worked on, what goes well and what still needs work.
+
+  Because we follow the goals of the first four grades, we want the move to be as smooth as possible for the child.
+pendingNote: "How a transfer would work in our case depends on the school where the child is enrolled. We are still confirming this."

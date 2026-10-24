@@ -1,0 +1,104 @@
+# A day in our community (docs/ia.md §2.3). English placeholder translation (not literal), needs-review: native review in L9.
+key: day
+status: needs-review
+reviewNote: "English draft copy (owner request 2026-10-24), native review needed; everything is an illustrative example, times and practical details stay pending in settings.operations."
+seo:
+  title: A day with us
+  description: An illustrative example of a day in our community. The daily rhythm, independent and guided work, time outdoors, creative work, rest and a shared reflection.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: A day with us
+    title: What a day might look like
+    lead: The day has a calm, predictable rhythm that moves between focused work, movement, play and conversation. Children know what is coming, and within that they have room to choose what to work on. This page shows an illustrative example, not a confirmed timetable.
+  rhythm:
+    status: needs-review
+    eyebrow: Daily rhythm
+    title: From the morning circle to the shared reflection
+    intro: The order may change with the weather, a project or the mood of the group. We will add times once they are confirmed.
+  aspects:
+    status: needs-review
+    reviewNote: "Intended practice as examples (owner to confirm)."
+    eyebrow: What fills the day
+    title: What may happen during the day
+    intro: Eight things that should each have their place in the day. What they look like in detail may vary.
+    items:
+      - kind: rhythm
+        title: Daily rhythm
+        text: A familiar rhythm gives children security. They know what comes next and can concentrate on their work.
+      - kind: independent_guided
+        title: Independent and guided work
+        text: For part of the day children choose their own work. At other times they work in a small group with a guide who introduces a new topic or material.
+      - kind: outdoor
+        title: Learning outdoors
+        text: Outside you can measure, observe, count and play. Nature is a classroom for us too, not just a place for a break.
+      - kind: creative
+        title: Creative activities
+        text: Drawing, building, music or drama. Creative work often grows out of the project the children are working on.
+      - kind: rest
+        title: Time to rest
+        text: After focused work everyone needs a breather. The day should leave room for quiet, reading or free play.
+      - kind: social
+        title: Together with others
+        text: Play, shared moments, group agreements and resolving disagreements. These are learning situations too.
+      - kind: math_language
+        title: Mathematics and language
+        text: Tasks from the Hejný environments, reading, writing and storytelling. Alone, in pairs and in groups.
+      - kind: reflection
+        title: Shared reflection
+        text: At the end of the day the children look back at what went well, what surprised them and what they want to try next time.
+  people:
+    status: needs-review
+    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times)."
+    id: who-is-with-the-children
+    eyebrow: Who is with the children
+    title: A guide, small groups and the right clothes
+    intro:
+      - The day rests on adults who know the children, and on clear agreements the children understand.
+    items:
+      - id: guide-during-the-day
+        title: The guide during the day
+        body:
+          - The guide does not stand at the front all day. In the morning they welcome the children; during independent work they move from one child to the next, observe and offer the next step. For guided work they sit down with a small group and introduce a new topic.
+          - When a child gets stuck, the guide does not give the answer straight away. They ask what the child has already tried and help them find the next step themselves.
+      - id: small-groups-during-the-day
+        title: Small groups and time together
+        body:
+          - Much of the work happens in small groups or pairs that change during the day. The morning circle, time outdoors and the closing review are shared, so the whole group comes together.
+          - The rules for how we treat each other and look after the materials are made together with the children, and we come back to them when needed.
+      - id: outdoors-in-the-rain
+        title: Outdoors, even in the rain
+        body:
+          - We want to go out every day, as long as it is safe. It helps if your child has clothes that can get dirty, and a change of clothes. You will get a list of what to pack before the start.
+      - id: drop-off-and-pick-up
+        title: Drop-off and pick-up
+        body:
+          - In the morning there is time for a short handover, when you can tell the guide how your child slept or what is on their mind. At pick-up you will hear if anything important happened during the day.
+  practical:
+    status: needs-review
+    id: practical-information
+    eyebrow: Practical details
+    title: What we are still confirming
+    intro:
+      - We will publish these details once they are confirmed. If you need them sooner, send us a message.
+    items:
+      - id: hours-meals-attendance
+        title: Hours, meals and attendance
+        facts:
+          - label: Start and end of the day
+            path: settings.operations.hours
+          - label: Meals
+            path: settings.operations.meals
+          - label: Time outdoors
+            path: settings.operations.outdoorTime
+          - label: Attendance
+            path: settings.operations.attendance
+        link:
+          to: contact
+          label: Ask us a question
+  cta:
+    status: needs-review
+    title: Come and see how a day really flows
+    text: On a visit you will see the setting and the materials, and you can ask about anything that interests you.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Arrange a meeting

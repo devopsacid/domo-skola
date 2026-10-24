@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
+id: transfer-back
+category: legal
+order: 10
+featuredOnHome: false
+status: needs-review
+reviewNote: "LEGAL: no statement about transfer rules until the legal model is verified; the answer only describes support we intend to offer (owner to confirm)."
+dependsOnFacts: [settings.legalModel]
+question: "Může dítě přestoupit zpět do běžné školy?"
+answer: |-
+  S možností přestupu do jiné školy počítáme. Pomůžeme vám se na něj připravit, například přehledem toho, na čem dítě pracovalo, co mu jde a na čem je ještě potřeba pracovat.
+
+  Protože sledujeme cíle prvního stupně, chceme, aby byl přechod pro dítě co nejplynulejší.
+pendingNote: "Jak by přestup probíhal v našem případě, záleží na škole, ve které bude dítě zapsané. Tuto část zatím ověřujeme."

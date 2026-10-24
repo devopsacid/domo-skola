@@ -1,0 +1,87 @@
+# Legal information (docs/ia.md §2.9). PLACEHOLDER STRUCTURE: needs-review and LEGAL REVIEW.
+# Operator identity and contacts are settings facts; the legal model lives on the parents page.
+key: legal
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. Operator data are settings facts; the disclaimers repeat the pillar wording. Font licences are from docs/design/system.md §3.1."
+seo:
+  title: Právne informácie
+  description: Kto prevádzkuje tieto stránky, ako je komunita usporiadaná a čo znamenajú informácie a ilustrácie na stránkach.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Právne dokumenty
+    title: Právne informácie
+    lead: Kto stránky prevádzkuje a ako čítať informácie, ktoré na nich nájdete.
+    draftNote: Tento text je pracovný návrh. Údaje o prevádzkovateľovi doplníme po potvrdení a právnej kontrole.
+  prevadzkovatelStranok:
+    status: needs-review
+    id: prevadzkovatel-stranok
+    title: Prevádzkovateľ stránok
+    items:
+      - id: udaje
+        title: Údaje o prevádzkovateľovi
+        facts:
+          - label: Názov
+            path: settings.dataController.name
+          - label: Adresa
+            path: settings.dataController.address
+          - label: IČO
+            path: settings.dataController.companyId
+          - label: E-mail
+            path: settings.contact.email
+          - label: Telefón
+            path: settings.contact.phone
+  pravnaForma:
+    status: needs-review
+    id: pravna-forma
+    title: Právna forma a vzdelávanie
+    items:
+      - id: model
+        title: Právny model komunity
+        body:
+          - Ako je komunita usporiadaná po právnej stránke a ako sa plní povinná školská dochádzka, vysvetľujeme na stránke Pre rodičov.
+        link:
+          to: parents
+          hash: pravny-status
+          label: Právny a organizačný status
+      - id: akreditacia
+        title: Akreditácie a certifikácie
+        body:
+          - Náš prístup je inšpirovaný princípmi Montessori. Neznamená to akreditáciu ani certifikáciu Montessori.
+          - V matematike pracujeme s prístupom Hejného metódy. Neznamená to oficiálnu certifikáciu.
+  obsahStranok:
+    status: needs-review
+    id: obsah-stranok
+    title: Obsah stránok
+    items:
+      - id: potvrdzovanie
+        title: Čo ešte potvrdzujeme
+        body:
+          - Informácie, ktoré ešte potvrdzujeme, sú na stránkach výslovne označené. Až po potvrdení ich zobrazujeme bez označenia.
+      - id: ilustracie
+        title: Ilustrácie a fotografie
+        body:
+          - Ilustrácie na stránkach sú ilustračné. Fotografie z komunity zverejníme, len ak na to máme súhlas.
+      - id: pisma
+        title: Písma
+        body:
+          - Stránky používajú písma Fraunces a Atkinson Hyperlegible Next, obe pod licenciou SIL Open Font License 1.1.
+  suvisiaceDokumenty:
+    status: needs-review
+    id: suvisiace-dokumenty
+    title: Súvisiace dokumenty
+    items:
+      - id: ochrana-udajov
+        title: Ochrana osobných údajov
+        body:
+          - Ako spracúvame osobné údaje z formulárov.
+        link:
+          to: privacy
+          label: Ochrana osobných údajov
+      - id: cookies
+        title: Cookies
+        body:
+          - Aké cookies a úložiská stránky používajú.
+        link:
+          to: cookies
+          label: Cookies

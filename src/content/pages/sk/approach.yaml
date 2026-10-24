@@ -1,0 +1,156 @@
+# Our approach (docs/ia.md §2.2, brief §5.2). Working Slovak copy: needs-review by the content owner.
+# Sections are typed in src/components/pages/content.ts. Pillar texts come from src/content/pillars.
+key: approach
+status: needs-review
+reviewNote: "L4 draft copy (owner request 2026-10-24): philosophy and intended way of working, hedged where it is a plan. No group sizes, schedules, staff, accreditation or legal status are stated. Owner to confirm wording."
+seo:
+  title: Náš prístup
+  description: Ako sa u nás deti učia. Malé skupiny, vlastné tempo, pripravené prostredie, sprievodca namiesto výkladu pred tabuľou, čas vonku a rodičia ako partneri.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Náš prístup
+    title: Ako sa u nás deti učia
+    lead: Chceme, aby deti učivu prvého stupňa naozaj rozumeli, aby sa učili s chuťou a aby sa pri tom cítili bezpečne. Na tejto stránke opisujeme, ako sa o to snažíme, z čoho vychádzame a čo môžete očakávať ako rodičia.
+  howWeWork:
+    status: needs-review
+    reviewNote: "Intended way of working (owner to confirm). 'Malé skupiny' stays without a number until a group size is decided; outdoor time is not quantified."
+    id: ako-pracujeme
+    eyebrow: Ako pracujeme
+    title: Šesť vecí, na ktorých nám záleží
+    intro:
+      - Nie sme trieda s lavicami a tabuľou. Sme komunita rodín a dospelých, ktorí chcú deťom 1. až 4. ročníka ponúknuť pokojné a podnetné miesto na učenie.
+      - Toto sú zásady, podľa ktorých chceme pracovať každý deň. Konkrétnu podobu im dávame spolu s deťmi a rodičmi.
+    items:
+      - id: male-skupiny
+        title: Malé skupiny
+        body:
+          - Chceme pracovať v malých skupinách, v ktorých dospelý pozná každé dieťa a má naň čas. V malej skupine sa ľahšie pýta, ľahšie sa priznáva, že niečomu nerozumiem, a ľahšie sa spolupracuje.
+          - Deti rôzneho veku sa môžu stretávať pri jednej práci. Starší si upevnia, čo vedia, keď to vysvetľujú, a mladší vidia, kam môžu dorásť.
+      - id: vlastne-tempo-v-praxi
+        title: Vlastné tempo, jasné ciele
+        body:
+          - Každé dieťa sa učí čítať, písať a počítať inak rýchlo. Jedno potrebuje pri násobilke viac času, iné už číta knihy pre starších. Tempo prispôsobujeme dieťaťu, nie dieťa tempu triedy.
+          - Ciele prvého stupňa však platia pre všetkých. Sprievodca sleduje, kde dieťa je, a pomáha mu urobiť ďalší krok.
+      - id: pripravene-prostredie
+        title: Pripravené prostredie
+        body:
+          - Priestor, pomôcky a materiály pripravujeme tak, aby si dieťa vedelo samo vybrať prácu, pustiť sa do nej a dokončiť ju. Veci majú svoje miesto, sú na dosah a dajú sa chytiť do rúk.
+          - Prostredie sa mení podľa toho, čo deti práve skúmajú. Inak vyzerá, keď sa učia o vode, a inak, keď stavajú model obce.
+      - id: sprievodca
+        title: Sprievodca, nie výklad pred tabuľou
+        body:
+          - Dospelého, ktorý je s deťmi, voláme sprievodca. Väčšinu času nestojí pred skupinou a nevykladá. Pozoruje, ponúka novú prácu, kladie otázky a pomáha, keď dieťa uviazne.
+          - Novú tému často predstaví krátko, jednému dieťaťu alebo malej skupinke. Potom nechá deti skúšať a objavovať samé a je nablízku.
+      - id: cas-vonku
+        title: Čas vonku
+        body:
+          - Vonku chceme byť každý deň, aj keď nesvieti slnko, pokiaľ je to bezpečné. Príroda nie je len miestom na prestávku. Dá sa v nej merať, počítať, pozorovať, kresliť aj rozprávať.
+          - Pohyb pomáha deťom sústrediť sa. Po čase vonku sa často lepšie pracuje aj pri stole.
+      - id: rodicia-ako-partneri
+        title: Rodičia ako partneri
+        body:
+          - Rodičia dieťa poznajú najlepšie. Chceme sa s vami pravidelne rozprávať o tom, čo sa dieťaťu darí a s čím zápasí, a spoločne hľadať, čo mu pomôže.
+          - Ak máte chuť, môžete komunitu obohatiť aj vy, napríklad svojou profesiou, remeslom alebo pomocou pri projekte. Nie je to podmienka.
+        link:
+          to: parents
+          hash: spolupraca
+          label: Ako spolupracujeme s rodičmi
+  pillarLabels:
+    status: needs-review
+    whatItMeans: Čo to znamená
+    inPractice: Ako to môže vyzerať v praxi
+    examples: Príklady
+    benefits: Čo to dáva deťom
+    parentsCanExpect: Čo môžete očakávať ako rodičia
+  topics:
+    status: needs-review
+    reviewNote: "Projects, emotional development and pace describe intended practice (owner to confirm). Formal assessment stays in pendingNote until settings.legalModel is verified."
+    id: ako-sa-ucime
+    eyebrow: Učenie v súvislostiach
+    title: Projekty, emócie, tempo a pokrok
+    intro:
+      - Štyri piliere sa v bežnom dni prelínajú. Tieto témy ukazujú, kde sa stretávajú.
+    items:
+      - id: ucenie-v-projektoch
+        title: Učenie cez projekty
+        body:
+          - Projekt sa začína otázkou, ktorá deti zaujíma, napríklad odkiaľ sa berie voda v potoku alebo ako postaviť búdku pre vtáky. Okolo nej sa môžu spojiť čítanie, matematika, prírodoveda aj výtvarná práca.
+          - Deti plánujú, skúšajú, zaznamenávajú a na konci ukážu, na čo prišli, napríklad ostatným deťom alebo rodičom. Témy a dĺžka projektov sa môžu líšiť podľa veku a záujmu skupiny.
+      - id: emocionalny-vyvin
+        title: Emocionálny vývin
+        body:
+          - Dieťa sa učí lepšie, keď sa cíti bezpečne. Preto sa venujeme aj tomu, ako deti pomenúvajú svoje pocity, ako zvládajú sklamanie a ako sa dohodnú, keď sa nezhodnú.
+          - Môže to byť napríklad ranný kruh, v ktorom každý povie, ako sa má, alebo spoločné hľadanie riešenia, keď sa niečo nepodarí. Nekričíme, nezahanbujeme a nestaviame deti proti sebe.
+      - id: vlastne-tempo
+        title: Individuálne tempo
+        body:
+          - Deti v rovnakom veku nie sú vo všetkom rovnako ďaleko. Dieťa môže pri niečom zostať dlhšie a inde postupovať rýchlejšie.
+          - Vlastné tempo neznamená, že na cieľoch nezáleží. Sprievodca sleduje, kam dieťa smeruje, a ponúkne mu ďalší krok, keď je naň pripravené. Ak niečo dlhšie nejde, povieme vám to a budeme spolu hľadať príčinu.
+      - id: pokrok
+        title: Ako sledujeme a hodnotíme pokrok
+        body:
+          - Pokrok chceme sledovať priebežne. Pozorujeme dieťa pri práci, odkladáme jeho práce a rozprávame sa s ním o tom, čo sa mu darí a na čom chce pracovať. Počas dňa dostáva dieťa namiesto známok slovnú spätnú väzbu.
+          - S rodičmi sa o pokroku chceme rozprávať pravidelne a konkrétne, nad prácami dieťaťa. Formu a frekvenciu týchto rozhovorov ešte upresňujeme.
+        pendingNote: Ako bude prebiehať formálne hodnotenie, napríklad vysvedčenie alebo preskúšanie, závisí od právneho modelu a od školy, v ktorej bude dieťa zapísané. Túto časť zatiaľ potvrdzujeme.
+        dependsOnFacts: [settings.legalModel]
+        link:
+          to: parents
+          hash: pravny-status
+          label: Právny a organizačný status
+  complement:
+    status: needs-review
+    id: ako-sa-doplnaju
+    eyebrow: Ako to spolu súvisí
+    title: Ako sa štyri prístupy dopĺňajú
+    body:
+      - Každý z prístupov odpovedá na inú otázku. Spolu tvoria jeden celok, nie štyri samostatné programy.
+    items:
+      - key: montessori
+        role: Prostredie
+        text: Ako pripraviť priestor a pomôcky, aby si dieťa vedelo samo vybrať zmysluplnú prácu.
+      - key: respectful
+        role: Vzťahy
+        text: Ako spolu hovoríme, riešime spory a budujeme dôveru medzi deťmi, sprievodcami a rodičmi.
+      - key: constructivist
+        role: Porozumenie
+        text: Ako si dieťa buduje porozumenie vlastnou skúsenosťou, otázkami a skúmaním.
+      - key: hejny
+        role: Matematika
+        text: Ako vzniká porozumenie v matematike, krok za krokom v prostrediach, ktoré deti poznajú.
+    caveat: Nie každý princíp sa uplatňuje rovnako v každej situácii a pri každom dieťati. Prístupy berieme ako inšpiráciu, nie ako pevné pravidlá, a prispôsobujeme ich veku a potrebám detí.
+  notClaimed:
+    status: needs-review
+    reviewNote: "Honesty block (brief §2, §3, §5.4). Keep it until the facts it mentions are verified; then reword, never drop silently."
+    id: co-netvrdime
+    eyebrow: Otvorene
+    title: Čo netvrdíme
+    intro:
+      - Chceme, aby ste sa rozhodovali podľa pravdivých informácií. Preto otvorene píšeme aj o tom, čo nie sme a čo nesľubujeme.
+    items:
+      - id: nie-sme-skola
+        title: Netvrdíme, že sme škola
+        body:
+          - Kým nebude potvrdený náš právny model, netvrdíme, že sme škola, ani že účasť v komunite sama osebe plní povinnú školskú dochádzku. Ako to funguje formálne, vysvetľujeme na stránke Pre rodičov.
+        link:
+          to: parents
+          hash: ako-to-funguje-formalne
+          label: Ako to funguje formálne
+      - id: bez-akreditacie
+        title: Nemáme akreditáciu Montessori ani certifikát Hejného metódy
+        body:
+          - Inšpirujeme sa princípmi Montessori a Hejného matematikou. Neznamená to, že sme akreditované Montessori zariadenie, ani že máme certifikát na Hejného metódu.
+      - id: bez-slubov
+        title: Nesľubujeme výsledky
+        body:
+          - Nesľubujeme výnimočné výsledky, nadpriemerné známky ani to, že náš spôsob vyhovuje každému dieťaťu. Sľubujeme, že budeme dieťa pozorne sledovať a otvorene sa s vami rozprávať o tom, ako sa mu darí.
+      - id: nie-proti-skolam
+        title: Nie sme proti bežným školám
+        body:
+          - Mnohé deti sú v bežnej škole spokojné a učia sa v nej dobre. Ponúkame inú cestu pre rodiny, ktorým viac vyhovuje menšia skupina a učenie objavovaním.
+  cta:
+    status: needs-review
+    title: Chcete vidieť, ako to vyzerá naživo?
+    text: Najviac sa dozviete pri osobnom stretnutí. Napíšte nám alebo rovno vyplňte krátku prihlášku. Prihláška je prejavom záujmu, nie potvrdením prijatia.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie

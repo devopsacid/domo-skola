@@ -1,12 +1,14 @@
-# Czech placeholder translation (not literal), needs-review: native review in L9.
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
 id: compulsory-education
 category: legal
-order: 2
+order: 7
 featuredOnHome: true
 status: needs-review
-reviewNote: "Answer must be rewritten with the verified legal model before the pendingNote can go; no legal claim until then."
+reviewNote: "LEGAL REVIEW: general Slovak rule only (attendance is fulfilled at a school in the network). Must be rewritten with the verified legal model before the pendingNote can go."
 dependsOnFacts: [settings.legalModel]
 question: "Jak se plní povinná školní docházka?"
 answer: |-
-  Záleží to na právním modelu komunity a na škole, ve které bude dítě formálně zapsané. Rádi si o tom s vámi promluvíme osobně.
+  Na Slovensku se povinná školní docházka plní ve škole zařazené do sítě škol. I dítě, které se učí mimo třídu, má svou školu, ve které je zapsané a která ho hodnotí. Pravidla v Česku se v některých bodech liší.
+
+  Jak to bude v případě naší komunity, záleží na jejím právním modelu a na škole, se kterou budeme spolupracovat. Rádi si o tom s vámi promluvíme osobně.
 pendingNote: "Tuto informaci zatím ověřujeme. Dokud nebude potvrzená, nebudeme vám nic slibovat."

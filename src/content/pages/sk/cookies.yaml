@@ -1,0 +1,64 @@
+# Cookies (docs/ia.md §2.9). PLACEHOLDER STRUCTURE: needs-review and LEGAL REVIEW.
+# States the actual cookies: none on public pages; the Access cookie applies to admins only.
+key: cookies
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. Reflects the build: no cookies on public pages while PUBLIC_ANALYTICS_PROVIDER is unset or none. L6 to confirm the sessionStorage draft wording."
+seo:
+  title: Cookies
+  description: Aké cookies a podobné technológie používajú naše stránky. Verejné stránky žiadne cookies nenastavujú.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Právne dokumenty
+    title: Cookies
+    lead: Stručne o tom, či a aké cookies a podobné technológie naše stránky používajú.
+    draftNote: Tento text je pracovný návrh a čaká na právnu kontrolu.
+  coSuCookies:
+    status: needs-review
+    id: co-su-cookies
+    title: Čo sú cookies
+    items:
+      - id: definicia
+        title: Cookies a podobné technológie
+        body:
+          - Cookies sú malé súbory, ktoré si stránka ukladá vo vašom prehliadači. Podobne fungujú aj iné úložiská v prehliadači, napríklad sessionStorage.
+  naseStranky:
+    status: needs-review
+    id: nase-stranky
+    title: Cookies na našich stránkach
+    items:
+      - id: verejne-stranky
+        if: analyticsOff
+        title: Verejné stránky
+        body:
+          - Verejné stránky nenastavujú žiadne cookies. Nepoužívame analytické ani reklamné nástroje tretích strán, preto sa vás nepýtame na súhlas s cookies.
+      - id: meranie
+        if: analyticsOn
+        title: Meranie návštevnosti
+        body:
+          - Na meranie návštevnosti používame analytický nástroj. Podrobnosti o ňom a o súhlase doplníme po právnej kontrole.
+      - id: rozpracovana-prihlaska
+        title: Rozpracovaná prihláška
+        body:
+          - Ak začnete vypĺňať prihlášku, rozpracované údaje sa môžu dočasne uložiť v úložisku sessionStorage vášho prehliadača, aby ste o ne neprišli. Nie je to cookie, nikam sa neodosiela a vymaže sa, keď zatvoríte kartu prehliadača.
+  administracia:
+    status: needs-review
+    id: administracia
+    title: Neverejná administrácia
+    items:
+      - id: prihlasenie
+        title: Prihlásenie do administrácie
+        body:
+          - Pri prihlásení do neverejnej administrácie nastavuje služba Cloudflare Access nevyhnutnú cookie CF_Authorization. Týka sa len poverených ľudí z komunity, nie návštevníkov stránok.
+  nastavenia:
+    status: needs-review
+    id: nastavenia
+    title: Ako cookies vymazať alebo zablokovať
+    items:
+      - id: prehliadac
+        title: Nastavenia prehliadača
+        body:
+          - Cookies a úložisko stránok môžete kedykoľvek vymazať alebo zablokovať v nastaveniach svojho prehliadača.
+        link:
+          to: privacy
+          label: Ochrana osobných údajov

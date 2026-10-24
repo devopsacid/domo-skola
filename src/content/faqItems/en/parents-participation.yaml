@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: parents-participation
+category: parents
+order: 17
+featuredOnHome: false
+status: needs-review
+reviewNote: "Participation examples are intended practice (owner to confirm); parents' formal duties depend on the legal model."
+dependsOnFacts: [settings.legalModel]
+question: "Do parents have to get involved?"
+answer: |-
+  We see parents as partners. What matters most to us is regular conversations about how your child is doing, and open communication when something comes up.
+
+  Anything beyond that is an offer, not an obligation. You might show the children your work or craft, help with a trip or project, or come to a parents' meeting.
+pendingNote: "We are still confirming what will be required of parents, for example towards the school where the child is enrolled."

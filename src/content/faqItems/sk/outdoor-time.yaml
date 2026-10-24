@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Slovak draft copy (needs-review).
+id: outdoor-time
+category: daily
+order: 14
+featuredOnHome: false
+status: needs-review
+reviewNote: "Outdoor time is not confirmed; the pendingNote stays until settings.operations.outdoorTime is verified."
+dependsOnFacts: [settings.operations.outdoorTime]
+question: "Koľko času trávia deti vonku?"
+answer: |-
+  Čas vonku je pre nás súčasťou učenia, nielen prestávkou. Vonku sa dá merať, pozorovať a skúmať a deti sa pri tom aj vybehajú. Chceme chodiť von každý deň, aj keď nesvieti slnko, pokiaľ je to bezpečné.
+
+  Pomôže, keď má dieťa oblečenie, ktoré sa môže zašpiniť, a náhradné veci.
+pendingNote: "Koľko času vonku to bude v bežnom dni, zatiaľ potvrdzujeme."

@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), English draft copy (needs-review).
+id: formal-enrolment
+category: legal
+order: 8
+featuredOnHome: false
+status: needs-review
+reviewNote: "LEGAL: which school the child is enrolled in depends on the legal model; never name a school before settings.legalModel and partnerSchools are verified."
+dependsOnFacts: [settings.legalModel]
+question: "Which school is my child formally enrolled in?"
+answer: |-
+  That depends on the community's legal model and on the agreement with a school. Parents enrol their child in a school, following the school's rules and dates. We will help you find your way through what needs doing and when.
+
+  The difference between a registered school, a community learning group and individual education is explained on the For parents page.
+pendingNote: "We are still confirming which school this will be and on what terms."

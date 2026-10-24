@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
+id: formal-enrolment
+category: legal
+order: 8
+featuredOnHome: false
+status: needs-review
+reviewNote: "LEGAL: which school the child is enrolled in depends on the legal model; never name a school before settings.legalModel and partnerSchools are verified."
+dependsOnFacts: [settings.legalModel]
+question: "Ve které škole je dítě formálně zapsané?"
+answer: |-
+  Záleží to na právním modelu komunity a na dohodě se školou. Zápis do školy dělají rodiče, podle pravidel a termínů školy. Pomůžeme vám zorientovat se v tom, co a kdy je potřeba udělat.
+
+  Rozdíl mezi registrovanou školou, komunitní vzdělávací skupinou a individuálním vzděláváním vysvětlujeme na stránce Pro rodiče.
+pendingNote: "Která škola to bude a za jakých podmínek, zatím ověřujeme."

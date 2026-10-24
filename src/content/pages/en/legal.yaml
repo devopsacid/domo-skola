@@ -1,0 +1,86 @@
+# Legal information (docs/ia.md §2.9). English placeholder translation, needs-review and LEGAL REVIEW.
+key: legal
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. English placeholder translation; operator data are settings facts; disclaimers repeat the pillar wording."
+seo:
+  title: Legal information
+  description: Who runs this website, how the community is organised, and what the information and illustrations on the site mean.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Legal documents
+    title: Legal information
+    lead: Who runs this website and how to read the information you find on it.
+    draftNote: This text is a working draft. Details of the operator will be added after confirmation and legal review.
+  operator:
+    status: needs-review
+    id: operator
+    title: Website operator
+    items:
+      - id: details
+        title: Operator details
+        facts:
+          - label: Name
+            path: settings.dataController.name
+          - label: Address
+            path: settings.dataController.address
+          - label: Company ID
+            path: settings.dataController.companyId
+          - label: Email
+            path: settings.contact.email
+          - label: Phone
+            path: settings.contact.phone
+  legalForm:
+    status: needs-review
+    id: legal-form
+    title: Legal form and education
+    items:
+      - id: model
+        title: The community's legal model
+        body:
+          - How the community is organised legally, and how compulsory school attendance is fulfilled, is explained on the For parents page.
+        link:
+          to: parents
+          hash: legal-status
+          label: Legal and organisational status
+      - id: accreditation
+        title: Accreditation and certification
+        body:
+          - Our approach is inspired by Montessori principles. This does not mean Montessori accreditation or certification.
+          - In mathematics we work with the Hejný method approach. This does not mean official certification.
+  siteContent:
+    status: needs-review
+    id: site-content
+    title: Website content
+    items:
+      - id: confirming
+        title: What we are still confirming
+        body:
+          - Information we are still confirming is clearly marked on the site. Only once it is confirmed do we show it without a label.
+      - id: illustrations
+        title: Illustrations and photos
+        body:
+          - The illustrations on the site are illustrative. We will publish photos from the community only with consent.
+      - id: fonts
+        title: Fonts
+        body:
+          - The site uses the Fraunces and Atkinson Hyperlegible Next typefaces, both under the SIL Open Font License 1.1.
+  relatedDocuments:
+    status: needs-review
+    id: related-documents
+    title: Related documents
+    items:
+      - id: privacy
+        title: Privacy policy
+        body:
+          - How we process personal data from the forms.
+        link:
+          to: privacy
+          label: Privacy policy
+      - id: cookies
+        title: Cookies
+        body:
+          - Which cookies and storage the site uses.
+        link:
+          to: cookies
+          label: Cookies

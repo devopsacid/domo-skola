@@ -1,0 +1,86 @@
+# Legal information (docs/ia.md §2.9). Czech placeholder translation, needs-review and LEGAL REVIEW.
+key: legal
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. Czech placeholder translation; operator data are settings facts; disclaimers repeat the pillar wording."
+seo:
+  title: Právní informace
+  description: Kdo provozuje tyto stránky, jak je komunita uspořádaná a co znamenají informace a ilustrace na stránkách.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Právní dokumenty
+    title: Právní informace
+    lead: Kdo stránky provozuje a jak číst informace, které na nich najdete.
+    draftNote: Tento text je pracovní návrh. Údaje o provozovateli doplníme po ověření a právní kontrole.
+  provozovatelStranek:
+    status: needs-review
+    id: provozovatel-stranek
+    title: Provozovatel stránek
+    items:
+      - id: udaje
+        title: Údaje o provozovateli
+        facts:
+          - label: Název
+            path: settings.dataController.name
+          - label: Adresa
+            path: settings.dataController.address
+          - label: IČO
+            path: settings.dataController.companyId
+          - label: E-mail
+            path: settings.contact.email
+          - label: Telefon
+            path: settings.contact.phone
+  pravniForma:
+    status: needs-review
+    id: pravni-forma
+    title: Právní forma a vzdělávání
+    items:
+      - id: model
+        title: Právní model komunity
+        body:
+          - Jak je komunita uspořádaná po právní stránce a jak se plní povinná školní docházka, vysvětlujeme na stránce Pro rodiče.
+        link:
+          to: parents
+          hash: pravni-status
+          label: Právní a organizační status
+      - id: akreditace
+        title: Akreditace a certifikace
+        body:
+          - Náš přístup je inspirovaný principy Montessori. Neznamená to akreditaci ani certifikaci Montessori.
+          - V matematice pracujeme s přístupem Hejného metody. Neznamená to oficiální certifikaci.
+  obsahStranek:
+    status: needs-review
+    id: obsah-stranek
+    title: Obsah stránek
+    items:
+      - id: overovani
+        title: Co ještě ověřujeme
+        body:
+          - Informace, které ještě ověřujeme, jsou na stránkách výslovně označené. Teprve po ověření je zobrazujeme bez označení.
+      - id: ilustrace
+        title: Ilustrace a fotografie
+        body:
+          - Ilustrace na stránkách jsou ilustrativní. Fotografie z komunity zveřejníme, jen pokud k tomu máme souhlas.
+      - id: pisma
+        title: Písma
+        body:
+          - Stránky používají písma Fraunces a Atkinson Hyperlegible Next, obě pod licencí SIL Open Font License 1.1.
+  souvisejiciDokumenty:
+    status: needs-review
+    id: souvisejici-dokumenty
+    title: Související dokumenty
+    items:
+      - id: ochrana-udaju
+        title: Ochrana osobních údajů
+        body:
+          - Jak zpracováváme osobní údaje z formulářů.
+        link:
+          to: privacy
+          label: Ochrana osobních údajů
+      - id: cookies
+        title: Cookies
+        body:
+          - Jaké cookies a úložiště stránky používají.
+        link:
+          to: cookies
+          label: Cookies

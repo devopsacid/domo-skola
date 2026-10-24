@@ -1,0 +1,30 @@
+# FAQ page (docs/ia.md §2.7). Czech placeholder translation (not literal), needs-review: native review in L9.
+key: faq
+status: needs-review
+reviewNote: "Czech placeholder translation of the FAQ page chrome."
+seo:
+  title: Časté dotazy
+  description: Odpovědi na otázky rodičů o domoškole, povinné školní docházce, přihlášení, běžném dni, nákladech a dojíždění z okolí Banské Bystrice, Ružomberku a Liptovského Mikuláše.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Časté dotazy
+    title: Otázky a odpovědi
+    lead: Na co se rodiče ptají nejčastěji. Pokud některou informaci ještě ověřujeme, řekneme vám to otevřeně.
+  search:
+    status: needs-review
+    label: Hledat v otázkách
+    hint: Napište slovo, například „docházka“ nebo „matematika“. Diakritiku psát nemusíte.
+    results: "Nalezené otázky: {n}"
+    noneTitle: Takovou otázku jsme nenašli
+    noneText: Zkuste jiné slovo, nebo se nás zeptejte přímo. Rádi odpovíme i na osobní schůzce.
+    ctaContact: Napište nám
+    ctaMeet: Domluvit si schůzku
+    categoriesLabel: Témata otázek
+    pendingLink: Napište nám
+  cta:
+    status: needs-review
+    title: Nenašli jste odpověď?
+    text: Napište nám, nebo si domluvte schůzku. Odpovíme na všechno, co už víme, a řekneme, co ještě ověřujeme.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Domluvit si schůzku

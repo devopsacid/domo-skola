@@ -1,0 +1,14 @@
+# FAQ item (brief §5.7), Czech draft copy (needs-review).
+id: not-claimed
+category: legal
+order: 6
+featuredOnHome: false
+status: needs-review
+reviewNote: "Honesty answer (brief §2, §5.4). Rewrite only after settings.legalModel and any accreditation are verified."
+dependsOnFacts: [settings.legalModel]
+question: "Jste škola? Máte akreditaci Montessori?"
+answer: |-
+  Dokud nebude potvrzen náš právní model, netvrdíme, že jsme škola, ani že účast v komunitě sama o sobě plní povinnou školní docházku.
+
+  Inspirujeme se principy Montessori a Hejného metodou. Nejsme akreditované Montessori zařízení a nemáme certifikát na Hejného metodu.
+pendingNote: "Jak je komunita uspořádána po právní stránce, zatím ověřujeme a zveřejníme to na stránce Pro rodiče."

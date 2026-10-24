@@ -1,0 +1,128 @@
+# Privacy notice (docs/ia.md §2.9). English placeholder translation, needs-review and LEGAL REVIEW.
+key: privacy
+status: needs-review
+reviewNote: "LEGAL REVIEW REQUIRED. English placeholder translation of the placeholder structure; controller, legal bases, retention and processors are settings facts."
+seo:
+  title: Privacy policy
+  description: How we process personal data from the contact form and the application, for what purpose, for how long, and what your rights are.
+sections:
+  intro:
+    status: needs-review
+    eyebrow: Legal documents
+    title: Privacy policy
+    lead: Here we explain what personal data we collect from you, why we need it, how long we keep it and what rights you have.
+    draftNote: This text is a working draft. The controller, legal bases, retention periods and processors will be added after legal review. Until then they are marked as still being confirmed.
+  controller:
+    status: needs-review
+    id: controller
+    title: Who processes your data
+    intro:
+      - The controller is the party that decides why and how your personal data is processed.
+    items:
+      - id: controller-details
+        title: Controller
+        facts:
+          - label: Name
+            path: settings.dataController.name
+          - label: Address
+            path: settings.dataController.address
+          - label: Company ID
+            path: settings.dataController.companyId
+          - label: Email
+            path: settings.dataController.email
+          - label: Data protection officer (if appointed)
+            path: settings.dataController.dpoContact
+  whatData:
+    status: needs-review
+    id: what-data
+    title: What data we process and why
+    intro:
+      - We collect only the data we need to reply to you and agree on next steps.
+    items:
+      - id: contact-form
+        title: Messages from the contact form
+        body:
+          - When you write to us, we process your name, email address, phone number (if you give one), region, topic and the text of your message. We need them to reply to you.
+      - id: application
+        title: Application (expression of interest)
+        body:
+          - In the application we process data about you (name, email, phone, municipality, region and preferred language) and about your child (name, the grade and school year you are interested in and, if you give it, the current form of education). We also process the answers you write about your expectations.
+          - We use the data to get in touch and agree on next steps. An application is an expression of interest, not a confirmation of a place.
+      - id: technical-data
+        title: Technical data
+        body:
+          - When you visit the site, technical data needed to deliver it and to protect the forms from abuse, such as your IP address, is processed. Details will be added after legal review.
+      - id: marketing
+        if: marketingEnabled
+        title: News (only with consent)
+        body:
+          - If you give separate consent, we may send you news. Consent is voluntary and you can withdraw it at any time.
+  legalBasis:
+    status: needs-review
+    id: legal-basis
+    title: On what legal basis
+    intro:
+      - Each purpose has its own legal basis. The controller will set it after legal review.
+    items:
+      - id: bases
+        title: Legal bases by purpose
+        facts:
+          - label: Replying to your message
+            path: settings.privacy.legalBases.inquiry
+          - label: Handling your application
+            path: settings.privacy.legalBases.application
+      - id: basis-marketing
+        if: marketingEnabled
+        title: News
+        facts:
+          - label: Sending news
+            path: settings.privacy.legalBases.marketing
+  howLong:
+    status: needs-review
+    id: how-long
+    title: How long we keep data
+    items:
+      - id: retention
+        title: Retention periods
+        body:
+          - When the period ends, we delete the data.
+        facts:
+          - label: Contact form messages
+            path: settings.privacy.retentionDays.inquiry
+            unit: days
+          - label: Applications
+            path: settings.privacy.retentionDays.application
+            unit: days
+          - label: After the conversation is closed
+            path: settings.privacy.retentionDays.afterClose
+            unit: days
+          - label: Records of access to data
+            path: settings.privacy.retentionDays.audit
+            unit: days
+  whoHasAccess:
+    status: needs-review
+    id: who-has-access
+    title: Who has access to the data
+    intro:
+      - Only authorised people from the community have access to the data. Technical services such as hosting and sending email are provided by processors.
+    items:
+      - id: processors
+        title: Processors
+        show: processors
+  yourRights:
+    status: needs-review
+    id: your-rights
+    title: Your rights
+    items:
+      - id: rights
+        title: Your rights
+        list:
+          - to request access to your data,
+          - to request its correction or erasure,
+          - to request restriction of processing,
+          - to object to processing,
+          - to data portability,
+          - to withdraw consent at any time, where we process data on the basis of consent,
+          - to lodge a complaint with a supervisory authority.
+        body:
+          - You can exercise your rights by email to the controller. The contact details are above.
