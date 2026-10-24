@@ -291,7 +291,7 @@ Indexes:
 - When the status becomes `closed`, `closed_at = now` and `retain_until = now + RETENTION_DAYS_AFTER_CLOSE`.
 - When a `closed` record is reopened (any other status), `closed_at = NULL` and `retain_until = now + RETENTION_DAYS_INQUIRY` (or `RETENTION_DAYS_APPLICATION`). Other status changes leave `retain_until` alone.
 - `marketing_consents` rows are purged when past `retain_until`, withdrawn, orphaned by a record deletion, or linked to a record past its own `retain_until` (`src/server/db/retention.ts`; §4.6 item 10).
-- Deleting a submission is a hard delete. Notes and deliveries cascade, and consents are unlinked.
+- Deleting a submission is a hard delete. Notes, deliveries and the record's marketing consents are deleted with it, in the same batch, so an erasure leaves no email address behind (an unlinked consent would keep one).
 - The audit entry keeps only the ID and action.
 - `audit_log` rows older than `AUDIT_RETENTION_DAYS` are purged by the same retention action.
 - Expired `rate_limits` rows are deleted opportunistically on each write.
