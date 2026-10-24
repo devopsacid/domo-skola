@@ -16,4 +16,7 @@ export default defineConfig({
   },
   // Static root redirect; public/_redirects adds the 301 on Cloudflare (L1).
   redirects: { '/': '/sk/' },
+  // Never inline small scripts or assets: processed <script>s ship as external
+  // files and nothing becomes a data: URI (strict CSP, architecture.md §11.2).
+  vite: { build: { assetsInlineLimit: 0 } },
 });
