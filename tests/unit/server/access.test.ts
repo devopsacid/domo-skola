@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { SignJWT, createLocalJWKSet, exportJWK, generateKeyPair, type JWK, type KeyLike } from 'jose';
+import { SignJWT, createLocalJWKSet, exportJWK, generateKeyPair, type JWK } from 'jose';
 import { verifyAccessJwt } from '../../../src/server/auth/access';
 
 const ISS = 'https://team.cloudflareaccess.com';
 const AUD = 'aud-tag-1';
-let priv: KeyLike;
-let otherPriv: KeyLike;
+let priv: CryptoKey;
+let otherPriv: CryptoKey;
 let getKey: ReturnType<typeof createLocalJWKSet>;
 
 beforeAll(async () => {
@@ -18,7 +18,7 @@ beforeAll(async () => {
 });
 
 const sign = (
-  o: { key?: KeyLike; iss?: string; aud?: string | string[]; exp?: number | string; email?: unknown; kid?: string } = {},
+  o: { key?: CryptoKey; iss?: string; aud?: string | string[]; exp?: number | string; email?: unknown; kid?: string } = {},
 ) => {
   const b = new SignJWT({ ...(o.email === null ? {} : { email: o.email ?? 'Staff@Example.SK' }) })
     .setProtectedHeader({ alg: 'RS256', kid: o.kid ?? 'k1' })
