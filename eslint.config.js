@@ -3,10 +3,7 @@ import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
 import globals from 'globals';
 
-const serverOnly = {
-  group: ['**/server/**', '**/server'],
-  message: 'src/server/** is server-only (islands, components and shared must not import it).',
-};
+import local from './eslint-rules/import-allowlist.js';
 
 export default [
   { ignores: ['dist/', '.astro/', 'node_modules/', 'seed/', 'pnpm-lock.yaml'] },
@@ -14,54 +11,40 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
+  { plugins: { local } },
   {
     files: ['src/islands/**', 'src/components/**'],
-    rules: { 'no-restricted-imports': ['error', { patterns: [serverOnly] }] },
+    rules: { 'local/import-allowlist': ['error', { denyDirs: ['src/server'] }] },
   },
   {
-    // shared imports nothing from the app; zod / zod/mini only.
-    files: ['src/shared/**'],
+    files: ['src/server/**'],
     rules: {
-      'no-restricted-imports': [
+      'local/import-allowlist': [
         'error',
-        {
-          patterns: [
-            serverOnly,
-            {
-              group: [
-                '**/islands/**',
-                '**/components/**',
-                '**/layouts/**',
-                '**/pages/**',
-                '**/i18n/**',
-                '**/content/**',
-              ],
-              message: 'src/shared/** must not import from the rest of the app.',
-            },
-          ],
-        },
+        { denyDirs: ['src/islands', 'src/components', 'src/pages', 'src/layouts'] },
       ],
     },
   },
   {
-    // functions import only src/server and src/shared (checked via path shape).
+    // Allowlist: relative shared files, zod and zod/mini only. The `zod` dependency exists
+    // for src/shared/schemas; astro/zod stays in src/content-schemas.ts and content.config.ts.
+    files: ['src/shared/**'],
+    rules: {
+      'local/import-allowlist': [
+        'error',
+        { allowDirs: ['src/shared'], allowBare: ['zod', 'zod/mini'] },
+      ],
+    },
+  },
+  {
+    // Allowlist: src/server, src/shared, own files and the Workers types.
     files: ['functions/**'],
     rules: {
-      'no-restricted-imports': [
+      'local/import-allowlist': [
         'error',
         {
-          patterns: [
-            {
-              group: [
-                '**/src/islands/**',
-                '**/src/components/**',
-                '**/src/layouts/**',
-                '**/src/pages/**',
-                '**/src/i18n/**',
-              ],
-              message: 'functions/** may import only src/server/** and src/shared/**.',
-            },
-          ],
+          allowDirs: ['src/server', 'src/shared', 'functions'],
+          allowBare: ['@cloudflare/workers-types'],
         },
       ],
     },
