@@ -1,0 +1,65 @@
+{
+  "brandName": {
+    "value": "Domoškola",
+    "status": "needs-review",
+    "reviewNote": "Neutral working name for previews"
+  },
+  "contact": {
+    "email": { "value": null, "status": "draft" },
+    "phone": { "value": null, "status": "draft" }
+  },
+  "venue": {
+    "name": { "value": null, "status": "draft" },
+    "address": { "value": null, "status": "draft" },
+    "municipality": { "value": null, "status": "draft" },
+    "mapImage": { "value": null, "status": "draft" },
+    "mapUrl": { "value": null, "status": "draft" },
+    "commuteNotes": { "value": null, "status": "draft" }
+  },
+  "regions": [
+    {
+      "key": "banska_bystrica",
+      "label": {
+        "sk": "Banská Bystrica",
+        "cs": "Banská Bystrica",
+        "en": "Banská Bystrica"
+      }
+    },
+    {
+      "key": "ruzomberok",
+      "label": { "sk": "Ružomberok", "cs": "Ružomberok", "en": "Ružomberok" }
+    },
+    {
+      "key": "liptovsky_mikulas",
+      "label": {
+        "sk": "Liptovský Mikuláš",
+        "cs": "Liptovský Mikuláš",
+        "en": "Liptovský Mikuláš"
+      }
+    }
+  ],
+  "schoolYear": {
+    "current": { "value": null, "status": "draft" },
+    "applicationYears": { "value": null, "status": "draft" }
+  },
+  "enrollment": { "availability": { "value": null, "status": "draft" } },
+  "fees": { "value": null, "status": "draft" },
+  "legalModel": {
+    "type": { "value": "unknown", "status": "draft" },
+    "partnerSchools": []
+  },
+  "dataController": {
+    "name": { "value": null, "status": "draft" },
+    "address": { "value": null, "status": "draft" },
+    "companyId": { "value": null, "status": "draft" },
+    "email": { "value": null, "status": "draft" },
+    "dpoContact": { "value": null, "status": "draft" }
+  },
+  "privacyNotice": { "version": "0", "status": "draft" },
+  "marketingConsent": { "enabled": false },
+  "instructionLanguages": { "value": null, "status": "draft" },
+  "social": [],
+  "seoDefaults": {
+    "siteName": { "sk": "Domoškola", "cs": "Domoškola", "en": "Domoškola" }
+  }
+}

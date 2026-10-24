@@ -76,7 +76,11 @@ describe('resolvePath', () => {
         expect(resolvePath(ROUTES[key][locale])).toEqual({ key, locale });
   });
   it('resolves posts with their slug', () => {
-    expect(resolvePath('/cs/blog/ahoj/')).toEqual({ key: 'post', locale: 'cs', slug: 'ahoj' });
+    expect(resolvePath('/cs/blog/ahoj/')).toEqual({
+      key: 'post',
+      locale: 'cs',
+      slug: 'ahoj',
+    });
   });
   it('returns null for unknown paths', () => {
     expect(resolvePath('/de/')).toBeNull();
@@ -91,11 +95,21 @@ describe('language switcher', () => {
     expect(switcherHref({ key: 'home', locale: 'cs' }, 'sk')).toBe('/sk/');
   });
   it('uses the translationKey slug map for blog posts', () => {
-    const page = { key: 'post', locale: 'sk', slug: 'a', translations: { en: 'a-en' } } as const;
+    const page = {
+      key: 'post',
+      locale: 'sk',
+      slug: 'a',
+      translations: { en: 'a-en' },
+    } as const;
     expect(switcherHref(page, 'en')).toBe('/en/blog/a-en/');
   });
   it('falls back to the blog index when a post has no translation', () => {
-    const page = { key: 'post', locale: 'sk', slug: 'a', translations: {} } as const;
+    const page = {
+      key: 'post',
+      locale: 'sk',
+      slug: 'a',
+      translations: {},
+    } as const;
     expect(switcherHref(page, 'cs')).toBe('/cs/blog/');
   });
 });
@@ -111,7 +125,9 @@ describe('hreflang alternates', () => {
     ]);
   });
   it('strips a trailing slash from the site', () => {
-    expect(hreflangAlternates({ key: 'home' }, `${site}/`)[0]?.href).toBe('https://example.org/sk/');
+    expect(hreflangAlternates({ key: 'home' }, `${site}/`)[0]?.href).toBe(
+      'https://example.org/sk/',
+    );
   });
   it('emits only existing translations for posts', () => {
     const alts = hreflangAlternates({ key: 'post', slugs: { sk: 'a', en: 'a-en' } }, site);

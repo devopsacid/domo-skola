@@ -227,6 +227,7 @@ Facts that shape this ADR:
 
 ### D15. Toolchain
 - **Node:** Node.js 24 LTS ("Krypton"), in `.nvmrc` and `engines: ">=24 <25"`. Astro 7 needs Node 22.23.4 or later.
+- **Dev-machine constraint (L0, 2026-10-24):** the dev machine has Node 22.22.1 and corepack 0.24, which cannot run pnpm 12. L0 therefore sets `engines.node` to `">=22.12"`, `.nvmrc` to `22` and `packageManager` to `pnpm@10.34.6` (brief owner decisions). Revisit when the machine is upgraded.
 - **pnpm:** pnpm 12.x through corepack, with the exact version and hash in `packageManager`. The deploy skill pins the same pnpm and wrangler versions.
 - **wrangler:** 4.x as a devDependency.
 - **Lint and types:** TypeScript strict, ESLint plus `astro check`, and Prettier.

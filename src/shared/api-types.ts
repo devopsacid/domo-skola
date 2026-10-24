@@ -2,7 +2,14 @@
  * Request and response contracts shared by islands and Functions.
  * Zod schemas for the field sets arrive with the forms lane (src/shared/schemas/).
  */
-import type { ApplicationStatus, ContactSubject, Grade, InquiryStatus, Locale, Region } from './enums';
+import type {
+  ApplicationStatus,
+  ContactSubject,
+  Grade,
+  InquiryStatus,
+  Locale,
+  Region,
+} from './enums';
 import type { ErrorCode } from './errors';
 
 export interface ApiOk<T = Record<string, never>> {

@@ -8,7 +8,10 @@ describe('extractSqlChecks', () => {
       locale TEXT NOT NULL CHECK(locale IN ('sk','cs','en')),
       status TEXT CHECK (status IN ('new', 'closed')) DEFAULT 'new'
     );`;
-    expect(extractSqlChecks(sql)).toEqual({ locale: ['sk', 'cs', 'en'], status: ['new', 'closed'] });
+    expect(extractSqlChecks(sql)).toEqual({
+      locale: ['sk', 'cs', 'en'],
+      status: ['new', 'closed'],
+    });
   });
 });
 

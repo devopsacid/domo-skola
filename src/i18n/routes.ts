@@ -30,9 +30,17 @@ export const SLUG_PLACEHOLDER = '<slug>';
 
 export const ROUTES: Record<PageKey, Record<Locale, string>> = {
   home: { sk: '/sk/', cs: '/cs/', en: '/en/' },
-  approach: { sk: '/sk/nas-pristup/', cs: '/cs/nas-pristup/', en: '/en/approach/' },
+  approach: {
+    sk: '/sk/nas-pristup/',
+    cs: '/cs/nas-pristup/',
+    en: '/en/approach/',
+  },
   day: { sk: '/sk/nas-den/', cs: '/cs/nas-den/', en: '/en/our-day/' },
-  parents: { sk: '/sk/pre-rodicov/', cs: '/cs/pro-rodice/', en: '/en/for-parents/' },
+  parents: {
+    sk: '/sk/pre-rodicov/',
+    cs: '/cs/pro-rodice/',
+    en: '/en/for-parents/',
+  },
   enrol: { sk: '/sk/prihlaska/', cs: '/cs/prihlaska/', en: '/en/apply/' },
   'enrol-submitted': {
     sk: '/sk/prihlaska/odoslana/',
@@ -58,7 +66,11 @@ export const ROUTES: Record<PageKey, Record<Locale, string>> = {
     en: '/en/privacy/',
   },
   cookies: { sk: '/sk/cookies/', cs: '/cs/cookies/', en: '/en/cookies/' },
-  legal: { sk: '/sk/pravne-informacie/', cs: '/cs/pravni-informace/', en: '/en/legal/' },
+  legal: {
+    sk: '/sk/pravne-informacie/',
+    cs: '/cs/pravni-informace/',
+    en: '/en/legal/',
+  },
   '404': { sk: '/sk/404.html', cs: '/cs/404.html', en: '/en/404.html' },
 };
 
@@ -71,8 +83,7 @@ export function localePath(key: PageKey, locale: Locale, slug?: string): string 
 }
 
 export type ResolvedRoute =
-  | { key: Exclude<PageKey, 'post'>; locale: Locale }
-  | { key: 'post'; locale: Locale; slug: string };
+  { key: Exclude<PageKey, 'post'>; locale: Locale } | { key: 'post'; locale: Locale; slug: string };
 
 /** Reverse lookup: URL path -> page key, locale and (for posts) slug. */
 export function resolvePath(path: string): ResolvedRoute | null {
@@ -115,7 +126,8 @@ export interface Alternate {
   href: string;
 }
 
-export type AlternatesInput = { key: Exclude<PageKey, 'post'> } | { key: 'post'; slugs: Partial<Record<Locale, string>> };
+export type AlternatesInput =
+  { key: Exclude<PageKey, 'post'> } | { key: 'post'; slugs: Partial<Record<Locale, string>> };
 
 /** hreflang alternates incl. x-default (SK). Posts emit only locales that exist. */
 export function hreflangAlternates(page: AlternatesInput, site: string): Alternate[] {
@@ -124,9 +136,16 @@ export function hreflangAlternates(page: AlternatesInput, site: string): Alterna
   for (const locale of LOCALES) {
     if (page.key === 'post') {
       const slug = page.slugs[locale];
-      if (slug) out.push({ hreflang: locale, href: origin + localePath('post', locale, slug) });
+      if (slug)
+        out.push({
+          hreflang: locale,
+          href: origin + localePath('post', locale, slug),
+        });
     } else {
-      out.push({ hreflang: locale, href: origin + localePath(page.key, locale) });
+      out.push({
+        hreflang: locale,
+        href: origin + localePath(page.key, locale),
+      });
     }
   }
   const def = out.find((a) => a.hreflang === DEFAULT_LOCALE) ?? out[0];
