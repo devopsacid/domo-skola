@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   LOCALES,
+  NOT_FOUND_PATH,
   PAGE_KEYS,
   ROUTES,
   hreflangAlternates,
@@ -15,7 +16,8 @@ describe('route map completeness', () => {
   });
 
   it('defines every page key in every locale', () => {
-    expect(PAGE_KEYS).toHaveLength(15);
+    expect(PAGE_KEYS).toHaveLength(14);
+    expect(PAGE_KEYS).not.toContain('404');
     for (const key of PAGE_KEYS) {
       for (const locale of LOCALES) {
         const path = ROUTES[key][locale];
@@ -25,14 +27,14 @@ describe('route map completeness', () => {
     }
   });
 
-  it('ends every path with a trailing slash, except the 404 pages', () => {
-    for (const key of PAGE_KEYS) {
-      for (const locale of LOCALES) {
-        const path = ROUTES[key][locale];
-        if (key === '404') expect(path).toBe(`/${locale}/404.html`);
-        else expect(path.endsWith('/'), path).toBe(true);
-      }
-    }
+  it('ends every path with a trailing slash', () => {
+    for (const key of PAGE_KEYS)
+      for (const locale of LOCALES) expect(ROUTES[key][locale].endsWith('/')).toBe(true);
+  });
+
+  it('serves a single language-neutral root 404', () => {
+    expect(NOT_FOUND_PATH).toBe('/404.html');
+    expect(resolvePath(NOT_FOUND_PATH)).toBeNull();
   });
 
   it('has no duplicate paths inside a locale', () => {
@@ -133,5 +135,36 @@ describe('hreflang alternates', () => {
     const alts = hreflangAlternates({ key: 'post', slugs: { sk: 'a', en: 'a-en' } }, site);
     expect(alts.map((a) => a.hreflang)).toEqual(['sk', 'en', 'x-default']);
     expect(alts[1]?.href).toBe('https://example.org/en/blog/a-en/');
+  });
+});
+
+describe('hreflang reciprocity', () => {
+  const site = 'https://example.org';
+  const path = (href: string) => href.slice(site.length);
+
+  it('gives every locale the identical alternate set, and resolvePath round-trips', () => {
+    for (const key of PAGE_KEYS.filter((k) => k !== 'post')) {
+      const sets = LOCALES.map((locale) => {
+        const r = resolvePath(ROUTES[key][locale]);
+        expect(r).toEqual({ key, locale });
+        return JSON.stringify(hreflangAlternates({ key: r!.key as never }, site));
+      });
+      expect(new Set(sets).size).toBe(1);
+      const alts = hreflangAlternates({ key: key as never }, site);
+      for (const a of alts.filter((x) => x.hreflang !== 'x-default'))
+        expect(resolvePath(path(a.href))).toEqual({ key, locale: a.hreflang });
+    }
+  });
+
+  it('x-default is always the SK URL', () => {
+    for (const key of PAGE_KEYS.filter((k) => k !== 'post')) {
+      const alts = hreflangAlternates({ key: key as never }, site);
+      expect(alts.find((a) => a.hreflang === 'x-default')?.href).toBe(site + ROUTES[key].sk);
+    }
+  });
+
+  it('omits x-default for a post without an SK version', () => {
+    const alts = hreflangAlternates({ key: 'post', slugs: { en: 'a', cs: 'b' } }, site);
+    expect(alts.map((a) => a.hreflang)).toEqual(['cs', 'en']);
   });
 });
