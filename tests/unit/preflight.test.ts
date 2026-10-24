@@ -58,6 +58,10 @@ describe('preflight', () => {
     expect(e).toContain('CONTENT_STRICT');
     expect(e).toContain('database_id');
   });
+  it('fails a production build with SITE_URL unset or localhost', () => {
+    expect(run({ ...goodEnv, SITE_URL: undefined }).errors.join()).toContain('SITE_URL build variable');
+    expect(run({ ...goodEnv, SITE_URL: 'http://localhost:4321' }).errors.join()).toContain('SITE_URL must be an https');
+  });
   it('only warns about retention outside production', () => {
     const r = run({}, false);
     expect(r.errors).toEqual([]);

@@ -75,6 +75,8 @@ export function preflight({ production, env, wrangler, redirects, routes, devVar
     if (blank(v)) errors.push(`${k} is required in production`);
     else if (/REPLACE_/.test(v)) errors.push(`${k} is still a placeholder`);
   }
+  if (blank(env.SITE_URL))
+    errors.push('SITE_URL build variable is unset: astro.config.mjs would fall back to http://localhost:4321');
   const site = get('SITE_URL');
   if (!blank(site) && !/REPLACE_/.test(site) && (!/^https:\/\//.test(site) || /localhost|127\.0\.0\.1/.test(site)))
     errors.push('SITE_URL must be an https production origin');

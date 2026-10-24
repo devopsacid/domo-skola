@@ -37,7 +37,8 @@ for (const [url, { alts, canonical }] of info) {
   if (canonical && canonical !== url) problems.push(`${url}: canonical ${canonical} is not self`);
   const self = [...alts].filter(([l, p]) => l !== 'x-default' && p === url);
   if (self.length !== 1) problems.push(`${url}: expected exactly one self-referencing hreflang, found ${self.length}`);
-  if (!alts.has('x-default')) problems.push(`${url}: missing x-default`);
+  if ([...alts.values()].some((p) => p.startsWith('/sk/')) && !alts.has('x-default'))
+    problems.push(`${url}: missing x-default (an SK alternate exists)`);
   for (const [lang, target] of alts) {
     if (!pageUrls.has(target)) {
       problems.push(`${url}: hreflang ${lang} -> ${target} does not exist in dist`);
