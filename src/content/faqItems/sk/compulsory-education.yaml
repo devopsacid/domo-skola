@@ -1,11 +1,12 @@
+# Home FAQ item, Slovak working copy (needs-review).
 id: compulsory-education
 category: legal
 order: 2
 featuredOnHome: true
 status: needs-review
+reviewNote: "Answer must be rewritten with the verified legal model before the pendingNote can go; no legal claim until then."
 dependsOnFacts: [settings.legalModel]
-question: Ako sa plní povinná školská dochádzka?
+question: "Ako sa plní povinná školská dochádzka?"
 answer: |-
-  Túto informáciu zatiaľ potvrdzujeme. Závisí od právneho modelu komunity a od školy, v ktorej bude dieťa formálne zapísané.
-
-  Kým to nebude potvrdené, nebudeme vám nič sľubovať. Radi sa s vami o tom porozprávame osobne.
+  Závisí to od právneho modelu komunity a od školy, v ktorej bude dieťa formálne zapísané. Radi sa s vami o tom porozprávame osobne.
+pendingNote: "Túto informáciu zatiaľ potvrdzujeme. Kým nebude potvrdená, nebudeme vám nič sľubovať."

@@ -2,6 +2,7 @@
 key: hejny
 order: 4
 status: needs-review
+reviewNote: "Working copy; describes the Hejný approach without any certification claim. Owner to confirm."
 title: Hejného matematika
 anchor: hejneho-matematika
 summary: Matematika objavovaním v známych prostrediach, kde deti hľadajú pravidlá a vysvetľujú, prečo riešenie platí.
@@ -10,10 +11,10 @@ parentBenefits:
   - Chyba je príležitosť na rozhovor, nie dôvod na strach.
   - Rastie sebadôvera aj chuť pustiť sa do náročnejších úloh.
 whatItMeans: Metóda profesora Milana Hejného stavia na tom, že si dieťa matematické predstavy buduje samo. Pracuje v prostrediach, ktoré pozná z bežného života, napríklad Krokovanie, Schody alebo Autobus.
-inPractice: Deti riešia úlohy samy aj v skupinách, diskutujú o postupoch a samy hľadajú chyby. Učiteľ neprezradí výsledok, ale kladie otázky, ktoré pomôžu pokročiť.
+inPractice: Deti riešia úlohy samy aj v skupinách, diskutujú o postupoch a samy hľadajú chyby. Sprievodca neprezradí výsledok, ale kladie otázky, ktoré pomôžu pokročiť.
 examples:
   - V Krokovaní deti chodia po čiare a krokmi objavujú sčítanie, odčítanie a neskôr aj záporné čísla.
   - V súčtových trojuholníkoch hľadajú chýbajúce čísla a pravidlá, ktoré platia vždy.
 benefits: Matematické uvažovanie, sebadôvera a schopnosť vysvetliť svoj postup.
 parentsCanExpect: Ukážky úloh, na ktorých uvidíte, ako dieťa uvažuje. Ukážeme vám, ako môžete s dieťaťom o matematike hovoriť doma.
-disclaimer: V matematike pracujeme s prístupom Hejného metódy. Neuvádzame tým oficiálnu certifikáciu.
+disclaimer: V matematike pracujeme s prístupom Hejného metódy. Neznamená to oficiálnu certifikáciu.

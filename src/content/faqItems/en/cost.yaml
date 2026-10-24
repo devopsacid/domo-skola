@@ -4,6 +4,7 @@ category: costs
 order: 6
 featuredOnHome: true
 status: needs-review
+reviewNote: "No fee information until settings.fees is verified; owner to supply the wording."
 dependsOnFacts: [settings.fees]
 question: "How much does it cost to take part?"
 answer: |-

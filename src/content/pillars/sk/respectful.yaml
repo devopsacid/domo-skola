@@ -2,6 +2,7 @@
 key: respectful
 order: 2
 status: needs-review
+reviewNote: "Working copy; the morning circle and conflict handling describe intended practice. Owner to confirm."
 title: Rešpektujúci prístup
 anchor: respektujuci-pristup
 summary: Pokojná a otvorená komunikácia, v ktorej deti aj dospelí berú jeden druhého vážne.
@@ -10,7 +11,7 @@ parentBenefits:
   - Konflikty riešime rozhovorom a hľadaním dohody, nie trestom.
   - S vami ako rodičmi spolupracujeme ako partneri.
 whatItMeans: Rešpektujúci prístup znamená, že potreby dieťaťa aj dospelého sú rovnako dôležité. Hranice sú jasné, ale nastavujeme ich bez ponižovania, krikov a manipulácie.
-inPractice: Deň začína spoločným kruhom, v ktorom je priestor povedať, ako sa kto má. Keď sa deti pohádajú, pomôžeme im pomenovať, čo sa stalo, a nájsť riešenie, s ktorým môžu žiť obe strany.
+inPractice: Deň môže začínať spoločným kruhom, v ktorom je priestor povedať, ako sa kto má. Keď sa deti pohádajú, pomôžeme im pomenovať, čo sa stalo, a nájsť riešenie, s ktorým môžu žiť obe strany.
 examples:
   - Namiesto „Prestaň!“ povieme, čo vidíme, a spýtame sa, čo dieťa potrebuje.
   - Pravidlá triedy deti spoluvytvárajú a vracajú sa k nim, keď niečo nefunguje.

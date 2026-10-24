@@ -2,13 +2,14 @@
 # Sections are typed in src/components/home/content.ts.
 key: home
 status: needs-review
-reviewNote: L3 working copy built from brief §3 messaging; owner and native review before verified.
+reviewNote: "L3 working copy built from brief §3 messaging. Owner decisions pending: hero lead wording (Inšpirujeme sa…) and the menšia skupina wording in fit (see section notes)."
 seo:
   title: Komunitné vzdelávanie pre 1.–4. ročník
   description: Malá vzdelávacia komunita pre deti 1.–4. ročníka. Učenie objavovaním, inšpirácia princípmi Montessori, rešpektujúci prístup a Hejného matematika. Pre rodiny z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša.
 sections:
   hero:
     status: needs-review
+    reviewNote: "OWNER DECISION PENDING: lead reworded from the brief to 'Inšpirujeme sa princípmi Montessori…' (inspired, not a Montessori school). Keep or revert."
     eyebrow: Komunitné vzdelávanie pre 1.–4. ročník
     headline: Miesto, kde deti objavujú svet vlastným tempom.
     lead: Vytvárame rešpektujúce prostredie pre deti 1. až 4. ročníka, kde sa učenie opiera o objavovanie, skúsenosti, samostatnosť a spoluprácu. Inšpirujeme sa princípmi Montessori, staviame na konštruktivistickom učení a v matematike pracujeme s Hejného metódou.
@@ -99,6 +100,7 @@ sections:
         label: Učenie vonku
   fit:
     status: needs-review
+    reviewNote: "OWNER DECISION PENDING: 'menšia skupina detí' (smaller group) wording; group size is not confirmed."
     eyebrow: Pre koho
     title: Komu môže naša komunita vyhovovať
     intro: Každé dieťa je iné. Komunita môže byť dobrou voľbou pre rodiny, ktoré…

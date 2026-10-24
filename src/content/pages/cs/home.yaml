@@ -1,13 +1,14 @@
 # Home page, Czech. Placeholder translation (not literal), needs-review: native Czech review in L9.
 key: home
 status: needs-review
-reviewNote: L3 placeholder translation from the SK working copy; native review before verified.
+reviewNote: "L3 placeholder translation from the SK working copy; native review in L9. Owner decisions pending: hero lead wording and the smaller-group wording in fit (see section notes)."
 seo:
   title: Komunitní vzdělávání pro 1.–4. ročník
   description: Malá vzdělávací komunita pro děti 1.–4. ročníku. Učení objevováním, inspirace principy Montessori, respektující přístup a Hejného metoda. Pro rodiny z okolí Banské Bystrice, Ružomberku a Liptovského Mikuláše.
 sections:
   hero:
     status: needs-review
+    reviewNote: "OWNER DECISION PENDING: lead reworded from the brief to 'Inšpirujeme sa princípmi Montessori…' (inspired, not a Montessori school). Keep or revert."
     eyebrow: Komunitní vzdělávání pro 1.–4. ročník
     headline: Místo, kde děti objevují svět vlastním tempem.
     lead: Vytváříme respektující prostředí pro děti 1. až 4. ročníku, kde učení stojí na objevování, zkušenosti, samostatnosti a spolupráci. Inspirujeme se principy Montessori, vycházíme z konstruktivistického učení a v matematice pracujeme s Hejného metodou.
@@ -98,6 +99,7 @@ sections:
         label: Učení venku
   fit:
     status: needs-review
+    reviewNote: "OWNER DECISION PENDING: 'menšia skupina detí' (smaller group) wording; group size is not confirmed."
     eyebrow: Pro koho
     title: Komu může naše komunita vyhovovat
     intro: Každé dítě je jiné. Komunita může být dobrou volbou pro rodiny, které…

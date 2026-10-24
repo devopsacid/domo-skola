@@ -2,13 +2,14 @@
 # Never implies English-language instruction (brief §8): instruction languages are a settings fact.
 key: home
 status: needs-review
-reviewNote: L3 placeholder translation from the SK working copy; native review before verified.
+reviewNote: "L3 placeholder translation from the SK working copy; native review in L9. Owner decisions pending: hero lead wording and the smaller-group wording in fit (see section notes)."
 seo:
   title: Community learning for grades 1–4
   description: A small learning community for children in grades 1–4. Learning by discovery, inspired by Montessori principles, respectful education and the Hejný mathematics method. For families around Banská Bystrica, Ružomberok and Liptovský Mikuláš.
 sections:
   hero:
     status: needs-review
+    reviewNote: "OWNER DECISION PENDING: lead reworded from the brief to 'Inšpirujeme sa princípmi Montessori…' (inspired, not a Montessori school). Keep or revert."
     eyebrow: Community learning for grades 1–4
     headline: A place where children discover the world at their own pace.
     lead: We create a respectful environment for children in grades 1 to 4, where learning grows from discovery, experience, independence and working together. We draw on Montessori principles, build on constructivist learning and teach maths with the Hejný method.
@@ -99,6 +100,7 @@ sections:
         label: Learning outdoors
   fit:
     status: needs-review
+    reviewNote: "OWNER DECISION PENDING: 'menšia skupina detí' (smaller group) wording; group size is not confirmed."
     eyebrow: Who it suits
     title: Who our community may suit
     intro: Every child is different. The community may be a good choice for families who…

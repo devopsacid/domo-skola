@@ -4,9 +4,9 @@ category: legal
 order: 2
 featuredOnHome: true
 status: needs-review
+reviewNote: "Answer must be rewritten with the verified legal model before the pendingNote can go; no legal claim until then."
 dependsOnFacts: [settings.legalModel]
 question: "How is compulsory school attendance fulfilled?"
 answer: |-
-  We are still confirming this. It depends on the community's legal model and on the school where your child will be formally enrolled.
-
-  Until that is confirmed, we won't promise anything. We are happy to talk it through with you in person.
+  It depends on the community's legal model and on the school where your child will be formally enrolled. We are happy to talk it through with you in person.
+pendingNote: "We are still confirming this. Until it is confirmed, we won't promise anything."

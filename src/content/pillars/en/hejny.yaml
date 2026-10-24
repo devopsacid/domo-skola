@@ -2,6 +2,7 @@
 key: hejny
 order: 4
 status: needs-review
+reviewNote: "Placeholder translation; no certification claimed. Native review in L9."
 title: Hejný mathematics
 anchor: hejny-mathematics
 summary: Maths through discovery in familiar environments, where children look for rules and explain why a solution works.
@@ -10,10 +11,10 @@ parentBenefits:
   - A mistake is a reason to talk, not a reason to be afraid.
   - Confidence grows, and so does the appetite for harder problems.
 whatItMeans: Professor Milan Hejný's method rests on children building their own mathematical ideas. They work in environments they know from everyday life, such as Stepping, Stairs or Bus.
-inPractice: Children solve problems alone and in groups, discuss their methods and look for mistakes themselves. The teacher doesn't give away the answer but asks questions that help them move on.
+inPractice: Children solve problems alone and in groups, discuss their methods and look for mistakes themselves. The guide doesn't give away the answer but asks questions that help them move on.
 examples:
   - In Stepping, children walk along a line and discover addition, subtraction and later negative numbers through their steps.
   - In sum triangles, they look for missing numbers and for rules that always hold.
 benefits: Mathematical reasoning, confidence and the ability to explain their thinking.
 parentsCanExpect: Examples of tasks that show how your child reasons, and ideas for talking about maths at home.
-disclaimer: We teach maths using the Hejný method approach. This does not claim official certification.
+disclaimer: We teach maths using the Hejný method approach. This does not mean official certification.

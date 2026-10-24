@@ -2,6 +2,7 @@
 key: montessori
 order: 1
 status: needs-review
+reviewNote: "Placeholder translation; the examples describe possible practice (materials and mixed-age work not confirmed). Native review in L9."
 title: Principy Montessori
 anchor: principy-montessori
 summary: Připravené prostředí, ve kterém si dítě vybírá práci, pracuje vlastním tempem a dokončí, co začalo.
@@ -12,8 +13,8 @@ parentBenefits:
 whatItMeans: Inspirujeme se pedagogikou Marie Montessori. Prostředí je připravené tak, aby si dítě umělo samo vybrat smysluplnou práci, soustředěně pracovat a samo si ověřit výsledek.
 inPractice: Pomůcky mají na policích své místo. Dítě si vybere práci, připraví si ji, pracuje a nakonec ji vrátí na místo. Průvodce pozoruje, nabízí nové výzvy a pomáhá, když je to potřeba.
 examples:
-  - Při počítání s korálky dítě vidí, jak velký je doopravdy rozdíl mezi desítkou a stovkou.
-  - Mladší a starší děti mohou pracovat vedle sebe a učit se jedno od druhého.
+  - Například při počítání s pomůckami, jako jsou korálky, může dítě vidět, jak velký je doopravdy rozdíl mezi desítkou a stovkou.
+  - Pokud se ve skupině sejdou mladší a starší děti, mohou pracovat vedle sebe a učit se jedno od druhého.
 benefits: Samostatnost, soustředění a důvěra ve vlastní schopnosti.
 parentsCanExpect: Pravidelné informace o tom, na čem dítě pracuje, a možnost vidět pomůcky a prostředí na vlastní oči.
-disclaimer: Náš přístup je inspirovaný principy Montessori. Neuvádíme tím akreditaci ani certifikaci Montessori.
+disclaimer: Náš přístup je inspirovaný principy Montessori. Neznamená to akreditaci ani certifikaci Montessori.
