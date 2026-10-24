@@ -248,6 +248,9 @@ export function updateStatusStatement(
 export const deleteRecordStatement = (db: D1Like, type: RecordType, id: string) =>
   stmt(db, `DELETE FROM ${TABLE[type]} WHERE id = ?`, id);
 
+export const deleteConsentsStatement = (db: D1Like, type: RecordType, id: string) =>
+  stmt(db, `DELETE FROM marketing_consents WHERE ${FK[type]} = ?`, id);
+
 export const findAdminStatement = (db: D1Like, email: string) =>
   stmt(db, 'SELECT role FROM admin_users WHERE email = ? AND disabled_at IS NULL', email);
 

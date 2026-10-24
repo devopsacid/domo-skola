@@ -32,7 +32,7 @@ import { decodeUrlencoded } from '../forms/urlencoded';
 import { hmacHex } from '../hash';
 import { MAX_BODY_BYTES, jsonResponse, publicError, readBodyCapped } from '../http';
 import { logError, logRequest } from '../log';
-import { checkRateLimit } from '../ratelimit';
+import { checkRateLimit, clientIp } from '../ratelimit';
 import { publicRequestAllowed } from '../security';
 
 type Kind = 'contact' | 'application';
@@ -131,7 +131,8 @@ async function run(
 
   // 3. rate limit per hashed IP (before any parsing)
   const nowMs = deps.now().getTime();
-  const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+  const ip = clientIp(request, cfg.environment);
+  if (ip === null) return finish(failure('bad_request'), 'no_client_ip');
   const ipHash = await hmacHex(cfg.ipHashSecret, 'ip', ip);
   const limited = await checkRateLimit(env.DB, {
     now: nowMs,
@@ -227,24 +228,7 @@ async function run(
     }
   }
 
-  // 9. recipient limit (mail-bombing)
-  const rcptHash = await hmacHex(cfg.ipHashSecret, 'rcpt', fields.email);
-  const rcpt = await checkRateLimit(env.DB, {
-    now: nowMs,
-    checks: [{ key: `rcpt:${rcptHash}:day`, limit: cfg.rateLimit.emailPerDay, windowMs: DAY_MS }],
-  });
-  if (!rcpt.allowed) {
-    return finish(
-      failure(
-        'rate_limited',
-        { retry_after: rcpt.retryAfter },
-        { 'Retry-After': String(rcpt.retryAfter) },
-      ),
-      'rate_limited',
-    );
-  }
-
-  // 10. heuristics: stored as suspected, never rejected
+  // 9. heuristics: stored as suspected, never rejected
   const urlCount = countUrls(
     Object.values(fields)
       .filter((v): v is string => typeof v === 'string')
@@ -253,6 +237,19 @@ async function run(
   const suspectedTiming =
     mode === 'json' && (elapsed === undefined || elapsed <= 0 || isTooFast(elapsed, MIN_FILL_MS));
   const suspected = suspectedTiming || urlCount > MAX_URLS;
+
+  // 10. recipient limit (mail-bombing, ADR-0001 A2): checked and counted only when a confirmation
+  // would actually be queued. Over the limit the submission is still stored; only the confirmation
+  // is skipped. Never a 429, which would tell an attacker the address is being targeted.
+  let confirmation: 'queued' | 'skipped' | 'recipient_limit' = suspected ? 'skipped' : 'queued';
+  if (!suspected) {
+    const rcptHash = await hmacHex(cfg.ipHashSecret, 'rcpt', fields.email);
+    const rcpt = await checkRateLimit(env.DB, {
+      now: nowMs,
+      checks: [{ key: `rcpt:${rcptHash}:day`, limit: cfg.rateLimit.emailPerDay, windowMs: DAY_MS }],
+    });
+    if (!rcpt.allowed) confirmation = 'recipient_limit';
+  }
 
   // 11. write
   const nowIso = deps.now().toISOString();
@@ -279,7 +276,8 @@ async function run(
       kind: 'sender_confirmation',
       type,
       recordId,
-      status: suspected ? 'skipped' : 'queued',
+      status: confirmation === 'queued' ? 'queued' : 'skipped',
+      errorCode: confirmation === 'recipient_limit' ? 'recipient_limit' : undefined,
       now: nowIso,
     }),
     insertDelivery(env.DB, {
@@ -328,7 +326,7 @@ async function run(
       const jobs = [
         sendAndRecord(env.DB, transport, adminDeliveryId, emails.admin, deps.now, ctx.requestId),
       ];
-      if (!suspected)
+      if (confirmation === 'queued')
         jobs.push(
           sendAndRecord(
             env.DB,

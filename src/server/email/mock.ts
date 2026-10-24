@@ -19,6 +19,7 @@ export function createMockTransport(opts: {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(m),
+          redirect: 'manual', // never follow; workerd rejects 'error', and a 3xx is treated as a failure (res.ok is false)
           signal: AbortSignal.timeout(5000),
         });
         if (!res.ok) return { ok: false, code: await failureCode(res) };

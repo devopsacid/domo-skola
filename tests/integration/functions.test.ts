@@ -35,6 +35,7 @@ beforeAll(async () => {
   base = `http://127.0.0.1:${port}`;
   staticDir = mkdtempSync(join(tmpdir(), 'domo-static-'));
   writeFileSync(join(staticDir, 'index.html'), '<!doctype html><title>x</title>');
+  writeFileSync(join(staticDir, '404.html'), '<!doctype html><title>404</title>');
   const vars: Record<string, string> = {
     ...(Object.fromEntries(Object.entries(f.env).filter(([k]) => k !== 'DB')) as Record<
       string,

@@ -12,7 +12,7 @@
     "build": "node tools/preflight.mjs && astro build && node tools/build-headers.mjs",
     "preview": "astro preview",
     "lint": "eslint .",
-    "typecheck": "astro check",
+    "typecheck": "astro check && tsc -p functions/tsconfig.json",
     "test": "vitest run",
     "test:integration": "vitest run --config tests/integration/vitest.config.ts",
     "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs",

@@ -86,17 +86,19 @@ export function insertDelivery(
     type: 'inquiry' | 'application';
     recordId: string;
     status: 'queued' | 'skipped';
+    errorCode?: string | undefined;
     now: string;
   },
 ): D1StatementLike {
   return stmt(
     db,
-    'INSERT INTO email_deliveries(id, kind, inquiry_id, application_id, status, attempts, created_at, updated_at) VALUES(?,?,?,?,?,0,?,?)',
+    'INSERT INTO email_deliveries(id, kind, inquiry_id, application_id, status, attempts, last_error_code, created_at, updated_at) VALUES(?,?,?,?,?,0,?,?,?)',
     d.id,
     d.kind,
     d.type === 'inquiry' ? d.recordId : undefined,
     d.type === 'application' ? d.recordId : undefined,
     d.status,
+    d.errorCode,
     d.now,
     d.now,
   );

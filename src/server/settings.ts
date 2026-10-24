@@ -25,8 +25,14 @@ const str = (v: unknown): string | undefined =>
 
 export function readSettings(raw: unknown): ServerSettings {
   const s = obj(raw);
-  const availability = obj(obj(s.enrollment).availability).value;
-  const years = obj(obj(s.schoolYear).applicationYears).value;
+  // Only a `verified` fact gates (same rule as verifiedValue() in src/content-schemas.ts, which is
+  // not imported here because it pulls the Astro content runtime into the Functions bundle).
+  const verified = (fact: unknown): unknown => {
+    const f = obj(fact);
+    return f.status === 'verified' ? f.value : null;
+  };
+  const availability = verified(obj(s.enrollment).availability);
+  const years = verified(obj(s.schoolYear).applicationYears);
   const marketing = obj(s.marketingConsent);
   const purposeRaw = obj(marketing.purpose);
   const purpose: Partial<Record<Locale, string>> = {};

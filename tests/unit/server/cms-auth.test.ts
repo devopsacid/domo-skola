@@ -81,7 +81,7 @@ describe('cms-auth callback', () => {
     expect(calls[0]?.url).toBe('https://github.com/login/oauth/access_token');
     const sent = JSON.parse(String(calls[0]?.init.body));
     expect(sent).toMatchObject({ client_id: 'cid', client_secret: 'csecret', code: 'abc' });
-    expect(calls[0]?.init.redirect).toBe('error');
+    expect(calls[0]?.init.redirect).toBe('manual');
     const html = await res.text();
     expect(html).toContain('gho_TOKEN');
     expect(html).toContain('https://skola.example');

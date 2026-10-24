@@ -152,6 +152,7 @@ export async function handleCmsCallback(
         code,
         redirect_uri: `${cfg.origin}/api/cms-auth/callback`,
       }),
+      redirect: 'manual', // never follow; workerd rejects 'error', and a 3xx is treated as a failure (res.ok is false)
       signal: AbortSignal.timeout(8000),
     });
     const body = (await res.json()) as { access_token?: unknown };

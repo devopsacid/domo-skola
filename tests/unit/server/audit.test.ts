@@ -11,7 +11,15 @@ function capture(details: Record<string, unknown> | undefined) {
       },
     }),
   } as never;
-  auditStatement(db, { at: 't', actorEmail: 'a@b.sk', actorRole: 'admin', action: 'view', subjectType: 'bulk', details, requestId: 'r' });
+  auditStatement(db, {
+    at: 't',
+    actorEmail: 'a@b.sk',
+    actorRole: 'admin',
+    action: 'view',
+    subjectType: 'bulk',
+    details,
+    requestId: 'r',
+  });
   return binds[6] as string | null;
 }
 

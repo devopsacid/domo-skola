@@ -81,10 +81,13 @@ describe('mock-mail', () => {
     const port = Number(new URL(url).port);
     const get = (host: string) =>
       new Promise<number>((resolve, reject) => {
-        const r = http.request({ host: '127.0.0.1', port, path: '/messages', headers: { host } }, (res) => {
-          res.resume();
-          resolve(res.statusCode ?? 0);
-        });
+        const r = http.request(
+          { host: '127.0.0.1', port, path: '/messages', headers: { host } },
+          (res) => {
+            res.resume();
+            resolve(res.statusCode ?? 0);
+          },
+        );
         r.on('error', reject);
         r.end();
       });

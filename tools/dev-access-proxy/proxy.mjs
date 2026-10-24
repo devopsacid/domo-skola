@@ -6,6 +6,11 @@
 import http from 'node:http';
 import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 
+// Loopback bind only, and only requests addressed to localhost or 127.0.0.1 on the server's own port
+// (DNS-rebinding protection) are answered.
+const LOOPBACK_BIND = new Set(['127.0.0.1', 'localhost']);
+const hostAllowed = (header, port) =>
+  header === `localhost:${port}` || header === `127.0.0.1:${port}`;
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
 const COOKIE = 'dev_access_user';
 const EMAIL = /^[^\s@;,]+@[^\s@;,]+\.[^\s@;,]+$/;
@@ -19,6 +24,9 @@ export async function startDevAccessProxy({
   host = '127.0.0.1',
   defaultEmail = 'admin@example.test',
 }) {
+  if (!LOOPBACK_BIND.has(host)) {
+    throw new Error('dev-access-proxy binds to loopback only (127.0.0.1 or localhost)');
+  }
   const targetUrl = new URL(target);
   if (!LOCAL_HOSTS.has(targetUrl.hostname)) {
     throw new Error('dev-access-proxy only proxies to a local target (localhost or 127.0.0.1)');
@@ -28,6 +36,10 @@ export async function startDevAccessProxy({
   const jwk = { ...(await exportJWK(publicKey)), kid, alg: 'RS256', use: 'sig' };
 
   const certsServer = http.createServer((req, res) => {
+    if (!hostAllowed(req.headers.host, certsServer.address().port)) {
+      res.writeHead(403);
+      return res.end();
+    }
     if (req.method === 'GET' && req.url?.split('?')[0] === '/certs') {
       res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
       return res.end(JSON.stringify({ keys: [jwk], public_cert: { kid }, public_certs: [] }));
@@ -62,6 +74,10 @@ export async function startDevAccessProxy({
   };
 
   const proxy = http.createServer(async (req, res) => {
+    if (!hostAllowed(req.headers.host, proxy.address().port)) {
+      res.writeHead(403, { 'content-type': 'text/plain' });
+      return res.end('bad host');
+    }
     const url = new URL(req.url ?? '/', 'http://proxy.local');
     const picked = url.searchParams.get('dev_user');
     if (picked !== null) {

@@ -59,7 +59,12 @@ describe('parseConfig', () => {
     }
     expect(() => parseConfig({ ...base, RETENTION_DAYS_INQUIRY: '-1' })).toThrow(ConfigError);
     expect(() => parseConfig({ ...base, RETENTION_DAYS_INQUIRY: '1.5' })).toThrow(ConfigError);
-    for (const k of ['RETENTION_DAYS_INQUIRY', 'RETENTION_DAYS_APPLICATION', 'RETENTION_DAYS_AFTER_CLOSE', 'AUDIT_RETENTION_DAYS']) {
+    for (const k of [
+      'RETENTION_DAYS_INQUIRY',
+      'RETENTION_DAYS_APPLICATION',
+      'RETENTION_DAYS_AFTER_CLOSE',
+      'AUDIT_RETENTION_DAYS',
+    ]) {
       expect(() => parseConfig({ ...base, [k]: '0' }), k).toThrow(ConfigError);
     }
     expect(() => parseConfig({ ...base, EMAIL_PROVIDER: 'carrier-pigeon' })).toThrow(ConfigError);

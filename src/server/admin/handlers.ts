@@ -18,6 +18,7 @@ import {
   TABLE,
   consentsStatement,
   decodeCursor,
+  deleteConsentsStatement,
   deleteRecordStatement,
   deliveriesStatement,
   encodeCursor,
@@ -37,7 +38,7 @@ import type { D1Like } from '../db/types';
 import type { Deps } from '../deps';
 import { buildTransport, composeEmails, sendAndRecord } from '../email/dispatch';
 import type { Locale } from '../../shared/enums';
-import { jsonResponse } from '../http';
+import { jsonResponse, readBodyCapped } from '../http';
 
 export interface AdminIdentity {
   email: string;
@@ -54,6 +55,7 @@ export interface AdminCtx {
 }
 
 const DAY_MS = 86_400_000;
+const MAX_ADMIN_BODY = 64 * 1024;
 
 export function adminError(error: AdminErrorCode, fields?: Record<string, string>): Response {
   return jsonResponse(
@@ -83,8 +85,9 @@ function audit(
 
 async function jsonBody(request: Request): Promise<Record<string, unknown> | null> {
   try {
-    const text = await request.text();
-    if (text.length > 64 * 1024) return null;
+    // Capped before parsing: Content-Length is checked first, a missing header is stream-capped.
+    const text = await readBodyCapped(request, MAX_ADMIN_BODY);
+    if (text === null) return null;
     const v: unknown = JSON.parse(text);
     return typeof v === 'object' && v !== null && !Array.isArray(v)
       ? (v as Record<string, unknown>)
@@ -150,6 +153,8 @@ type Getter = (key: string) => string | undefined;
 /** GET /api/admin/records: parameters from the query string. */
 export function listRecords(c: AdminCtx): Promise<Response> {
   const p = c.url.searchParams;
+  // A search term is personal data: it travels only in the body of POST /records/search (§4.6 item 4).
+  if (p.has('q')) return Promise.resolve(adminError('bad_request'));
   return listFrom(c, (k) => p.get(k) ?? undefined);
 }
 
@@ -160,17 +165,21 @@ export function listRecords(c: AdminCtx): Promise<Response> {
 export async function searchRecords(c: AdminCtx): Promise<Response> {
   const body = await jsonBody(c.request);
   if (!body) return adminError('bad_request');
-  return listFrom(c, (k) => {
-    const v = body[k];
-    if (v === undefined || v === null) return undefined;
-    if (typeof v === 'string') return v;
-    if (typeof v === 'number') return String(v);
-    if (typeof v === 'boolean') return v ? '1' : '0';
-    return '\u0000'; // any other shape fails validation below
-  });
+  return listFrom(
+    c,
+    (k) => {
+      const v = body[k];
+      if (v === undefined || v === null) return undefined;
+      if (typeof v === 'string') return v;
+      if (typeof v === 'number') return String(v);
+      if (typeof v === 'boolean') return v ? '1' : '0';
+      return '\u0000'; // any other shape fails validation
+    },
+    true,
+  );
 }
 
-async function listFrom(c: AdminCtx, get: Getter): Promise<Response> {
+async function listFrom(c: AdminCtx, get: Getter, auditSearch = false): Promise<Response> {
   const f = parseFilter({
     type: get('type'),
     status: get('status'),
@@ -192,6 +201,23 @@ async function listFrom(c: AdminCtx, get: Getter): Promise<Response> {
     if (!/^\d{1,3}$/.test(limitRaw)) return adminError('bad_request');
     limit = Number(limitRaw);
     if (limit < 1 || limit > 100) return adminError('bad_request');
+  }
+  if (auditSearch && f.q) {
+    // The fact of a text search is audited before any result leaves: filter enums and q:true, never the text.
+    await audit(c, {
+      action: 'search',
+      subjectType: 'bulk',
+      details: {
+        type: f.type,
+        filters: {
+          status: f.status,
+          region: f.region,
+          grade: f.grade,
+          include_spam: f.includeSpam,
+        },
+        q: true,
+      },
+    }).run();
   }
   const result = await listStatement(c.db, f, limit + 1).all<Record<string, unknown>>();
   const rows = result.results ?? [];
@@ -356,6 +382,8 @@ export async function deleteRecord(c: AdminCtx, type: RecordType, id: string): P
   const exists = await c.db.prepare(`SELECT id FROM ${TABLE[type]} WHERE id = ?`).bind(id).first();
   if (!exists) return adminError('not_found');
   await c.db.batch([
+    // Erasure leaves no email behind: the record's marketing consents go in the same batch.
+    deleteConsentsStatement(c.db, type, id),
     deleteRecordStatement(c.db, type, id),
     audit(c, { action: 'delete', subjectType: type, subjectId: id }),
   ]);

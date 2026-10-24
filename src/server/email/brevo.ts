@@ -37,6 +37,7 @@ export function createBrevoTransport(opts: {
             accept: 'application/json',
           },
           body: JSON.stringify(payload),
+          redirect: 'manual', // never follow; workerd rejects 'error', and a 3xx is treated as a failure (res.ok is false)
           signal: AbortSignal.timeout(TIMEOUT_MS),
         });
         if (!res.ok) return { ok: false, code: await failureCode(res) };

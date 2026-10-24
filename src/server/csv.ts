@@ -7,12 +7,15 @@
 const BOM = String.fromCharCode(0xfeff);
 const FORMULA_START = /^[=+\-@\t\r]/;
 
+/** A value that is wholly a phone number shows cleanly in Excel; it is not a formula. */
+const PHONE = /^\+?[0-9 ()./-]{7,32}$/;
+
 export function escapeCsvCell(value: unknown): string {
   if (value === null || value === undefined) return '';
   if (typeof value === 'boolean') return value ? '1' : '0';
   if (typeof value === 'number') return Number.isFinite(value) ? String(value) : '';
   let s = String(value);
-  if (FORMULA_START.test(s)) s = `'${s}`;
+  if (FORMULA_START.test(s) && !PHONE.test(s)) s = `'${s}`;
   return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 

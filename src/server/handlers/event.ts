@@ -6,7 +6,10 @@
 import type { HandlerContext } from '../env';
 import { parseAnalyticsEvent } from '../analytics';
 import { MAX_BODY_BYTES, jsonResponse, publicError, readBodyCapped } from '../http';
+import type { D1Like } from '../db/types';
+import { hmacHex } from '../hash';
 import { logError } from '../log';
+import { checkRateLimit, clientIp } from '../ratelimit';
 import { publicRequestAllowed } from '../security';
 
 type RawEnv = Record<string, unknown>;
@@ -48,6 +51,31 @@ export async function handleEvent(
   if (!(request.headers.get('Content-Type') ?? '').toLowerCase().startsWith('application/json')) {
     return publicError('bad_request');
   }
+  // Per hashed client IP, before the body is read. Generous: it only bounds abuse of the relay.
+  const secret = text(env.IP_HASH_SECRET);
+  const db = env.DB as D1Like | undefined;
+  const environment = text(env.ENVIRONMENT) ?? 'production';
+  const ip = clientIp(request, environment);
+  if (!secret || !db) return publicError('server');
+  if (ip === null) return publicError('bad_request');
+  const perMin = Number(text(env.RATE_LIMIT_EVENTS_PER_MIN) ?? 60);
+  const limited = await checkRateLimit(db, {
+    now: Date.now(),
+    checks: [
+      {
+        key: `ip:${await hmacHex(secret, 'ip', ip)}:event:1m`,
+        limit: Number.isInteger(perMin) && perMin >= 0 ? perMin : 60,
+        windowMs: 60_000,
+      },
+    ],
+  });
+  if (!limited.allowed) {
+    return publicError(
+      'rate_limited',
+      { retry_after: limited.retryAfter },
+      { 'Retry-After': String(limited.retryAfter) },
+    );
+  }
   const body = await readBodyCapped(request, Math.min(MAX_EVENT_BYTES, MAX_BODY_BYTES));
   if (body === null) return publicError('bad_request');
   let parsed: unknown;
@@ -75,6 +103,7 @@ export async function handleEvent(
           method: 'POST',
           headers,
           body: JSON.stringify(payload),
+          redirect: 'manual', // never follow; workerd rejects 'error', and a 3xx is treated as a failure (res.ok is false)
           signal: AbortSignal.timeout(4000),
         });
         await res.body?.cancel();

@@ -92,7 +92,7 @@ describe('POST /api/e', () => {
     expect(res.status).toBe(202);
     expect(s.calls).toHaveLength(1);
     expect(s.calls[0]?.url).toBe('https://stats.example/api/event');
-    expect(s.calls[0]?.init.redirect).toBe('error');
+    expect(s.calls[0]?.init.redirect).toBe('manual');
     expect(JSON.parse(String(s.calls[0]?.init.body))).toEqual({
       name: 'cta_click',
       url: 'https://skola.example/sk/',
@@ -140,7 +140,9 @@ describe('POST /api/e', () => {
     const e = { ...env, DB: fakeDb(), RATE_LIMIT_EVENTS_PER_MIN: '2' };
     const s = spy();
     const go = (ip: string) =>
-      handleEvent(req({ name: 'page_view', path: '/sk/' }, { 'CF-Connecting-IP': ip }), e, ctx(), { fetch: s.f });
+      handleEvent(req({ name: 'page_view', path: '/sk/' }, { 'CF-Connecting-IP': ip }), e, ctx(), {
+        fetch: s.f,
+      });
     expect((await go('203.0.113.1')).status).toBe(202);
     expect((await go('203.0.113.1')).status).toBe(202);
     const limited = await go('203.0.113.1');
@@ -151,13 +153,22 @@ describe('POST /api/e', () => {
   it('defaults to a generous 60 per minute', async () => {
     const e = { ...env, DB: fakeDb() };
     for (let i = 0; i < 60; i++) {
-      expect((await handleEvent(req({ name: 'page_view', path: '/sk/' }), e, ctx(), { fetch: spy().f })).status).toBe(202);
+      expect(
+        (await handleEvent(req({ name: 'page_view', path: '/sk/' }), e, ctx(), { fetch: spy().f }))
+          .status,
+      ).toBe(202);
     }
-    expect((await handleEvent(req({ name: 'page_view', path: '/sk/' }), e, ctx(), { fetch: spy().f })).status).toBe(429);
+    expect(
+      (await handleEvent(req({ name: 'page_view', path: '/sk/' }), e, ctx(), { fetch: spy().f }))
+        .status,
+    ).toBe(429);
   });
   it('fails closed (400) without CF-Connecting-IP outside development', async () => {
     const r = req({ name: 'page_view', path: '/sk/' });
     r.headers.delete('CF-Connecting-IP');
-    expect((await handleEvent(r, { ...env, ENVIRONMENT: 'production' }, ctx(), { fetch: spy().f })).status).toBe(400);
+    expect(
+      (await handleEvent(r, { ...env, ENVIRONMENT: 'production' }, ctx(), { fetch: spy().f }))
+        .status,
+    ).toBe(400);
   });
 });

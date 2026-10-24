@@ -9,6 +9,13 @@
 import http from 'node:http';
 import { randomUUID } from 'node:crypto';
 
+// Dev tools listen on loopback only and answer only requests addressed to localhost or 127.0.0.1 on
+// their own port. The Host check stops DNS rebinding: a hostile page cannot reach this tool through a
+// domain name that resolves to 127.0.0.1.
+const LOOPBACK_BIND = new Set(['127.0.0.1', 'localhost']);
+const hostAllowed = (header, port) =>
+  header === `localhost:${port}` || header === `127.0.0.1:${port}`;
+
 const MAX_BODY = 256 * 1024;
 const esc = (s) =>
   String(s ?? '')
@@ -43,6 +50,8 @@ function readJson(req) {
 const isStr = (v) => typeof v === 'string' && v.length > 0;
 
 export async function startMockMail({ port = 8791, host = '127.0.0.1' } = {}) {
+  if (!LOOPBACK_BIND.has(host))
+    throw new Error('mock-mail binds to loopback only (127.0.0.1 or localhost)');
   const messages = [];
   let failStatus = null;
 
@@ -56,6 +65,8 @@ export async function startMockMail({ port = 8791, host = '127.0.0.1' } = {}) {
   const json = (res, status, obj) => send(res, status, JSON.stringify(obj));
 
   const server = http.createServer(async (req, res) => {
+    if (!hostAllowed(req.headers.host, server.address().port))
+      return json(res, 403, { code: 'bad_host' });
     const url = new URL(req.url ?? '/', 'http://localhost');
     const path = url.pathname;
     if (req.method === 'POST' && path === '/send') {

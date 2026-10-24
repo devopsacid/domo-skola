@@ -5,6 +5,16 @@
  */
 import { stmt, type D1Like } from './db/types';
 
+/**
+ * The client address for limiting. Cloudflare always sets CF-Connecting-IP; its absence outside
+ * development means a request that did not come through the edge, so callers fail closed (null).
+ */
+export function clientIp(request: Request, environment: string): string | null {
+  const ip = request.headers.get('CF-Connecting-IP')?.trim();
+  if (ip) return ip;
+  return environment === 'development' ? 'unknown' : null;
+}
+
 export interface LimitCheck {
   /** `ip:<hmac>:<route>:10m`, `rcpt:<hmac>:day`, ... */
   key: string;

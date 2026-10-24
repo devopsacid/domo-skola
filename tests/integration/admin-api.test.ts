@@ -153,7 +153,7 @@ describe('GET /api/admin/records', () => {
     const q = async (s: string) =>
       (
         await json(
-          await api('admin', 'GET', `/api/admin/records?type=inquiry&q=${encodeURIComponent(s)}`),
+          await api('admin', 'POST', '/api/admin/records/search', { type: 'inquiry', q: s }),
         )
       ).data.items;
     expect((await q('kováč')).map((i: { id: string }) => i.id)).toEqual([a.id]);
@@ -189,18 +189,31 @@ describe('POST /api/admin/records/search (search terms stay out of URLs)', () =>
       400,
     );
     expect(
-      (await api('admin', 'POST', '/api/admin/records/search', { type: 'inquiry' }))
-        .status,
+      (await api('admin', 'POST', '/api/admin/records/search', { type: 'inquiry' })).status,
     ).toBe(200);
     expect(await audit()).toHaveLength(1); // only the text search is audited; the filter-only listing is not
   });
 
   it('audits the fact of a text search, never its text', async () => {
     await seedApplication(f.db);
-    await api('coord', 'POST', '/api/admin/records/search', { type: 'application', q: 'petra@example.cz', status: 'new', grade: 1 });
+    await api('coord', 'POST', '/api/admin/records/search', {
+      type: 'application',
+      q: 'petra@example.cz',
+      status: 'new',
+      grade: 1,
+    });
     const [a] = await audit();
-    expect(a).toMatchObject({ action: 'search', subject_type: 'bulk', subject_id: null, actor_email: 'coord@example.test' });
-    expect(JSON.parse(String(a?.details))).toEqual({ type: 'application', filters: { status: 'new', grade: 1, include_spam: false }, q: true });
+    expect(a).toMatchObject({
+      action: 'search',
+      subject_type: 'bulk',
+      subject_id: null,
+      actor_email: 'coord@example.test',
+    });
+    expect(JSON.parse(String(a?.details))).toEqual({
+      type: 'application',
+      filters: { status: 'new', grade: 1, include_spam: false },
+      q: true,
+    });
     expect(String(a?.details)).not.toContain('petra');
   });
 
@@ -575,7 +588,9 @@ describe('DELETE record', () => {
 describe('request bodies', () => {
   it('rejects an oversized JSON body before parsing it', async () => {
     const r = await seedInquiry(f.db);
-    const res = await api('admin', 'POST', `/api/admin/records/inquiry/${r.id}/notes`, { body: 'x'.repeat(70_000) });
+    const res = await api('admin', 'POST', `/api/admin/records/inquiry/${r.id}/notes`, {
+      body: 'x'.repeat(70_000),
+    });
     expect(res.status).toBe(400);
     expect(await audit()).toHaveLength(0);
   });

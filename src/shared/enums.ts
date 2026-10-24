@@ -29,6 +29,7 @@ export const EMAIL_KINDS = ['sender_confirmation', 'admin_notification'] as cons
 export const EMAIL_STATUSES = ['queued', 'sent', 'failed', 'skipped'] as const;
 export const AUDIT_ACTIONS = [
   'view',
+  'search',
   'status_change',
   'note_add',
   'email_resend',

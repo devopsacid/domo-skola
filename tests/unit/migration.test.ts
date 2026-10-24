@@ -105,9 +105,9 @@ describe('0001_init.sql', () => {
       'source',
     ]) {
       expect(checks[col], col).toBeDefined();
-      expect([...(checks[col] ?? [])].sort(), col).toEqual(
-        [...(ENUMS[col] ?? [])].map(String).sort(),
-      );
+      // 0002_audit_search.sql adds the 'search' audit action after this migration.
+      const expected = (ENUMS[col] ?? []).filter((v) => !(col === 'action' && v === 'search'));
+      expect([...(checks[col] ?? [])].sort(), col).toEqual(expected.map(String).sort());
     }
     // `status` and `kind` appear in several tables; assert by table text.
     const section = (t: string) =>

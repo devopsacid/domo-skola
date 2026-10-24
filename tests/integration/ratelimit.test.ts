@@ -100,12 +100,20 @@ describe('D1 rate limiter', () => {
     expect(del.filter((d) => d.status === 'skipped')).toEqual([
       { status: 'skipped', last_error_code: 'recipient_limit' },
     ]);
-    const mails = ((await (await fetch(`${f.mail.url}/messages`)).json()) as { messages: { tag: string }[] }).messages;
+    const mails = (
+      (await (await fetch(`${f.mail.url}/messages`)).json()) as { messages: { tag: string }[] }
+    ).messages;
     expect(mails.filter((m) => m.tag === 'sender_confirmation')).toHaveLength(3);
     expect(mails.filter((m) => m.tag === 'admin_notification')).toHaveLength(4);
-    const other = await send('198.51.100.21', { fields: { ...contactFields(), email: 'other@example.sk' } }, env);
+    const other = await send(
+      '198.51.100.21',
+      { fields: { ...contactFields(), email: 'other@example.sk' } },
+      env,
+    );
     expect(other.status).toBe(201);
-    expect(await rows(f.db, "SELECT id FROM email_deliveries WHERE last_error_code = 'recipient_limit'")).toHaveLength(1);
+    expect(
+      await rows(f.db, "SELECT id FROM email_deliveries WHERE last_error_code = 'recipient_limit'"),
+    ).toHaveLength(1);
   });
 
   it('counts only queued confirmations: suspected spam neither checks nor increments', async () => {
@@ -114,7 +122,10 @@ describe('D1 rate limiter', () => {
     expect(await rows(f.db, "SELECT * FROM rate_limits WHERE key LIKE 'rcpt:%'")).toHaveLength(0);
     // and a limited recipient does not stop spam from being stored as spam
     expect((await send('198.51.100.70', {}, env)).status).toBe(201);
-    const [r] = await rows<{ count: number }>(f.db, "SELECT count FROM rate_limits WHERE key LIKE 'rcpt:%'");
+    const [r] = await rows<{ count: number }>(
+      f.db,
+      "SELECT count FROM rate_limits WHERE key LIKE 'rcpt:%'",
+    );
     expect(r?.count).toBe(1);
   });
 
@@ -200,7 +211,10 @@ describe('D1 rate limiter', () => {
     };
     const run = async (environment: string) => {
       const ctx = makeCtx();
-      return handleContact(mk(), { ...f.env, ENVIRONMENT: environment }, ctx, { ...fixedClock(), settings: testSettings() });
+      return handleContact(mk(), { ...f.env, ENVIRONMENT: environment }, ctx, {
+        ...fixedClock(),
+        settings: testSettings(),
+      });
     };
     const res = await run('preview');
     expect(res.status).toBe(400);

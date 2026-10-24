@@ -29,7 +29,7 @@ export interface Config {
   };
   adminEmailLocale: Locale;
   ipHashSecret: string;
-  rateLimit: { per10min: number; perDay: number; emailPerDay: number };
+  rateLimit: { per10min: number; perDay: number; emailPerDay: number; eventsPerMin: number };
   retention: {
     inquiryDays: number;
     applicationDays: number;
@@ -65,10 +65,11 @@ const rawSchema = z.object({
   ANALYTICS_UPSTREAM: str,
 });
 
-const nonNegInt = (v: unknown, fallback?: number): number | undefined => {
+const nonNegInt = (v: unknown, fallback?: number, min = 0): number | undefined => {
   if (v === undefined || v === '') return fallback;
   if (typeof v !== 'string' || !/^\d{1,6}$/.test(v)) return undefined;
-  return Number(v);
+  const n = Number(v);
+  return n >= min ? n : undefined;
 };
 
 function origin(value: string): string | undefined {
@@ -104,10 +105,10 @@ export function parseConfig(env: Record<string, unknown>): Config {
   if (allowed.length === 0) bad.add('ALLOWED_ORIGINS');
 
   const retention = {
-    inquiryDays: nonNegInt(env.RETENTION_DAYS_INQUIRY),
-    applicationDays: nonNegInt(env.RETENTION_DAYS_APPLICATION),
-    afterCloseDays: nonNegInt(env.RETENTION_DAYS_AFTER_CLOSE),
-    auditDays: nonNegInt(env.AUDIT_RETENTION_DAYS),
+    inquiryDays: nonNegInt(env.RETENTION_DAYS_INQUIRY, undefined, 1),
+    applicationDays: nonNegInt(env.RETENTION_DAYS_APPLICATION, undefined, 1),
+    afterCloseDays: nonNegInt(env.RETENTION_DAYS_AFTER_CLOSE, undefined, 1),
+    auditDays: nonNegInt(env.AUDIT_RETENTION_DAYS, undefined, 1),
   };
   // No retention default is invented (docs/architecture.md section 7): all four must be set.
   if (retention.inquiryDays === undefined) bad.add('RETENTION_DAYS_INQUIRY');
@@ -119,10 +120,12 @@ export function parseConfig(env: Record<string, unknown>): Config {
     per10min: nonNegInt(blankless(env.RATE_LIMIT_PER_10MIN), 5),
     perDay: nonNegInt(blankless(env.RATE_LIMIT_PER_DAY), 20),
     emailPerDay: nonNegInt(blankless(env.RATE_LIMIT_EMAIL_PER_DAY), 3),
+    eventsPerMin: nonNegInt(blankless(env.RATE_LIMIT_EVENTS_PER_MIN), 60),
   };
   if (rl.per10min === undefined) bad.add('RATE_LIMIT_PER_10MIN');
   if (rl.perDay === undefined) bad.add('RATE_LIMIT_PER_DAY');
   if (rl.emailPerDay === undefined) bad.add('RATE_LIMIT_EMAIL_PER_DAY');
+  if (rl.eventsPerMin === undefined) bad.add('RATE_LIMIT_EVENTS_PER_MIN');
 
   const adminLocale = raw.ADMIN_EMAIL_LOCALE ?? 'sk';
   if (!(LOCALES as readonly string[]).includes(adminLocale)) bad.add('ADMIN_EMAIL_LOCALE');
