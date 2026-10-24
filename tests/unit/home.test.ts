@@ -308,7 +308,9 @@ describe('home content files', () => {
     for (const l of LOCALES)
       for (const f of files('faqItems', l)) {
         const text = readFileSync(join(root, 'faqItems', l, f), 'utf8');
-        const answer = text.split(/^answer: /m)[1]?.split(/^\S/m)[0] ?? '';
+        // The block scalar runs until the next unindented key.
+        const answer = text.split(/^answer: /m)[1]?.split(/\n(?=\S)/)[0] ?? '';
+        expect(answer.length, `${l}/${f} answer`).toBeGreaterThan(10);
         expect(answer, `${l}/${f}`).not.toMatch(pendingPhrase);
       }
     for (const l of LOCALES)

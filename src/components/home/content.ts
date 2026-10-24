@@ -7,6 +7,9 @@ import { getCollection, getEntry } from 'astro:content';
 import { z } from 'astro/zod';
 import type { Locale } from '../../i18n/routes';
 import { status } from '../../content-schemas';
+import { getSettings } from '../site/settings';
+
+export { getSettings };
 
 const s = z.string().min(1);
 const block = { status, reviewNote: z.string().optional() };
@@ -130,4 +133,5 @@ export function worstStatus(...statuses: Status[]): Status {
   if (statuses.includes('needs-review')) return 'needs-review';
   return 'verified';
 }
+export type Settings = Awaited<ReturnType<typeof getSettings>>;
 export type DaySchedule = Awaited<ReturnType<typeof getDaySchedule>>;

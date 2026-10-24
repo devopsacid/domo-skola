@@ -5,7 +5,8 @@
  * others simply allow several. Each item has a stable id for deep links.
  * `answer` is plain text with blank lines between paragraphs (the CMS field is
  * Markdown; only paragraphs are rendered here, which keeps the home page free of a
- * Markdown runtime). Answers that depend on unverified facts get a contact link.
+ * Markdown runtime). Answers that depend on unverified facts (`pending`) get their
+ * `pendingNote` and a contact link; both disappear once the facts are verified.
  */
 interface Item {
   id: string;
@@ -13,6 +14,8 @@ interface Item {
   answer: string;
   /** True when the answer depends on a fact that is not verified yet. */
   pending?: boolean;
+  /** Shown only while pending, e.g. "We are still confirming this." */
+  pendingNote?: string;
 }
 interface Props {
   items: Item[];
@@ -58,6 +61,7 @@ const paragraphs = (text: string) =>
           {paragraphs(item.answer).map((p) => (
             <p>{p}</p>
           ))}
+          {item.pending && item.pendingNote && <p class="faq-item__pending">{item.pendingNote}</p>}
           {item.pending && pendingLink && (
             <p>
               <a href={pendingLink.href}>{pendingLink.label}</a>

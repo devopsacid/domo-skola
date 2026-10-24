@@ -357,7 +357,9 @@
   justify-items: start;
 }
 
-@media (min-width: 64rem) {
+/* Sticky only when the viewport is tall enough to show the whole heading block,
+ * so its link stays reachable on short landscape screens. */
+@media (min-width: 64rem) and (min-height: 48rem) {
   .home-day__head {
     position: sticky;
     inset-block-start: calc(var(--header-height) + var(--space-l));

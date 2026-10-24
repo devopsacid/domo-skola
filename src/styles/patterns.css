@@ -145,6 +145,10 @@
   transform: rotate(45deg);
 }
 
+.faq-item__pending {
+  color: var(--color-text-muted);
+}
+
 .faq-item__a {
   display: grid;
   gap: var(--space-s);

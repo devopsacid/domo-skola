@@ -1,14 +1,14 @@
 ---
 /**
  * K. Featured FAQ (max 6) as a no-JS accordion. Answers that depend on unverified
- * settings facts get a contact link (never an invented answer, brief §5.7).
+ * settings facts get their pendingNote and a contact link (never an invented answer,
+ * brief §5.7).
  */
 import { localePath, type Locale } from '../../i18n/routes';
 import Reviewable from '../status/Reviewable.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import FaqAccordion from '../ui/FaqAccordion.astro';
 import LinkArrow from '../ui/LinkArrow.astro';
-import { getSettings } from '../site/settings';
 import { factsVerified } from '../site/facts';
 import { worstStatus, type FaqItem, type HomeSections } from './content';
 
@@ -16,13 +16,15 @@ interface Props {
   locale: Locale;
   data: HomeSections['faq'];
   items: FaqItem[];
+  /** Site settings (passed in, so the section renders without the content store). */
+  settings: Record<string, unknown>;
 }
-const { locale, data, items } = Astro.props;
-const settings = await getSettings();
+const { locale, data, items, settings } = Astro.props;
 const list = items.map((f) => ({
   id: f.id,
   question: f.question,
   answer: f.answer,
+  pendingNote: f.pendingNote,
   pending: !f.dependsOnFacts.every((path) => factsVerified(settings, path)),
 }));
 const status = worstStatus(data.status, ...items.map((f) => f.status));

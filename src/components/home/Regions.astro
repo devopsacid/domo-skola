@@ -9,15 +9,15 @@ import Reviewable from '../status/Reviewable.astro';
 import NotePending from '../status/NotePending.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import Motif from '../art/Motif.astro';
-import { getSettings } from '../site/settings';
-import type { HomeSections } from './content';
+import type { HomeSections, Settings } from './content';
 
 interface Props {
   locale: Locale;
   data: HomeSections['regions'];
+  /** Site settings (passed in, so the section renders without the content store). */
+  settings: Pick<Settings, 'regions' | 'venue'>;
 }
-const { locale, data } = Astro.props;
-const settings = await getSettings();
+const { locale, data, settings } = Astro.props;
 const regions = settings.regions.map((r) => r.label[locale]).filter(Boolean);
 const venueName = verifiedValue(settings.venue.name)?.[locale];
 const venueTown = verifiedValue(settings.venue.municipality);

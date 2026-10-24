@@ -30,7 +30,9 @@ export function fact<T extends z.ZodType>(value: T) {
 }
 
 /** The value of a fact only when verified; otherwise null (render "pending confirmation"). */
-export function verifiedValue<T>(f: { value: T | null; status: string } | null | undefined): T | null {
+export function verifiedValue<T>(
+  f: { value: T | null; status: string } | null | undefined,
+): T | null {
   return f && f.status === 'verified' ? f.value : null;
 }
 
@@ -195,6 +197,8 @@ export const faqItemsSchema = z.object({
   category: z.enum(FAQ_CATEGORY_KEYS),
   question: z.string(),
   answer: z.string(),
+  /** "We are still confirming …": rendered only while a fact in dependsOnFacts is unverified. */
+  pendingNote: z.string().optional(),
   order: z.number().int().default(0),
   featuredOnHome: z.boolean().default(false),
   /** Settings paths whose facts the answer depends on, e.g. "settings.fees". */

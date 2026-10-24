@@ -24,6 +24,7 @@ import {
   getFeaturedFaq,
   getHome,
   getPillars,
+  getSettings,
 } from '../../components/home/content';
 
 export function getStaticPaths() {
@@ -31,11 +32,12 @@ export function getStaticPaths() {
 }
 
 const locale = Astro.params.locale as Locale;
-const [home, pillars, schedule, faq] = await Promise.all([
+const [home, pillars, schedule, faq, settings] = await Promise.all([
   getHome(locale),
   getPillars(locale),
   getDaySchedule(locale),
   getFeaturedFaq(locale),
+  getSettings(),
 ]);
 const s = home.sections;
 ---
@@ -49,8 +51,8 @@ const s = home.sections;
   <Examples locale={locale} data={s.examples} />
   <Environment locale={locale} data={s.environment} />
   <Fit locale={locale} data={s.fit} />
-  <Regions locale={locale} data={s.regions} />
+  <Regions locale={locale} data={s.regions} settings={settings} />
   <Process locale={locale} data={s.process} />
-  <Faq locale={locale} data={s.faq} items={faq} />
+  <Faq locale={locale} data={s.faq} items={faq} settings={settings} />
   <FinalCta locale={locale} data={s.finalCta} />
 </Base>
