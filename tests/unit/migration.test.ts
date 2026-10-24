@@ -160,9 +160,15 @@ describe('0001_init.sql', () => {
     ['motivation too long', { motivation: 'a'.repeat(2001) }],
     ['questions too long', { questions: 'a'.repeat(2001) }],
     ['school year format', { intended_school_year: '27/28' }],
-    ['missing phone', { phone: null }],
+    ['empty phone', { phone: '' }],
+    ['phone too long', { phone: '1'.repeat(33) }],
   ])('rejects invalid application: %s', (_n, o) => {
     expect(() => application(o)).toThrow();
+  });
+
+  it('allows a NULL phone (requiredness lives in APPLICATION_PHONE_REQUIRED)', () => {
+    application({ phone: null });
+    expect(db.prepare('SELECT phone FROM applications').get()).toEqual({ phone: null });
   });
 
   it('allows null optional application fields and valid enums', () => {
@@ -231,19 +237,151 @@ describe('0001_init.sql', () => {
     expect(cols).toContain('attempts');
   });
 
-  it('audit_log is append-only for updates, validates enums, and has no PII columns', () => {
-    const ins = db.prepare(
-      'INSERT INTO audit_log(at, actor_email, actor_role, action, subject_type, subject_id, details, request_id) VALUES(?,?,?,?,?,?,?,?)',
+  describe('audit_log integrity', () => {
+    const ins = () =>
+      db.prepare(
+        'INSERT INTO audit_log(at, actor_email, actor_role, action, subject_type, subject_id, details, request_id) VALUES(?,?,?,?,?,?,?,?)',
+      );
+    const row = () => ins().run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', 'i1', null, 'r1');
+
+    it('validates enums', () => {
+      row();
+      expect(() =>
+        ins().run(NOW, 'a@x.sk', 'admin', 'hack', 'inquiry', 'i1', null, 'r1'),
+      ).toThrow();
+      expect(() => ins().run(NOW, 'a@x.sk', 'boss', 'view', 'inquiry', 'i1', null, 'r1')).toThrow();
+      expect(() => ins().run(NOW, 'a@x.sk', 'admin', 'view', 'other', 'i1', null, 'r1')).toThrow();
+    });
+    it('blocks UPDATE', () => {
+      row();
+      expect(() => db.prepare("UPDATE audit_log SET action='delete'").run()).toThrow(/append-only/);
+    });
+    it('blocks INSERT OR REPLACE and REPLACE INTO over an existing id', () => {
+      row();
+      const id = (db.prepare('SELECT id FROM audit_log').get() as { id: number }).id;
+      const cols = '(id, at, actor_email, actor_role, action, subject_type) VALUES(?,?,?,?,?,?)';
+      expect(() =>
+        db
+          .prepare(`INSERT OR REPLACE INTO audit_log${cols}`)
+          .run(id, NOW, 'evil@x.sk', 'admin', 'view', 'bulk'),
+      ).toThrow(/append-only/);
+      expect(() =>
+        db
+          .prepare(`REPLACE INTO audit_log${cols}`)
+          .run(id, NOW, 'evil@x.sk', 'admin', 'view', 'bulk'),
+      ).toThrow(/append-only/);
+      expect(db.prepare('SELECT actor_email FROM audit_log').get()).toEqual({
+        actor_email: 'a@x.sk',
+      });
+    });
+    it('still allows normal appends with autoincrement ids', () => {
+      row();
+      row();
+      expect(db.prepare('SELECT count(*) c FROM audit_log').get()).toEqual({ c: 2 });
+    });
+    it('blocks DELETE unless the purge path has opened retention_guard in the same transaction', () => {
+      row();
+      expect(() => db.prepare('DELETE FROM audit_log').run()).toThrow(/retention/);
+      expect(() => db.prepare("DELETE FROM audit_log WHERE at < '2100'").run()).toThrow(
+        /retention/,
+      );
+      db.exec('BEGIN');
+      db.exec('UPDATE retention_guard SET purge_allowed = 1');
+      db.exec('DELETE FROM audit_log');
+      db.exec('UPDATE retention_guard SET purge_allowed = 0');
+      db.exec('COMMIT');
+      expect(db.prepare('SELECT count(*) c FROM audit_log').get()).toEqual({ c: 0 });
+      row();
+      expect(() => db.prepare('DELETE FROM audit_log').run()).toThrow(/retention/);
+    });
+    it('retention_guard is a single closed row by default', () => {
+      expect(db.prepare('SELECT id, purge_allowed FROM retention_guard').all()).toEqual([
+        { id: 1, purge_allowed: 0 },
+      ]);
+      expect(() =>
+        db.prepare('INSERT INTO retention_guard(id, purge_allowed) VALUES(2, 0)').run(),
+      ).toThrow();
+      expect(() => db.prepare('UPDATE retention_guard SET purge_allowed = 2').run()).toThrow();
+    });
+    it('has length limits on details, request_id and subject_id', () => {
+      const long = (n: number) => 'x'.repeat(n);
+      const i = ins();
+      expect(() =>
+        i.run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', 'i1', long(1001), 'r'),
+      ).toThrow();
+      expect(() =>
+        i.run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', 'i1', null, long(65)),
+      ).toThrow();
+      expect(() => i.run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', long(65), null, 'r')).toThrow();
+      i.run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', long(64), long(1000), long(64));
+    });
+  });
+
+  describe('marketing_consents lifetime and limits', () => {
+    const consent = (o: Record<string, unknown> = {}) => {
+      const r: Record<string, unknown> = {
+        id: 'm1',
+        email: 'j@example.sk',
+        locale: 'sk',
+        purpose: 'newsletter',
+        consent_text_version: 'v1',
+        granted_at: NOW,
+        source: 'contact',
+        retain_until: LATER,
+        ...o,
+      };
+      const cols = Object.keys(r);
+      db.prepare(
+        `INSERT INTO marketing_consents(${cols.join(',')}) VALUES(${cols.map(() => '?').join(',')})`,
+      ).run(...(Object.values(r) as never[]));
+    };
+    it('accepts a valid row and requires retain_until and source', () => {
+      consent();
+      expect(() => consent({ id: 'm2', retain_until: null })).toThrow();
+      expect(() => consent({ id: 'm3', source: null })).toThrow();
+      expect(() => consent({ id: 'm4', source: 'other' })).toThrow();
+    });
+    it.each([
+      ['purpose', { purpose: 'x'.repeat(101) }],
+      ['purpose empty', { purpose: '' }],
+      ['version', { consent_text_version: 'x'.repeat(33) }],
+      ['version empty', { consent_text_version: '' }],
+      ['channel', { withdrawn_at: NOW, withdrawal_channel: 'x'.repeat(65) }],
+      ['channel without withdrawal', { withdrawal_channel: 'email' }],
+      ['email', { email: 'x'.repeat(255) }],
+    ])('rejects %s', (_n, o) => {
+      expect(() => consent(o)).toThrow();
+    });
+    it('accepts a withdrawal with a channel', () => {
+      consent({ withdrawn_at: NOW, withdrawal_channel: 'email' });
+    });
+  });
+
+  it('limits free-form metadata columns', () => {
+    const long = (n: number) => 'x'.repeat(n);
+    expect(() => inquiry({ source_page: long(65) })).toThrow();
+    expect(() => inquiry({ id: 'i2', privacy_notice_version: long(33) })).toThrow();
+    expect(() => inquiry({ id: 'i3', privacy_notice_version: '' })).toThrow();
+    expect(() => application({ privacy_notice_version: long(33) })).toThrow();
+    inquiry({ id: 'i4', source_page: long(64), privacy_notice_version: long(32) });
+    const d = db.prepare(
+      'INSERT INTO email_deliveries(id, kind, inquiry_id, status, last_error_code, provider_message_id, created_at, updated_at) VALUES(?,?,?,?,?,?,?,?)',
     );
-    ins.run(NOW, 'a@x.sk', 'admin', 'view', 'inquiry', 'i1', null, 'r1');
-    expect(() => ins.run(NOW, 'a@x.sk', 'admin', 'hack', 'inquiry', 'i1', null, 'r1')).toThrow();
-    expect(() => ins.run(NOW, 'a@x.sk', 'boss', 'view', 'inquiry', 'i1', null, 'r1')).toThrow();
-    expect(() => ins.run(NOW, 'a@x.sk', 'admin', 'view', 'other', 'i1', null, 'r1')).toThrow();
-    expect(() => db.prepare("UPDATE audit_log SET action='delete'").run()).toThrow();
-    db.prepare('DELETE FROM audit_log').run(); // retention job
+    expect(() =>
+      d.run('d1', 'sender_confirmation', 'i4', 'failed', long(65), null, NOW, NOW),
+    ).toThrow();
+    expect(() =>
+      d.run('d2', 'sender_confirmation', 'i4', 'sent', null, long(129), NOW, NOW),
+    ).toThrow();
+    d.run('d3', 'sender_confirmation', 'i4', 'failed', long(64), long(128), NOW, NOW);
   });
 
   it('admin_users and rate_limits enforce their shape', () => {
+    expect(() =>
+      db
+        .prepare("INSERT INTO admin_users(email, role, created_at) VALUES('Boss@x.sk','admin',?)")
+        .run(NOW),
+    ).toThrow();
     db.prepare("INSERT INTO admin_users(email, role, created_at) VALUES('a@x.sk','admin',?)").run(
       NOW,
     );
@@ -267,6 +405,16 @@ describe('0001_init.sql', () => {
     ).toThrow();
   });
 
+  it('does not keep redundant single-column region or grade indexes', () => {
+    const names = db
+      .prepare("SELECT name FROM sqlite_master WHERE type='index'")
+      .all()
+      .map((r) => r.name as string);
+    expect(names).not.toContain('contact_inquiries_region');
+    expect(names).not.toContain('applications_region');
+    expect(names).not.toContain('applications_grade');
+  });
+
   it('creates the documented indexes', () => {
     const idx = db
       .prepare("SELECT name FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'")
@@ -276,9 +424,13 @@ describe('0001_init.sql', () => {
     for (const needle of [
       'contact_inquiries_status',
       'applications_status',
-      'contact_inquiries_region',
-      'applications_region',
-      'applications_grade',
+      'contact_inquiries_status_region',
+      'applications_status_region',
+      'applications_status_grade',
+      'contact_inquiries_email',
+      'applications_email',
+      'marketing_consents_email',
+      'audit_log_subject',
       'contact_inquiries_retain',
       'applications_retain',
       'audit_log_at',
