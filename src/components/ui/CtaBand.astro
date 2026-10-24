@@ -1,0 +1,30 @@
+---
+/**
+ * Closing conversion band on the night surface, continuous with the footer
+ * (system.md §6.12): primary → enrol, secondary → contact with subject=visit.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import Mark from '../site/Mark.astro';
+import type { ContentStatus } from '../status/mode';
+
+interface Props {
+  locale: Locale;
+  name: string;
+  data: { status: ContentStatus; title: string; text: string; ctaPrimary: string; ctaSecondary: string };
+}
+const { locale, name, data } = Astro.props;
+const id = `${name.replace(/[^a-z0-9]+/gi, '-')}-cta`;
+---
+
+<section class="section surface-night cta-band" aria-labelledby={id}>
+  <Reviewable locale={locale} status={data.status} name={name} quiet class="container cta-band__inner">
+    <Mark size="l" class="cta-band__mark" />
+    <h2 class="cta-band__title" id={id}>{data.title}</h2>
+    <p class="cta-band__text">{data.text}</p>
+    <div class="btn-group cta-band__ctas">
+      <a class="btn btn-primary" href={localePath('enrol', locale)}>{data.ctaPrimary}</a>
+      <a class="btn btn-secondary" href={`${localePath('contact', locale)}?subject=visit`}>{data.ctaSecondary}</a>
+    </div>
+  </Reviewable>
+</section>

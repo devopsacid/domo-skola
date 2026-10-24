@@ -1,0 +1,29 @@
+---
+/**
+ * Settings facts as a definition list (docs/ia.md §4 "Facts"). A row shows its value
+ * only when the fact is verified (resolved by the caller with factText); otherwise the
+ * public pending label, never the unverified value.
+ */
+import type { Locale } from '../../i18n/routes';
+import NotePending from '../status/NotePending.astro';
+
+interface Props {
+  locale: Locale;
+  rows: { label: string; value: string | null; pending?: string }[];
+  class?: string;
+}
+const { locale, rows, class: className } = Astro.props;
+---
+
+<dl class:list={['fact-list', className]}>
+  {
+    rows.map((r) => (
+      <div class="fact-list__row">
+        <dt>{r.label}</dt>
+        <dd>
+          {r.value ?? <NotePending locale={locale} kind="pending" inline label={r.pending} />}
+        </dd>
+      </div>
+    ))
+  }
+</dl>

@@ -1,0 +1,128 @@
+---
+/**
+ * A day in our community (docs/ia.md §2.3, brief §5.3): an illustrative rhythm from
+ * daySchedule (times only from verified facts), what fills the day (the eight aspects
+ * of brief §5.3), who is with the children (guide, small groups, weather), practical details that are still pending (settings.operations facts)
+ * and the CTA. The "illustrative example" label is always visible.
+ */
+import type { Locale } from '../../i18n/routes';
+import { verifiedValue } from '../../content-schemas';
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import PageIntro from '../ui/PageIntro.astro';
+import TopicGroup from '../ui/TopicGroup.astro';
+import CtaBand from '../ui/CtaBand.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Timeline from '../ui/Timeline.astro';
+import Reviewable from '../status/Reviewable.astro';
+import NotePending from '../status/NotePending.astro';
+import Motif, { type MotifName } from '../art/Motif.astro';
+import { getDaySchedule, worstStatus, type DaySchedule } from '../home/content';
+import { getPage, getSettings } from './content';
+import { buildConditions } from './links';
+import { ASPECT_MOTIF } from './motifs';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const [page, schedule, settings] = await Promise.all([
+  getPage('day', locale),
+  getDaySchedule(locale),
+  getSettings(),
+]);
+const s = page.sections;
+const conditions = buildConditions(settings, import.meta.env.PUBLIC_ANALYTICS_PROVIDER);
+const MOTIF: Record<DaySchedule['items'][number]['kind'], MotifName> = {
+  arrival: 'sunrise',
+  independent: 'beads',
+  guided: 'steps',
+  project: 'paper',
+  math_language: 'numberline',
+  outdoor: 'leaf',
+  creative: 'paper',
+  rest: 'window',
+  social: 'ring',
+  reflection: 'ring',
+};
+const items = schedule.items.map((it) => ({
+  title: it.title,
+  description: it.description,
+  time: verifiedValue(it.approxTime),
+  motif: MOTIF[it.kind],
+}));
+---
+
+<Base locale={locale} title={page.seo.title} description={page.seo.description} page={{ key: 'day', locale }}>
+  <PageIntro
+    locale={locale}
+    status={s.intro.status}
+    name="pages/day.intro"
+    eyebrow={s.intro.eyebrow}
+    title={s.intro.title}
+    lead={s.intro.lead}
+  >
+    <NotePending locale={locale} kind="illustrative">
+      <p>{schedule.disclaimer}</p>
+    </NotePending>
+  </PageIntro>
+
+  <section class="section surface-sunk day-rhythm" aria-labelledby="day-rhythm-title">
+    <Reviewable
+      locale={locale}
+      status={worstStatus(s.rhythm.status, schedule.status)}
+      name="pages/day.rhythm + daySchedule"
+      quiet
+      class="container split"
+    >
+      <div class="split__head split__head--sticky">
+        <SectionHeading eyebrow={s.rhythm.eyebrow} title={s.rhythm.title} id="day-rhythm-title">
+          <p>{s.rhythm.intro}</p>
+        </SectionHeading>
+        <NotePending locale={locale} kind="illustrative" />
+      </div>
+      <div class="split__body">
+        <Timeline items={items} />
+      </div>
+    </Reviewable>
+  </section>
+
+  <section class="section day-aspects" aria-labelledby="day-aspects-title">
+    <Reviewable locale={locale} status={s.aspects.status} name="pages/day.aspects" quiet class="container">
+      <SectionHeading eyebrow={s.aspects.eyebrow} title={s.aspects.title} id="day-aspects-title">
+        <p>{s.aspects.intro}</p>
+      </SectionHeading>
+      <ul class="aspect-list">
+        {
+          s.aspects.items.map((a) => (
+            <li class="aspect" data-kind={a.kind}>
+              <Motif name={ASPECT_MOTIF[a.kind]} class="aspect__motif" />
+              <h3 class="aspect__title">{a.title}</h3>
+              <p class="aspect__text">{a.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </Reviewable>
+  </section>
+
+  <TopicGroup
+    locale={locale}
+    group={s.people}
+    settings={settings}
+    conditions={conditions}
+    surface="surface-sunk"
+    name="pages/day.people"
+  />
+
+  <TopicGroup
+    locale={locale}
+    group={s.practical}
+    settings={settings}
+    conditions={conditions}
+    surface="surface-sage"
+    name="pages/day.practical"
+  />
+
+  <CtaBand locale={locale} name="pages/day" data={s.cta} />
+</Base>

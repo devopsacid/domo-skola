@@ -8,19 +8,10 @@ import { STUB_KEYS, type StubKey } from '../../components/site/stubs';
 import Base from '../../layouts/Base.astro';
 import NotePending from '../../components/status/NotePending.astro';
 import { CHROME } from '../../components/site/strings';
-import { getPillars } from '../../components/home/content';
 
 const TITLES: Record<StubKey, Record<Locale, string>> = {
-  approach: { sk: CHROME.sk.nav.approach, cs: CHROME.cs.nav.approach, en: CHROME.en.nav.approach },
-  day: { sk: CHROME.sk.nav.day, cs: CHROME.cs.nav.day, en: CHROME.en.nav.day },
-  parents: { sk: CHROME.sk.nav.parents, cs: CHROME.cs.nav.parents, en: CHROME.en.nav.parents },
   enrol: { sk: CHROME.sk.ctaEnrol, cs: CHROME.cs.ctaEnrol, en: CHROME.en.ctaEnrol },
   contact: { sk: CHROME.sk.nav.contact, cs: CHROME.cs.nav.contact, en: CHROME.en.nav.contact },
-  faq: { sk: CHROME.sk.nav.faq, cs: CHROME.cs.nav.faq, en: CHROME.en.nav.faq },
-  blog: { sk: 'Blog', cs: 'Blog', en: 'Blog' },
-  privacy: { sk: CHROME.sk.privacy, cs: CHROME.cs.privacy, en: CHROME.en.privacy },
-  cookies: { sk: CHROME.sk.cookies, cs: CHROME.cs.cookies, en: CHROME.en.cookies },
-  legal: { sk: CHROME.sk.legal, cs: CHROME.cs.legal, en: CHROME.en.legal },
 };
 
 const SOON: Record<Locale, string> = {
@@ -41,8 +32,6 @@ export function getStaticPaths() {
 const locale = Astro.params.locale as Locale;
 const { key } = Astro.props as { key: StubKey };
 const title = TITLES[key][locale];
-// Home pillar links point at approach#<anchor>; keep those anchors resolvable until L4.
-const pillars = key === 'approach' ? await getPillars(locale) : [];
 ---
 
 <Base locale={locale} title={title} page={{ key, locale }} noindex stub>
@@ -52,13 +41,6 @@ const pillars = key === 'approach' ? await getPillars(locale) : [];
       <NotePending locale={locale} kind="pending">
         <p>{SOON[locale]}</p>
       </NotePending>
-      {
-        pillars.map((p) => (
-          <h2 class="heading-2" id={p.anchor}>
-            {p.title}
-          </h2>
-        ))
-      }
     </div>
   </section>
 </Base>

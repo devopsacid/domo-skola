@@ -1,0 +1,108 @@
+---
+/**
+ * For parents (docs/ia.md §2.4, brief §5.4): practical topics in groups (facts only
+ * when verified; fees only when settings.fees is verified and visible), the indicative
+ * admission process (the same steps as home §J, marked "proposed"), how enrolment and
+ * formal home education work in general terms, and the legal and
+ * organizational status block.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import PageIntro from '../ui/PageIntro.astro';
+import OnThisPage from '../ui/OnThisPage.astro';
+import TopicGroup from '../ui/TopicGroup.astro';
+import CtaBand from '../ui/CtaBand.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Steps from '../ui/Steps.astro';
+import Reviewable from '../status/Reviewable.astro';
+import NotePending from '../status/NotePending.astro';
+import { getHome, worstStatus } from '../home/content';
+import { getPage, getSettings } from './content';
+import { buildConditions } from './links';
+import { pageStrings } from './strings';
+import LegalStatus from './LegalStatus.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const [page, home, settings] = await Promise.all([
+  getPage('parents', locale),
+  getHome(locale),
+  getSettings(),
+]);
+const s = page.sections;
+const process = home.sections.process;
+const conditions = buildConditions(settings, import.meta.env.PUBLIC_ANALYTICS_PROVIDER);
+const SURFACES = [undefined, 'surface-sunk', undefined, 'surface-sage'];
+const groups = [s.basics, s.learning, s.family, s.practical];
+const toc = [
+  ...groups.map((g) => ({ href: `#${g.id}`, label: g.title })),
+  { href: `#${s.admission.id}`, label: s.admission.title },
+  { href: `#${s.formal.id}`, label: s.formal.title },
+  { href: `#${s.legal.id}`, label: s.legal.title },
+];
+---
+
+<Base locale={locale} title={page.seo.title} description={page.seo.description} page={{ key: 'parents', locale }}>
+  <PageIntro
+    locale={locale}
+    status={s.intro.status}
+    name="pages/parents.intro"
+    eyebrow={s.intro.eyebrow}
+    title={s.intro.title}
+    lead={s.intro.lead}
+  >
+    <OnThisPage label={pageStrings(locale).onThisPage} items={toc} />
+  </PageIntro>
+
+  {
+    groups.map((g, i) => (
+      <TopicGroup
+        locale={locale}
+        group={g}
+        settings={settings}
+        conditions={conditions}
+        surface={SURFACES[i % SURFACES.length]}
+        pendingLink={s.legal.contactLink}
+        name={`pages/parents.${g.id}`}
+      />
+    ))
+  }
+
+  <section class="section surface-sunk parents-admission" id={s.admission.id} aria-labelledby={`${s.admission.id}-title`}>
+    <Reviewable
+      locale={locale}
+      status={worstStatus(s.admission.status, process.status)}
+      name="pages/parents.admission + pages/home.process"
+      quiet
+      class="container"
+    >
+      <SectionHeading eyebrow={s.admission.eyebrow} title={s.admission.title} id={`${s.admission.id}-title`}>
+        <p>{s.admission.intro}</p>
+      </SectionHeading>
+      <NotePending locale={locale} kind="proposed" class="parents-admission__note">
+        <p>{s.admission.note}</p>
+      </NotePending>
+      <Steps steps={process.steps} />
+      <div class="btn-group parents-admission__ctas">
+        <a class="btn btn-primary" href={localePath('enrol', locale)}>{s.admission.ctaPrimary}</a>
+        <a class="btn btn-secondary" href={`${localePath('contact', locale)}?subject=visit`}>{s.admission.ctaSecondary}</a>
+      </div>
+    </Reviewable>
+  </section>
+
+  <TopicGroup
+    locale={locale}
+    group={s.formal}
+    settings={settings}
+    conditions={conditions}
+    pendingLink={s.legal.contactLink}
+    name="pages/parents.formal"
+  />
+
+  <LegalStatus locale={locale} data={s.legal} settings={settings} />
+
+  <CtaBand locale={locale} name="pages/parents" data={s.cta} />
+</Base>

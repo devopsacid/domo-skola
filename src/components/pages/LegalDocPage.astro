@@ -1,0 +1,89 @@
+---
+/**
+ * Privacy, cookies and legal information (docs/ia.md §2.9, brief §10 GDPR). Placeholder
+ * structures: the visible "draft, pending legal review" note stays until the page is
+ * verified; every organisational fact (controller, legal bases, retention, processors)
+ * comes from settings and shows the pending label until verified. Nothing is invented.
+ * Layout: one reading column with a sticky table of contents from 64rem.
+ */
+import type { Locale } from '../../i18n/routes';
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import PageIntro from '../ui/PageIntro.astro';
+import OnThisPage from '../ui/OnThisPage.astro';
+import TopicGroup from '../ui/TopicGroup.astro';
+import NotePending from '../status/NotePending.astro';
+import { chrome } from '../site/strings';
+import { getPage, getSettings } from './content';
+import { buildConditions } from './links';
+import { pageStrings } from './strings';
+
+interface Props {
+  locale: Locale;
+  doc: 'privacy' | 'cookies' | 'legal';
+}
+const { locale, doc: key } = Astro.props;
+const [page, settings] = await Promise.all([getPage(key, locale), getSettings()]);
+const s = page.sections;
+const t = pageStrings(locale);
+const conditions = buildConditions(settings, import.meta.env.PUBLIC_ANALYTICS_PROVIDER);
+const verified = page.status === 'verified' && s.groups.every((g) => g.status === 'verified');
+const notice = settings.privacyNotice;
+const version =
+  key === 'privacy' && notice.status === 'verified'
+    ? [notice.version, notice.effectiveDate].filter(Boolean).join(' · ')
+    : null;
+---
+
+<Base locale={locale} title={page.seo.title} description={page.seo.description} page={{ key, locale }}>
+  <PageIntro
+    locale={locale}
+    status={s.intro.status}
+    name={`pages/${key}.intro`}
+    eyebrow={s.intro.eyebrow}
+    title={s.intro.title}
+    lead={s.intro.lead}
+  >
+    {
+      !verified && (
+        <NotePending locale={locale} kind="pending" label={t.draftLegal}>
+          <p>{s.intro.draftNote}</p>
+        </NotePending>
+      )
+    }
+  </PageIntro>
+
+  <section class="section legal-doc" aria-label={s.intro.title}>
+    <div class="container legal-doc__layout">
+      <div class="legal-doc__nav">
+        <OnThisPage
+          label={t.onThisPage}
+          items={s.groups.map((g) => ({ href: `#${g.id}`, label: g.title }))}
+          class="toc--vertical"
+        />
+      </div>
+      <div class="legal-doc__main">
+        {
+          s.groups.map((g) => (
+            <TopicGroup
+              locale={locale}
+              group={g}
+              settings={settings}
+              conditions={conditions}
+              layout="doc"
+              pendingLink={chrome(locale).nav.contact}
+              name={`pages/${key}.${g.id}`}
+            />
+          ))
+        }
+        {
+          key === 'privacy' && (
+            <p class="legal-doc__version text-small">
+              {version ?? <NotePending locale={locale} kind="pending" inline />}
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Base>

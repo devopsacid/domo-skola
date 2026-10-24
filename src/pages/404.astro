@@ -1,0 +1,90 @@
+---
+/**
+ * Language-neutral root 404 (NOT_FOUND_PATH = /404.html). Cloudflare Pages serves this
+ * one file for every unknown path, at any depth, so every URL in it is absolute and it
+ * renders no locale header. Always noindex; no hreflang or canonical (check-hreflang
+ * skips it). One short block per language, each marked with its own `lang`.
+ * PLACEHOLDER COPY (needs-review): CS and EN need a native-speaker check (brief §8).
+ */
+import '../styles/index.css';
+import '../styles/pages.css';
+import { LOCALES, localePath, type Locale } from '../i18n/routes';
+import Brand from '../components/site/Brand.astro';
+import Mark from '../components/site/Mark.astro';
+import { getBrandName } from '../components/site/settings';
+import { chrome } from '../components/site/strings';
+import { THEME_COLOR } from '../components/site/theme';
+
+const TEXT: Record<Locale, { title: string; text: string; home: string; faq: string }> = {
+  sk: {
+    title: 'Stránku sme nenašli',
+    text: 'Adresa sa mohla zmeniť alebo je v nej preklep.',
+    home: 'Prejsť na úvodnú stránku',
+    faq: 'Časté otázky',
+  },
+  cs: {
+    title: 'Stránku jsme nenašli',
+    text: 'Adresa se mohla změnit, nebo je v ní překlep.',
+    home: 'Přejít na úvodní stránku',
+    faq: 'Časté dotazy',
+  },
+  en: {
+    title: 'We could not find this page',
+    text: 'The address may have changed or contain a typo.',
+    home: 'Go to the home page',
+    faq: 'Questions and answers',
+  },
+};
+const brandName = await getBrandName();
+---
+
+<!doctype html>
+<html lang="sk" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 – {brandName}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content={THEME_COLOR} />
+    <meta name="color-scheme" content="light" />
+  </head>
+  <body class="not-found">
+    <header class="not-found__header">
+      <div class="container">
+        <Brand name={brandName} href={localePath('home', 'sk')} />
+      </div>
+    </header>
+    <main id="main" class="section not-found__main">
+      <div class="container not-found__inner">
+        <Mark size="l" class="not-found__mark" />
+        <p class="not-found__code" aria-hidden="true">404</p>
+        <ul class="not-found__list">
+          {
+            LOCALES.map((l, i) => (
+              <li class="not-found__lang" lang={l}>
+                {i === 0 ? (
+                  <h1 class="not-found__title">{TEXT[l].title}</h1>
+                ) : (
+                  <h2 class="not-found__title">{TEXT[l].title}</h2>
+                )}
+                <p>{TEXT[l].text}</p>
+                <ul class="not-found__links">
+                  <li>
+                    <a class="btn btn-secondary" href={localePath('home', l)}>
+                      {TEXT[l].home}
+                      <span class="visually-hidden"> ({chrome(l).languageNames[l]})</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href={localePath('faq', l)}>{TEXT[l].faq}</a>
+                  </li>
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
