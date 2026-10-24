@@ -13,13 +13,20 @@ interface Props {
   hrefs: Record<Locale, string>;
   variant?: 'compact' | 'full';
   label?: string;
+  /**
+   * Render without the <nav> landmark (a plain list under a visible heading), for a
+   * second switcher on the page: two landmarks with the same name fail axe
+   * landmark-unique (header "Jazyk" vs footer "Jazyk").
+   */
+  bare?: boolean;
   class?: string;
 }
-const { locale, hrefs, variant = 'compact', label, class: className } = Astro.props;
+const { locale, hrefs, variant = 'compact', label, bare = false, class: className } = Astro.props;
+const Wrap = bare ? 'div' : 'nav';
 const t = chrome(locale);
 ---
 
-<nav class={className} aria-label={label ?? t.languageNav}>
+<Wrap class={className} aria-label={bare ? undefined : (label ?? t.languageNav)}>
   <ul class:list={['lang-switch', variant === 'full' && 'lang-switch--full']}>
     {
       LOCALES.map((l) => (
@@ -43,4 +50,4 @@ const t = chrome(locale);
       ))
     }
   </ul>
-</nav>
+</Wrap>

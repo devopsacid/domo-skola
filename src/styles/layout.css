@@ -23,7 +23,8 @@
   padding-block: var(--space-2xl);
 }
 
-.section + .section:not([class*='surface-']),
+/* Only when both bands share the default surface; a cream band after a tinted one keeps its padding. */
+.section:not([class*='surface-']) + .section:not([class*='surface-']),
 .section.surface-sage + .section.surface-sage,
 .section.surface-sun + .section.surface-sun,
 .section.surface-clay + .section.surface-clay,
