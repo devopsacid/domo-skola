@@ -1,0 +1,568 @@
+---
+/**
+ * Component gallery for the design system (L2). Built only in `astro dev` or with
+ * DEV_PAGES=1, so production builds never contain /dev/. Always noindex.
+ *   /dev/components/     SK chrome
+ *   /dev/components/cs/  CS chrome
+ *   /dev/components/en/  EN chrome
+ * Demo copy below is gallery fixture text, not site content.
+ */
+import '../../styles/dev/gallery.css';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.astro';
+import LinkArrow from '../../components/ui/LinkArrow.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Mark from '../../components/site/Mark.astro';
+import Brand from '../../components/site/Brand.astro';
+import NotePending from '../../components/status/NotePending.astro';
+import Placeholder from '../../components/status/Placeholder.astro';
+import PlaceholderMedia from '../../components/status/PlaceholderMedia.astro';
+import ReviewBadge from '../../components/status/ReviewBadge.astro';
+import Reviewable from '../../components/status/Reviewable.astro';
+import { CHROME, chrome } from '../../components/site/strings';
+import { getBrandName } from '../../components/site/settings';
+import { LOCALES, localePath, type Locale } from '../../i18n/routes';
+
+export function getStaticPaths() {
+  const enabled = import.meta.env.DEV || process.env.DEV_PAGES === '1';
+  if (!enabled) return [];
+  return LOCALES.map((locale) => ({
+    params: { gallery: locale === 'sk' ? 'components' : `components/${locale}` },
+    props: { locale },
+  }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const t = chrome(locale);
+const brandName = await getBrandName();
+const langHrefs = Object.fromEntries(
+  LOCALES.map((l) => [l, l === 'sk' ? '/dev/components/' : `/dev/components/${l}/`]),
+) as Record<Locale, string>;
+
+const swatches = [
+  ['cream', '#F8F5ED', 'page bg'],
+  ['paper', '#FFFDF8', 'raised surface'],
+  ['cream-2', '#EFEADD', 'sunk band'],
+  ['sage-100', '#E3EADF', 'sage band'],
+  ['sage', '#A9BEA2', 'decorative'],
+  ['yellow-100', '#F6EBCB', 'sun band, draft'],
+  ['yellow', '#E8C875', 'accent on dark'],
+  ['clay-100', '#F3DED3', 'clay band'],
+  ['terracotta', '#C77958', 'decorative only'],
+  ['clay', '#9C5236', 'primary CTA 5.25'],
+  ['clay-700', '#8E4A2F', 'accent text 6.08'],
+  ['forest', '#315C4C', 'links 6.97'],
+  ['forest-700', '#24473A', 'link hover 9.46'],
+  ['forest-900', '#1A3329', 'headings, night 12.44'],
+  ['charcoal', '#29302D', 'body 12.40'],
+  ['ink-2', '#4F5A55', 'muted 6.59'],
+  ['red', '#A63A2B', 'error 5.91'],
+  ['green', '#2F6B45', 'success 5.82'],
+];
+const spaces = ['3xs', '2xs', 'xs', 's', 'm', 'l', 'xl', '2xl', '3xl', 'section'];
+const surfaces = [
+  ['surface-cream', 'cream (default)'],
+  ['surface-paper', 'paper'],
+  ['surface-sage', 'sage-100'],
+  ['surface-sun', 'sun (yellow-100)'],
+  ['surface-clay', 'clay-100'],
+  ['surface-sunk', 'sunk (cream-2)'],
+  ['surface-forest', 'forest'],
+  ['surface-night', 'night (forest-900)'],
+];
+const grades = ['1.', '2.', '3.', '4.'];
+---
+
+<Base locale={locale} title="Component gallery" langHrefs={langHrefs} noindex>
+  <section class="section-tight gallery-section">
+    <div class="container">
+      <SectionHeading
+        level={1}
+        size="4"
+        eyebrow="Design system · L2"
+        title="Component gallery"
+        landing
+      >
+        <p>
+          Tokens, chrome, buttons, form controls, status markers and patterns from
+          docs/design/system.md. Dev-only page; never in production builds.
+        </p>
+      </SectionHeading>
+      <ul class="cluster">
+        {
+          LOCALES.map((l) => (
+            <li>
+              <a href={langHrefs[l]} aria-current={l === locale ? 'page' : undefined}>
+                {CHROME[l].languageNames[l]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-colour">
+    <div class="container">
+      <SectionHeading id="g-colour" eyebrow="Tokens" title="Colour palette" />
+      <ul class="swatches">
+        {
+          swatches.map(([name, hex, use]) => (
+            <li class="swatch">
+              <span class:list={['swatch__chip', `swatch__chip--${name}`]} />
+              <strong>{name}</strong>
+              <span>{hex}</span>
+              <span class="text-muted">{use}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-type">
+    <div class="container">
+      <SectionHeading id="g-type" eyebrow="Tokens" title="Type scale" />
+      <div class="type-sample">
+        <span class="type-sample__meta">--step-5 · Fraunces 450 · hero h1 only</span>
+        <p class="heading-hero">Ďalší ľadový šťavnatý ôsmak</p>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step-4 · page h1</span>
+        <p class="heading-4">Príliš žltučký kôň úpěl ďábelské ódy</p>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step-3 · h2</span>
+        <h2>Štyri prístupy, ktoré sa navzájom dopĺňajú</h2>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step-2 · h3</span>
+        <h3>Hejného matematika: ťažké úlohy, ľahké otázky</h3>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step-1 · h4 / lead</span>
+        <h4>Ľúbezné ráno v záhrade</h4>
+        <p class="lead">
+          Lead text in Atkinson Hyperlegible Next: deti merajú, stavajú a porovnávajú. Ä ô ľ ĺ ŕ
+          č ď ň š ť ž ý á í é ú ě ř ů – „úvodzovky“ … €
+        </p>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step-0 · body</span>
+        <p class="measure">
+          Body copy at 17–18 px with a 1.6 line height and a measure of about 65 characters. Inline
+          links stay underlined, for example <a href="#g-type">odkaz v texte</a>, and
+          <strong>bold text</strong> uses weight 700.
+        </p>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step--1 · help, captions</span>
+        <p class="type-step--1">Pomocný text pod nadpisom alebo pri poli formulára.</p>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">--step--2 · fine print</span>
+        <p class="type-step--2">Právne informácie a zdroje fotografií.</p>
+      </div>
+      <div class="type-sample">
+        <span class="type-sample__meta">.eyebrow</span>
+        <p class="eyebrow">Štyri piliere · ĽUDSKÉ ŤAHY</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-space">
+    <div class="container">
+      <SectionHeading id="g-space" eyebrow="Tokens" title="Spacing scale" />
+      {
+        spaces.map((s) => (
+          <div class="space-row">
+            <span class:list={['space-bar', `space-bar--${s}`]} />
+            <code>--space-{s}</code>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-brand">
+    <div class="container">
+      <SectionHeading id="g-brand" eyebrow="Brand" title="Mark and lock-ups">
+        <p>The name is live text from settings.brandName ({brandName}); the mark is a placeholder.</p>
+      </SectionHeading>
+      <div class="gallery-grid gallery-grid--2">
+        <div class="gallery-demo surface-cream">
+          <p class="gallery-label">Horizontal, on cream</p>
+          <Brand name={brandName} href={localePath('home', locale)} />
+        </div>
+        <div class="gallery-demo surface-night">
+          <p class="gallery-label">Inverse, stacked, on night</p>
+          <div class="stack stack-xs">
+            <Mark size="l" />
+            <p class="brand__name">{brandName}</p>
+            <p class="brand__descriptor">{t.descriptor}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-buttons">
+    <div class="container">
+      <SectionHeading id="g-buttons" eyebrow="Components" title="Buttons and calls to action" />
+      <div class="gallery-grid gallery-grid--2">
+        {
+          surfaces.map(([cls, name]) => (
+            <div class:list={['gallery-demo', cls]}>
+              <p class="gallery-label">{name}</p>
+              <div class="stack">
+                <div class="btn-group">
+                  <Button href={localePath('enrol', locale)}>{t.ctaEnrol}</Button>
+                  <Button variant="secondary" href={localePath('approach', locale)}>
+                    {t.ctaApproach}
+                  </Button>
+                </div>
+                <div class="btn-group">
+                  <Button size="s" href={localePath('enrol', locale)}>
+                    {t.ctaEnrol}
+                  </Button>
+                  <Button variant="secondary" size="s">
+                    {t.menu}
+                  </Button>
+                  <Button loading type="submit">
+                    Odosielame…
+                  </Button>
+                </div>
+                <p>
+                  <LinkArrow href={localePath('approach', locale)}>Viac o princípoch Montessori</LinkArrow>
+                </p>
+                <p>
+                  Text with an <a href="#g-buttons">inline link</a> on this surface.
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <h3 class="heading-1 gallery-subhead">Longest labels, all locales (wrap, never truncate)</h3>
+      <div class="stack">
+        {
+          LOCALES.map((l) => (
+            <div class="btn-group" lang={l}>
+              <Button href={localePath('enrol', l)}>{CHROME[l].ctaEnrol}</Button>
+              <Button variant="secondary" href={localePath('approach', l)}>
+                {CHROME[l].ctaApproach}
+              </Button>
+              <Button variant="secondary" href={localePath('contact', l)}>
+                {CHROME[l].ctaMeet}
+              </Button>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-heading">
+    <div class="container">
+      <SectionHeading id="g-heading" eyebrow="Pattern" title="Section heading" />
+      <div class="gallery-grid gallery-grid--2">
+        <div class="gallery-demo surface-cream">
+          <SectionHeading
+            level={3}
+            size="3"
+            eyebrow="Štyri piliere"
+            title="Štyri prístupy, ktoré sa navzájom dopĺňajú"
+            landing
+          >
+            <p>
+              Intro paragraph on a landing section, set in the lead size and muted colour, at most one
+              measure wide.
+            </p>
+            <LinkArrow slot="link" href={localePath('approach', locale)}>Spoznajte náš prístup</LinkArrow>
+          </SectionHeading>
+        </div>
+        <div class="gallery-demo surface-night">
+          <SectionHeading
+            level={3}
+            size="3"
+            eyebrow="Final CTA"
+            title="Príďte sa pozrieť, ako sa u nás učí"
+            center
+          >
+            <p>Centred only for the final CTA band.</p>
+          </SectionHeading>
+          <div class="btn-group section-heading--center">
+            <Button href={localePath('enrol', locale)}>{t.ctaEnrol}</Button>
+            <Button variant="secondary" href={localePath('contact', locale)}>{t.ctaMeet}</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-forms">
+    <div class="container">
+      <SectionHeading id="g-forms" eyebrow="Components" title="Form controls">
+        <p>CSS classes shared by static markup and the Preact islands (forms.css).</p>
+      </SectionHeading>
+      <div class="gallery-grid gallery-grid--2">
+        <form class="form-panel on-light form-stack" action="#g-forms" novalidate>
+          <div class="error-summary" role="alert" tabindex="-1" aria-labelledby="es-title">
+            <h3 class="error-summary__title" id="es-title">Skontrolujte, prosím, tieto polia:</h3>
+            <ul class="error-summary__list">
+              <li><a href="#f-email">Napíšte, prosím, platný e-mail.</a></li>
+              <li><a href="#f-grade-1">Vyberte ročník dieťaťa.</a></li>
+            </ul>
+          </div>
+          <p class="form-note">Všetky polia sú povinné, ak nie je uvedené inak.</p>
+
+          <div class="field">
+            <label class="field__label" for="f-name">Meno rodiča</label>
+            <p class="field__help" id="f-name-help">Ako vás môžeme osloviť.</p>
+            <input
+              class="input"
+              id="f-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              aria-describedby="f-name-help"
+            />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label" for="f-email">E-mail</label>
+              <input
+                class="input"
+                id="f-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                aria-invalid="true"
+                aria-describedby="f-email-error"
+                value="meno@"
+              />
+              <p class="field__error" id="f-email-error">
+                Napíšte, prosím, platný e-mail, napr. meno@domena.sk.
+              </p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-phone">
+                Telefón <span class="field__optional">(nepovinné)</span>
+              </label>
+              <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-region">Región</label>
+            <div class="select-wrap">
+              <select class="select" id="f-region" name="region" required>
+                <option value="">Vyberte región</option>
+                <option>Banská Bystrica</option>
+                <option>Ružomberok</option>
+                <option>Liptovský Mikuláš</option>
+                <option>Iný</option>
+              </select>
+            </div>
+          </div>
+
+          <fieldset class="choice-group" aria-describedby="f-grade-error">
+            <legend class="choice-group__legend">Ročník dieťaťa</legend>
+            <div class="choice-grid">
+              {
+                grades.map((g, i) => (
+                  <label class="radio-card">
+                    <input
+                      class="check__input"
+                      type="radio"
+                      name="grade"
+                      id={`f-grade-${i + 1}`}
+                      value={i + 1}
+                      checked={i === 1}
+                    />
+                    {g} ročník
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field__error" id="f-grade-error">Vyberte ročník dieťaťa.</p>
+          </fieldset>
+
+          <div class="field">
+            <label class="field__label" for="f-msg">Správa</label>
+            <p class="field__help" id="f-msg-help">Stačí pár viet o tom, čo vás zaujíma.</p>
+            <textarea class="textarea" id="f-msg" name="message" rows="6" aria-describedby="f-msg-help"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="check">
+              <input class="check__input" type="checkbox" name="privacy" required checked />
+              <span>
+                Potvrdzujem, že som si prečítal(a) <a href={localePath('privacy', locale)}>informácie o
+                ochrane osobných údajov</a>.
+              </span>
+            </label>
+            <label class="check">
+              <input class="check__input" type="checkbox" name="marketing" />
+              <span>Nepovinný, nezaškrtnutý súhlas (len ak ho vlastník zapne).</span>
+            </label>
+          </div>
+
+          <div class="hp" aria-hidden="true">
+            <label for="f-hp">Nevypĺňajte</label>
+            <input id="f-hp" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="btn-group">
+            <Button type="submit" block>Odoslať</Button>
+          </div>
+        </form>
+
+        <div class="stack stack-l">
+          <div class="form-panel on-light form-stack">
+            <p class="gallery-label">States</p>
+            <div class="field">
+              <label class="field__label" for="s-disabled">Disabled</label>
+              <input class="input" id="s-disabled" type="text" value="Nedostupné" disabled />
+            </div>
+            <div class="field">
+              <label class="field__label" for="s-readonly">Read-only (review step)</label>
+              <input class="input" id="s-readonly" type="text" value="Jana Nováková" readonly />
+            </div>
+            <div class="field">
+              <label class="field__label" for="s-placeholder">With placeholder hint</label>
+              <input class="input" id="s-placeholder" type="text" placeholder="napr. Liptovský Mikuláš" />
+            </div>
+            <fieldset class="choice-group">
+              <legend class="choice-group__legend">Preferovaný ďalší krok</legend>
+              <div class="choice-list">
+                <label class="radio-card">
+                  <input class="check__input" type="radio" name="next" checked />
+                  Telefonát
+                </label>
+                <label class="radio-card">
+                  <input class="check__input" type="radio" name="next" />
+                  Osobné stretnutie v priestoroch
+                </label>
+                <label class="radio-card">
+                  <input class="check__input" type="radio" name="next" />
+                  Najprv viac informácií e-mailom
+                </label>
+              </div>
+            </fieldset>
+            <Button loading type="button">Odosielame…</Button>
+          </div>
+
+          <div class="form-panel on-light stack">
+            <p class="gallery-label">Stepper, step 2 of 4</p>
+            <nav class="stepper" data-step="2" aria-label="Priebeh prihlášky">
+              <p class="stepper__count">Krok 2 zo 4 · Údaje o dieťati</p>
+              <div class="stepper__bar" aria-hidden="true"></div>
+              <ol class="stepper__list">
+                <li class="stepper__item" data-state="done"><a href="#g-forms">Rodič</a></li>
+                <li class="stepper__item" aria-current="step">Dieťa</li>
+                <li class="stepper__item">Očakávania</li>
+                <li class="stepper__item">Kontrola</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="success-panel" tabindex="-1">
+            <h3 class="success-panel__title heading-1">Ďakujeme za váš záujem</h3>
+            <p>Vašu prihlášku sme prijali a ozveme sa vám ohľadom ďalšieho postupu.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight gallery-section" aria-labelledby="g-status">
+    <div class="container">
+      <SectionHeading id="g-status" eyebrow="Components" title="Status and draft markers">
+        <p>
+          A: public honesty labels that ship. B: editorial markers that exist only in preview builds
+          (CONTENT_STRICT unset).
+        </p>
+      </SectionHeading>
+      <div class="gallery-grid gallery-grid--2">
+        <div class="stack">
+          <p class="gallery-label">A. Public labels</p>
+          <NotePending locale={locale} kind="illustrative">
+            <p>Konkrétny rozvrh sa môže líšiť.</p>
+          </NotePending>
+          <NotePending locale={locale} kind="proposed">
+            <p>Postup prihlásenia zverejníme po potvrdení.</p>
+          </NotePending>
+          <NotePending locale={locale} kind="pending">
+            <p>
+              Napíšte nám a odpovieme vám. <a href={localePath('contact', locale)}>Kontakt</a>
+            </p>
+          </NotePending>
+          <p>
+            Inline: <NotePending locale={locale} kind="illustrative" inline />
+          </p>
+          <div class="gallery-demo surface-night">
+            <NotePending locale={locale} kind="pending">
+              <p>On night: the note restores light roles (<a href="#g-status">link</a>).</p>
+            </NotePending>
+          </div>
+        </div>
+        <div class="stack">
+          <p class="gallery-label">B. Editorial (preview only)</p>
+          <p>
+            Adresa: <Placeholder locale={locale} field="venue.address" label="adresa priestorov" />
+          </p>
+          <PlaceholderMedia
+            locale={locale}
+            field="gallery.venue"
+            label="fotografia priestorov"
+            ratio="16x9"
+          />
+          <p>
+            Badges: <ReviewBadge locale={locale} status="needs-review" inline />
+            <ReviewBadge locale={locale} status="draft" inline />
+          </p>
+          <Reviewable locale={locale} status="needs-review" name="gallery.review">
+            <h3 class="heading-1">Block with status needs-review</h3>
+            <p>Rendered with a dashed outline in previews; fails a CONTENT_STRICT=1 build.</p>
+          </Reviewable>
+          <Reviewable locale={locale} status="draft" name="gallery.draft">
+            <h3 class="heading-1">Block with status draft</h3>
+            <p>Left out of CONTENT_STRICT=1 builds.</p>
+          </Reviewable>
+          <div class="gallery-demo surface-night">
+            <Reviewable locale={locale} status="needs-review" name="gallery.night">
+              <p>needs-review on night: outline turns yellow.</p>
+            </Reviewable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-sage" aria-labelledby="g-surfaces">
+    <div class="container">
+      <SectionHeading id="g-surfaces" eyebrow="Pattern" title="Section bands" landing>
+        <p>
+          Full-width sections use --space-section padding; surface classes swap roles, not
+          components. Tab through the links to check the focus ring on each surface.
+        </p>
+      </SectionHeading>
+      <LinkArrow href={localePath('faq', locale)}>Časté otázky</LinkArrow>
+    </div>
+  </section>
+  <section class="section surface-forest" aria-labelledby="g-forest">
+    <div class="container">
+      <SectionHeading id="g-forest" eyebrow="Forest surface" title="Text and focus on forest" />
+      <div class="btn-group">
+        <Button href={localePath('enrol', locale)}>{t.ctaEnrol}</Button>
+        <Button variant="secondary" href={localePath('approach', locale)}>{t.ctaApproach}</Button>
+      </div>
+    </div>
+  </section>
+</Base>

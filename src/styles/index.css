@@ -1,0 +1,11 @@
+/*
+ * Global stylesheet entry, imported once by src/layouts/Base.astro.
+ * Vite bundles the imports into one external file (no inline <style>, CSP-safe).
+ */
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+@import './buttons.css';
+@import './forms.css';
+@import './status.css';
+@import './site.css';

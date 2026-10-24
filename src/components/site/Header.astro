@@ -1,0 +1,112 @@
+---
+/**
+ * Global header (system.md §6.1): brand, inline nav (>= 75rem), language codes
+ * (>= 40rem), header CTA (>= 48rem) and a Menu button that opens a native popover
+ * below 75rem. DOM order = visual order = tab order.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Brand from './Brand.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import { chrome, NAV_KEYS, type NavKey } from './strings';
+
+interface Props {
+  locale: Locale;
+  brandName: string;
+  langHrefs: Record<Locale, string>;
+  /** Page key of the current page, for aria-current in the nav. */
+  current?: string;
+}
+const { locale, brandName, langHrefs, current } = Astro.props;
+const t = chrome(locale);
+const items = NAV_KEYS.map((key: NavKey) => ({
+  key,
+  href: localePath(key, locale),
+  label: t.nav[key],
+  current: key === current,
+}));
+const enrolHref = localePath('enrol', locale);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <Brand class="site-header__brand" name={brandName} href={localePath('home', locale)} />
+
+    <nav class="site-header__nav" aria-label={t.mainNav}>
+      <ul class="nav-list nav-inline">
+        {
+          items.map((i) => (
+            <li>
+              <a href={i.href} aria-current={i.current ? 'page' : undefined}>
+                {i.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <LangSwitcher class="site-header__lang" locale={locale} hrefs={langHrefs} />
+
+    <a
+      class="btn btn-primary btn-s site-header__cta"
+      href={enrolHref}
+      aria-current={current === 'enrol' ? 'page' : undefined}>{t.ctaEnrol}</a
+    >
+
+    <button
+      class="btn btn-secondary btn-s site-header__menu"
+      type="button"
+      popovertarget="site-menu"
+    >
+      {t.menu}
+    </button>
+  </div>
+
+  <div class="menu-panel" id="site-menu" popover role="dialog" aria-label={t.menu}>
+    <div class="menu-panel__top">
+      <button
+        class="btn btn-secondary btn-s"
+        type="button"
+        popovertarget="site-menu"
+        popovertargetaction="hide"
+      >
+        <svg
+          class="menu-panel__close-icon"
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          ></path>
+        </svg>
+        {t.menuClose}
+      </button>
+    </div>
+    <nav aria-label={t.mainNav}>
+      <ul class="nav-list nav-drawer">
+        {
+          items.map((i) => (
+            <li>
+              <a href={i.href} aria-current={i.current ? 'page' : undefined}>
+                {i.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div>
+      <p class="menu-panel__heading" id="site-menu-lang">{t.menuLanguages}</p>
+      <LangSwitcher locale={locale} hrefs={langHrefs} variant="full" label={t.menuLanguages} />
+    </div>
+    <div>
+      <a class="btn btn-primary" href={enrolHref}>{t.ctaEnrol}</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  import './header';
+</script>

@@ -1,0 +1,126 @@
+---
+/**
+ * Global footer (system.md §6.12) on the night surface. Contact data comes only
+ * from settings and only when verified; in preview builds a missing fact shows an
+ * editorial placeholder, in launch builds the item is left out.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import { verifiedValue } from '../../content-schemas';
+import Brand from './Brand.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import Placeholder from '../status/Placeholder.astro';
+import { chrome, NAV_KEYS } from './strings';
+import { getSettings } from './settings';
+import { isStrictBuild, showPreviewMarkers } from '../status/mode';
+
+interface Props {
+  locale: Locale;
+  brandName: string;
+  langHrefs: Record<Locale, string>;
+}
+const { locale, brandName, langHrefs } = Astro.props;
+const t = chrome(locale);
+const settings = await getSettings();
+const preview = showPreviewMarkers(isStrictBuild());
+const email = verifiedValue(settings.contact.email);
+const phone = verifiedValue(settings.contact.phone);
+const regions = settings.regions.map((r) => r.label[locale]).filter(Boolean);
+const year = new Date().getFullYear();
+const pages = NAV_KEYS.map((key) => ({ href: localePath(key, locale), label: t.nav[key] }));
+const legal = [
+  { href: localePath('privacy', locale), label: t.privacy },
+  { href: localePath('cookies', locale), label: t.cookies },
+  { href: localePath('legal', locale), label: t.legal },
+];
+---
+
+<footer class="site-footer surface-night">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <Brand name={brandName} href={localePath('home', locale)} size="l" />
+        <p class="brand__descriptor">{t.descriptor}</p>
+        {
+          regions.length > 0 && (
+            <p class="site-footer__regions">
+              {t.regionsLead} {regions.join(' · ')}
+            </p>
+          )
+        }
+      </div>
+
+      <nav class="site-footer__pages" aria-labelledby="footer-pages">
+        <h2 class="site-footer__heading" id="footer-pages">{t.footerPages}</h2>
+        <ul class="footer-links">
+          {
+            pages.map((p) => (
+              <li>
+                <a href={p.href}>{p.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="site-footer__contact">
+        <h2 class="site-footer__heading">{t.footerContact}</h2>
+        <ul class="footer-links">
+          {
+            email ? (
+              <li>
+                <a href={`mailto:${email}`}>{email}</a>
+              </li>
+            ) : (
+              preview && (
+                <li class="footer-links__text">
+                  <Placeholder locale={locale} field="contact.email" label={t.email} />
+                </li>
+              )
+            )
+          }
+          {
+            phone ? (
+              <li>
+                <a href={`tel:${phone.replace(/\s+/g, '')}`}>{phone}</a>
+              </li>
+            ) : (
+              preview && (
+                <li class="footer-links__text">
+                  <Placeholder locale={locale} field="contact.phone" label={t.phone} />
+                </li>
+              )
+            )
+          }
+          <li>
+            <a href={localePath('contact', locale)}>{t.ctaMeet}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="site-footer__language">
+        <h2 class="site-footer__heading" id="footer-language">{t.footerLanguage}</h2>
+        <LangSwitcher
+          locale={locale}
+          hrefs={langHrefs}
+          variant="full"
+          label={t.footerLanguage}
+        />
+      </div>
+    </div>
+
+    <div class="site-footer__legal">
+      <nav aria-label={t.legalNav}>
+        <ul class="footer-links">
+          {
+            legal.map((l) => (
+              <li>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <p>© {year} {brandName}</p>
+    </div>
+  </div>
+</footer>

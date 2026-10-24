@@ -1,0 +1,422 @@
+/*
+ * Design tokens: Montessori-inspired domoškola marketing site
+ * Source of truth for colour, type, space, radii, shadows and motion.
+ * Shipped copy of docs/design/tokens.css (the design spec). Change both together;
+ * this file adds the implementation roles marked "impl" below, and loads the fonts
+ * from src/assets/fonts/ so Vite emits them content-hashed under /_astro/
+ * (immutable cache is safe; rebuilt fonts get new URLs).
+ * Spec and rationale: docs/design/system.md (contrast table in §4).
+ *
+ * Rules
+ * - CSS only. No external origins: fonts are self-hosted, bundled from src/assets/fonts/.
+ * - Components use ROLE tokens (--color-text, --color-cta-bg ...), never raw
+ *   palette tokens (--palette-*), so a surface can remap roles in one place.
+ * - Light theme only for v1 (see system.md §4.5 for why). `color-scheme: light`
+ *   keeps native controls consistent with the palette.
+ * - Fluid values interpolate between a 360 px and a 1600 px viewport.
+ *
+ * Breakpoints (custom properties cannot be used inside @media; copy the rem values).
+ * Media queries use rem so that 200 % browser zoom falls back to the smaller layout.
+ *
+ *   name     min-width        px @16   layout
+ *   (base)   0                0        4-col, drawer nav     (designed for 360–430, safe to 320)
+ *   --bp-sm  40rem            640      wider phone / small tablet; 2-col lists, inline facts
+ *   --bp-md  48rem            768      tablet band 768–1023: 8-col grid, split sections
+ *   --bp-lg  64rem            1024     tablet top / small laptop 1024–1199: hero split, 3-col footer
+ *   --bp-xl  75rem            1200     desktop 1200+: 12-col grid, inline navigation
+ *   --bp-2xl 100rem           1600     wide 1600–1920+: container capped, gutters grow, no new layout
+ *
+ *   Edges to test: 359/360, 430/431, 639/640, 767/768, 1023/1024, 1199/1200,
+ *   1279/1280, 1599/1600, 1920, plus 320 and 200 % zoom at 1280.
+ */
+
+/* ---------------------------------------------------------------- Fonts --
+ * Fraunces (OFL-1.1, Undercase Type) and Atkinson Hyperlegible Next
+ * (OFL-1.1, Braille Institute / Applied Design Works). Self-hosted, subset
+ * to Basic Latin + Latin-1 + Latin Extended-A + typographic punctuation
+ * (full SK/CS coverage) - see system.md §3 for the subset command.
+ * Files and licences: tools/build-fonts.sh, src/assets/fonts/SHA256SUMS, public/fonts/LICENSE-*.txt.
+ */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../assets/fonts/fraunces-roman.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('../assets/fonts/atkinson-next-roman.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('../assets/fonts/atkinson-next-italic.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Metric-matched fallbacks (measured in Chromium on Slovak headings and body copy:
+ * rendered width ratio web font / fallback; ascent and descent = hhea / size-adjust).
+ * Fraunces widens as its optical size drops, so one fallback cannot fit every size:
+ * "Fraunces Fallback" (112 %) matches line breaks for headings up to ~52 px, and
+ * "Fraunces Display Fallback" (108 %) is used only by the hero h1 from 75rem up
+ * (72 px). Verified by line count at 360/768/1280: system.md section 3.4.
+ * Times New Roman and Liberation Serif share metrics, as do Arial and Liberation Sans. */
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif');
+  size-adjust: 112%;
+  ascent-override: 87.32%;
+  descent-override: 22.77%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Fraunces Display Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif');
+  size-adjust: 108%;
+  ascent-override: 90.56%;
+  descent-override: 23.61%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Atkinson Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans');
+  size-adjust: 97.98%;
+  ascent-override: 100.43%;
+  descent-override: 32.25%;
+  line-gap-override: 0%;
+}
+
+:root {
+  color-scheme: light;
+
+  /* ------------------------------------------------------- Palette (raw) --
+   * The six brief colours plus derived tints and shades. Do not use these
+   * directly in components; use the roles below. */
+  --palette-cream: #f8f5ed; /* brief: warm cream */
+  --palette-forest: #315c4c; /* brief: forest green */
+  --palette-sage: #a9bea2; /* brief: sage green - decorative only on light */
+  --palette-terracotta: #c77958; /* brief: terracotta - decorative / large only */
+  --palette-yellow: #e8c875; /* brief: muted yellow - decorative on light, accent on dark */
+  --palette-charcoal: #29302d; /* brief: deep charcoal */
+
+  --palette-paper: #fffdf8; /* raised surface (forms, panels) */
+  --palette-cream-2: #efeadd; /* sunk band */
+  --palette-sage-100: #e3eadf;
+  --palette-sage-200: #cbd8c5;
+  --palette-yellow-100: #f6ebcb;
+  --palette-clay-100: #f3ded3;
+  --palette-forest-700: #24473a;
+  --palette-forest-900: #1a3329;
+  --palette-clay: #9c5236; /* terracotta deepened for AA with cream (5.25:1) */
+  --palette-clay-700: #8e4a2f; /* hover / text accent (6.08:1 on cream) */
+  --palette-ink-2: #4f5a55;
+  --palette-ink-3: #5e6863;
+  --palette-red: #a63a2b;
+  --palette-red-100: #f6e1dc;
+  --palette-green: #2f6b45;
+  --palette-green-100: #e1eee4;
+  --palette-line: #d7d1c2;
+  --palette-line-strong: #8c8a80;
+
+  /* --------------------------------------------------------- Colour roles --
+   * Ratios are WCAG 2.2 contrast against the default page background (cream)
+   * unless stated. Full table: system.md §4.3. */
+
+  /* Surfaces */
+  --color-bg: var(--palette-cream);
+  --color-surface: var(--palette-paper);
+  --color-surface-sunk: var(--palette-cream-2);
+  --color-surface-sage: var(--palette-sage-100);
+  --color-surface-sun: var(--palette-yellow-100);
+  --color-surface-clay: var(--palette-clay-100);
+  --color-surface-forest: var(--palette-forest);
+  --color-surface-night: var(--palette-forest-900);
+
+  /* Text on light surfaces */
+  --color-text: var(--palette-charcoal); /* 12.40 cream, 11.00 sage-100, 11.36 sun */
+  --color-heading: var(--palette-forest-900); /* 12.44 cream */
+  --color-text-muted: var(--palette-ink-2); /* 6.59 cream, 5.84 sage-100 */
+  --color-text-subtle: var(--palette-ink-3); /* 5.30 cream, 4.70 sage-100 - small meta only */
+  --color-accent-text: var(--palette-clay-700); /* 6.08 cream, 5.11 clay-100 - eyebrows, numerals */
+  --color-link: var(--palette-forest); /* 6.97 cream, 6.18 sage-100 - always underlined */
+  --color-link-hover: var(--palette-forest-700); /* 9.46 cream */
+
+  /* Text on forest / night surfaces */
+  --color-on-dark: var(--palette-cream); /* 6.97 forest, 12.44 night */
+  --color-on-dark-muted: var(
+    --palette-cream-2
+  ); /* 6.32 forest; on night use --color-on-night-muted */
+  --color-on-night-muted: var(--palette-sage); /* 6.82 night - FAILS on forest (3.82), night only */
+  --color-on-dark-accent: var(--palette-yellow); /* 4.68 forest, 8.36 night */
+
+  /* Calls to action */
+  --color-cta-bg: var(--palette-clay); /* cream text 5.25 */
+  --color-cta-bg-hover: var(--palette-clay-700); /* cream text 6.08 */
+  --color-cta-text: var(--palette-cream);
+  --color-cta-secondary-text: var(--palette-forest); /* outline button, 6.97 */
+  --color-cta-secondary-border: var(--palette-forest);
+  --color-cta-secondary-bg-hover: var(--palette-sage-100);
+  --color-cta-on-dark-bg: var(--palette-yellow); /* night text on it 8.36 */
+  --color-cta-on-dark-text: var(--palette-forest-900);
+
+  /* Focus: 3 px ring, 3 px offset; sits on the surface around the control */
+  --color-focus: var(--palette-forest-900); /* 12.44 cream, 11.04 sage-100, 13.3 paper */
+  --color-focus-on-dark: var(--palette-yellow); /* 4.68 forest, 8.36 night */
+
+  /* Status */
+  --color-error: var(--palette-red); /* 5.91 cream, 6.33 paper, 5.13 on error-bg */
+  --color-error-bg: var(--palette-red-100);
+  --color-success: var(--palette-green); /* 5.82 cream, 5.30 on success-bg */
+  --color-success-bg: var(--palette-green-100);
+
+  /* Borders */
+  --color-border: var(--palette-line); /* 1.40 - decorative dividers only */
+  --color-border-strong: var(--palette-line-strong); /* 3.18 cream, 3.41 paper - inputs, controls */
+  --color-border-on-dark: var(--palette-forest-700);
+
+  /* Draft / placeholder marker (editorial, see system.md §6.11) */
+  --color-draft-bg: var(--palette-yellow-100);
+  --color-draft-border: var(--palette-clay-700); /* 5.57 on draft-bg */
+  --color-draft-text: var(--palette-charcoal); /* 11.36 on draft-bg */
+
+  /* impl: preview-only review chips (system.md §6.11, ia.md §4). Never ship to production. */
+  --color-review-bg: var(--palette-charcoal); /* yellow text 8.33 */
+  --color-review-text: var(--palette-yellow);
+  --color-review-outline: var(--palette-clay-700); /* 6.08 cream, 5.57 sun */
+  --color-review-draft-bg: var(--palette-red); /* cream text 5.91 */
+  --color-review-draft-text: var(--palette-cream);
+  --color-draft-label: var(--palette-clay-700); /* 5.57 on draft-bg */
+
+  /* impl: checked checkbox / radio and selected radio card */
+  --color-control-checked: var(--palette-forest); /* 6.97 cream, 7.47 paper (3:1 UI) */
+  --color-control-checked-mark: var(--palette-paper);
+  --color-control-selected-bg: var(--palette-sage-100);
+
+  /* Decorative (never carries meaning; no contrast requirement) */
+  --color-deco-sage: var(--palette-sage);
+  --color-deco-sun: var(--palette-yellow);
+  --color-deco-clay: var(--palette-terracotta);
+  --color-deco-forest: var(--palette-forest);
+
+  /* Pillar accents (motif fill + thin rule; text stays --color-text) */
+  --color-pillar-montessori: var(--palette-sage);
+  --color-pillar-respect: var(--palette-terracotta);
+  --color-pillar-constructivism: var(--palette-yellow);
+  --color-pillar-hejny: var(--palette-forest);
+
+  /* ------------------------------------------------------------ Type ---- */
+  --font-display: 'Fraunces', 'Fraunces Fallback', 'Times New Roman', serif;
+  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Fallback', Arial, sans-serif;
+  --font-hero: var(--font-display); /* home hero h1 only; swaps fallback at --bp-xl below */
+  /* Fraunces is instanced at SOFT 50, WONK 0; opsz follows font-size automatically. */
+
+  /* Fluid scale, 360 -> 1600 px. Mobile ratio ~1.2, desktop ~1.33 above body. */
+  --step--2: clamp(0.8125rem, 0.7944rem + 0.0806vw, 0.875rem); /* 13 -> 14  legal, fine print */
+  --step--1: clamp(
+    0.9375rem,
+    0.9194rem + 0.0806vw,
+    1rem
+  ); /* 15 -> 16  captions, help text, eyebrows */
+  --step-0: clamp(
+    1.0625rem,
+    1.0444rem + 0.0806vw,
+    1.125rem
+  ); /* 17 -> 18  body, inputs (>=16 avoids iOS zoom) */
+  --step-1: clamp(1.25rem, 1.1774rem + 0.3226vw, 1.5rem); /* 20 -> 24  lead, h4 */
+  --step-2: clamp(1.4375rem, 1.3105rem + 0.5645vw, 1.875rem); /* 23 -> 30  h3 */
+  --step-3: clamp(1.6875rem, 1.4516rem + 1.0484vw, 2.5rem); /* 27 -> 40  h2 */
+  --step-4: clamp(2.0625rem, 1.7177rem + 1.5323vw, 3.25rem); /* 33 -> 52  page h1, numerals */
+  --step-5: clamp(2.5rem, 1.9194rem + 2.5806vw, 4.5rem); /* 40 -> 72  home hero h1 only */
+
+  --leading-tight: 1.08; /* step-4/5 display */
+  --leading-heading: 1.18; /* step-1..3 */
+  --leading-body: 1.6;
+  --leading-ui: 1.35; /* buttons, labels, nav */
+
+  --tracking-display: -0.015em;
+  --tracking-eyebrow: 0.08em;
+
+  --weight-display: 450; /* Fraunces headings */
+  --weight-display-strong: 560;
+  --weight-body: 400;
+  --weight-medium: 550;
+  --weight-bold: 700;
+
+  --measure: 38rem; /* ~65 characters of body text */
+  --measure-narrow: 30rem; /* hero lead, form help */
+  --measure-heading: 20ch;
+
+  /* ----------------------------------------------------------- Space ---- */
+  /* Fixed steps for components; fluid steps for layout rhythm. */
+  --space-3xs: 0.25rem; /*  4 */
+  --space-2xs: 0.5rem; /*  8 */
+  --space-xs: 0.75rem; /* 12 */
+  --space-s: 1rem; /* 16 */
+  --space-m: clamp(1.25rem, 1.1774rem + 0.3226vw, 1.5rem); /* 20 -> 24 */
+  --space-l: clamp(1.75rem, 1.6048rem + 0.6452vw, 2.25rem); /* 28 -> 36 */
+  --space-xl: clamp(2.5rem, 2.2097rem + 1.2903vw, 3.5rem); /* 40 -> 56 */
+  --space-2xl: clamp(3.5rem, 2.9194rem + 2.5806vw, 5.5rem); /* 56 -> 88 */
+  --space-3xl: clamp(4.5rem, 3.4839rem + 4.5161vw, 8rem); /* 72 -> 128 */
+  --space-section: clamp(
+    4rem,
+    2.5484rem + 6.4516vw,
+    9rem
+  ); /* 64 -> 144 block padding of a section */
+
+  /* ------------------------------------------------------------ Grid ---- */
+  --grid-columns: 4; /* 8 from 48rem, 12 from 75rem (set in layout CSS) */
+  --grid-gutter: clamp(1rem, 0.4194rem + 2.5806vw, 3rem); /* page side gutter 16 -> 48 */
+  --grid-gap: clamp(1rem, 0.7097rem + 1.2903vw, 2rem); /* column gap 16 -> 32 */
+  --container-max: 76rem; /* 1216 content width */
+  --container-wide: 90rem; /* 1440 for imagery bands */
+
+  --bp-sm: 40rem;
+  --bp-md: 48rem;
+  --bp-lg: 64rem;
+  --bp-xl: 75rem;
+  --bp-2xl: 100rem; /* documentation only - see header comment */
+
+  /* -------------------------------------------------- Sizes and targets -- */
+  --target-min: 2.75rem; /* 44 px - minimum for every interactive target */
+  --control-height: 3rem; /* 48 px - buttons, inputs, selects */
+  --header-height: 4rem; /* 64 px fallback; JS sets the measured value (see system.md §6.1) */
+  --icon-s: 1.25rem;
+  --icon-m: 1.5rem;
+
+  /* ---------------------------------------------------------- Radii ----- */
+  --radius-s: 0.375rem; /* inputs, small tags */
+  --radius-m: 0.75rem; /* panels, notes */
+  --radius-l: 1.5rem; /* image frames */
+  --radius-pill: 999px; /* buttons, chips */
+  /* Organic image mask: asymmetric so frames feel hand-cut, not template */
+  --radius-organic: 46% 54% 42% 58% / 52% 44% 56% 48%;
+  --radius-pebble: 2.5rem 1.5rem 3rem 1.75rem;
+
+  /* --------------------------------------------------------- Borders ---- */
+  --border-hairline: 1px;
+  --border-control: 1.5px;
+  --border-strong: 2px;
+  --focus-width: 3px;
+  --focus-offset: 3px;
+
+  /* --------------------------------------------------------- Shadows ---- */
+  /* Soft, warm and rare: used for the open mobile nav, popovers and form panel. */
+  --shadow-s: 0 1px 2px rgb(41 48 45 / 0.08);
+  --shadow-m: 0 2px 6px rgb(41 48 45 / 0.06), 0 8px 24px rgb(41 48 45 / 0.08);
+  --shadow-l: 0 4px 12px rgb(41 48 45 / 0.08), 0 24px 48px rgb(41 48 45 / 0.12);
+
+  /* ---------------------------------------------------------- Motion ---- */
+  --duration-instant: 100ms; /* colour, underline */
+  --duration-fast: 180ms; /* hover, press, icon turn */
+  --duration-base: 280ms; /* accordion, drawer */
+  --duration-slow: 480ms; /* section reveal, view transition */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* entering */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1); /* leaving */
+  --ease-organic: cubic-bezier(0.33, 0.9, 0.36, 1); /* reveals: settles softly, no overshoot */
+  --reveal-distance: 0.75rem; /* max travel for reveals */
+
+  /* ----------------------------------------------------------- Layers --- */
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-header: 20;
+  --z-overlay: 30;
+  --z-skip: 40;
+}
+
+/* The hero h1 reaches 72 px from 75rem; the narrower display fallback keeps its
+ * line breaks identical before and after the web font arrives (no CLS on the LCP). */
+@media (min-width: 75rem) {
+  :root {
+    --font-hero: 'Fraunces', 'Fraunces Display Fallback', 'Times New Roman', serif;
+  }
+}
+
+/* Reduced motion: durations collapse, travel removed. Components must read the
+ * tokens (not hard-coded values) for this to take effect. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+    --reveal-distance: 0;
+  }
+}
+
+/* Surface remaps: a section that switches surface swaps roles, not components. */
+.surface-forest,
+.surface-night {
+  --color-text: var(--color-on-dark);
+  --color-heading: var(--color-on-dark);
+  --color-text-muted: var(--color-on-dark-muted);
+  --color-link: var(--color-on-dark);
+  --color-link-hover: var(--color-on-dark-accent);
+  --color-accent-text: var(--color-on-dark-accent);
+  --color-focus: var(--color-focus-on-dark);
+  --color-cta-bg: var(--color-cta-on-dark-bg);
+  --color-cta-bg-hover: var(--palette-cream);
+  --color-cta-text: var(--color-cta-on-dark-text);
+  --color-cta-secondary-text: var(--color-on-dark);
+  --color-cta-secondary-border: var(--color-on-dark);
+  --color-cta-secondary-bg-hover: var(--palette-forest-700);
+  --color-border: var(--color-border-on-dark);
+  --color-border-strong: var(--palette-sage); /* 3.82 forest, 6.82 night */
+  --color-review-outline: var(--palette-yellow); /* 4.68 forest, 8.36 night */
+}
+
+/* impl: restore light roles inside a light island on a dark surface
+ * (form panel, honesty note, placeholder) so text never inherits on-dark roles. */
+.on-light {
+  --color-text: var(--palette-charcoal);
+  --color-heading: var(--palette-forest-900);
+  --color-text-muted: var(--palette-ink-2);
+  --color-text-subtle: var(--palette-ink-3);
+  --color-accent-text: var(--palette-clay-700);
+  --color-link: var(--palette-forest);
+  --color-link-hover: var(--palette-forest-700);
+  --color-focus: var(--palette-forest-900);
+  --color-cta-bg: var(--palette-clay);
+  --color-cta-bg-hover: var(--palette-clay-700);
+  --color-cta-text: var(--palette-cream);
+  --color-cta-secondary-text: var(--palette-forest);
+  --color-cta-secondary-border: var(--palette-forest);
+  --color-cta-secondary-bg-hover: var(--palette-sage-100);
+  --color-border: var(--palette-line);
+  --color-border-strong: var(--palette-line-strong);
+  --color-review-outline: var(--palette-clay-700);
+}
+
+/* impl: light tinted bands (roles unchanged, only the background) */
+.surface-paper {
+  --color-bg: var(--color-surface);
+}
+.surface-sunk {
+  --color-bg: var(--color-surface-sunk);
+}
+.surface-sage {
+  --color-bg: var(--color-surface-sage);
+}
+.surface-sun {
+  --color-bg: var(--color-surface-sun);
+}
+.surface-clay {
+  --color-bg: var(--color-surface-clay);
+}
+
+.surface-forest {
+  --color-bg: var(--color-surface-forest);
+}
+
+.surface-night {
+  --color-bg: var(--color-surface-night);
+  --color-text-muted: var(--color-on-night-muted);
+}

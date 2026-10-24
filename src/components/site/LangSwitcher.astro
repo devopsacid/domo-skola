@@ -1,0 +1,46 @@
+---
+/**
+ * Language switcher: plain links (no <select>, no JS). Each link carries lang and
+ * hreflang; the compact variant shows SK/CS/EN with the full name for assistive tech.
+ * Hrefs come from switcherHref() (equivalent page, or the locale home / blog index).
+ * The current language links to this very page, so it carries aria-current="page".
+ */
+import { LOCALES, type Locale } from '../../i18n/routes';
+import { chrome } from './strings';
+
+interface Props {
+  locale: Locale;
+  hrefs: Record<Locale, string>;
+  variant?: 'compact' | 'full';
+  label?: string;
+  class?: string;
+}
+const { locale, hrefs, variant = 'compact', label, class: className } = Astro.props;
+const t = chrome(locale);
+---
+
+<nav class={className} aria-label={label ?? t.languageNav}>
+  <ul class:list={['lang-switch', variant === 'full' && 'lang-switch--full']}>
+    {
+      LOCALES.map((l) => (
+        <li>
+          <a
+            href={hrefs[l]}
+            lang={l}
+            hreflang={l}
+            aria-current={l === locale ? 'page' : undefined}
+          >
+            {variant === 'compact' ? (
+              <>
+                <span aria-hidden="true">{l.toUpperCase()}</span>
+                <span class="visually-hidden">{t.languageNames[l]}</span>
+              </>
+            ) : (
+              t.languageNames[l]
+            )}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

@@ -193,3 +193,62 @@ describe('check-dist', () => {
     expect(run('check-dist.mjs', d).out).toContain('style attribute');
   });
 });
+
+describe('check-dist strict-output gate', () => {
+  const base = (html: string, extra: Record<string, string> = {}) =>
+    mk({
+      'sk/index.html': html,
+      _headers: renderHeaders(template, { hashes: [], noindex: true }),
+      _redirects: '/ /sk/ 301\n',
+      '_routes.json': '{}',
+      'robots.txt': 'x',
+      ...extra,
+    });
+  const strictEnv = { CONTENT_STRICT: '1' };
+  const clean = '<html><body><main><p>ok</p></main></body></html>';
+  it('passes clean output in strict mode', () => {
+    expect(run('check-dist.mjs', base(clean), strictEnv).code).toBe(0);
+  });
+  it.each([
+    [
+      'dist/dev/',
+      '<html><body><main>x</main></body></html>',
+      { 'dev/components/index.html': '<p>g</p>' },
+    ],
+    [
+      'data-placeholder',
+      '<html><body><main><span data-placeholder>x</span></main></body></html>',
+      {},
+    ],
+    [
+      'data-status',
+      '<html><body><main><p data-status="needs-review">x</p></main></body></html>',
+      {},
+    ],
+    [
+      'review-block',
+      '<html><body><main><div class="a review-block">x</div></main></body></html>',
+      {},
+    ],
+    ['DOPLNI', '<html><body><main><p>Tel: [DOPLNIŤ]</p></main></body></html>', {}],
+    ['stub page', '<html><body><main data-stub>x</main></body></html>', {}],
+  ])('fails in strict mode on %s', (_n, html, extra) => {
+    const r = run('check-dist.mjs', base(html, extra), strictEnv);
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('strict:');
+  });
+  it('also fails in production mode without CONTENT_STRICT', () => {
+    const d = base('<html><body><main data-stub>x</main></body></html>');
+    expect(run('check-dist.mjs', d, { ENVIRONMENT: 'production' }).code).toBe(1);
+    expect(run('check-dist.mjs', d, { CF_PAGES: '1', CF_PAGES_BRANCH: 'main' }).code).toBe(1);
+  });
+  it('allows all of it in a non-strict preview build', () => {
+    const d = base(
+      '<html><body><main data-stub><p data-status="draft" data-placeholder>[DOPLNIŤ]</p></main></body></html>',
+      {
+        'dev/components/index.html': '<p>g</p>',
+      },
+    );
+    expect(run('check-dist.mjs', d, { ENVIRONMENT: 'preview' }).code).toBe(0);
+  });
+});

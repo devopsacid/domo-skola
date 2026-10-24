@@ -2,6 +2,8 @@
 // Post-build structural check of dist/: re-derives the CSP facts from the built HTML instead of trusting build-headers.
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tokenize } from './lib/html.mjs';
+import { detectProduction } from './lib/preflight.mjs';
 import { fail, urlOf, walk } from './lib/fs.mjs';
 import { parseHeadersFile, scanHtml } from './lib/headers.mjs';
 import { isNoindex } from './lib/noindex.mjs';
@@ -68,6 +70,29 @@ if (!problems.length) {
     if (!actual.has(h)) problems.push(`inline script hash missing from CSP: ${h}`);
   for (const h of actual)
     if (!expected.has(h)) problems.push(`CSP carries a hash with no matching inline script: ${h}`);
+}
+
+// Strict-output gate: CONTENT_STRICT=1 or a production build must ship no dev pages, placeholders or stubs.
+const strict =
+  process.env.CONTENT_STRICT === '1' ||
+  detectProduction({ argv: process.argv, env: process.env }).production;
+if (strict && existsSync(dist)) {
+  if (existsSync(resolve(dist, 'dev')))
+    problems.push('strict: dist/dev/ must not be shipped (unset DEV_PAGES)');
+  for (const f of walk(dist).filter((x) => x.endsWith('.html'))) {
+    const url = urlOf(dist, f);
+    const html = readFileSync(f, 'utf8');
+    if (html.includes('[DOPLNIŤ')) problems.push(`strict: ${url} contains a [DOPLNIŤ placeholder`);
+    for (const t of tokenize(html).tags) {
+      if (t.has('data-placeholder'))
+        problems.push(`strict: ${url} has a data-placeholder attribute`);
+      if (t.has('data-status')) problems.push(`strict: ${url} has a data-status attribute`);
+      if ((t.get('class') ?? '').split(/\s+/).includes('review-block'))
+        problems.push(`strict: ${url} has a review-block`);
+      if (t.name === 'main' && t.has('data-stub'))
+        problems.push(`strict: ${url} is a stub page (main data-stub)`);
+    }
+  }
 }
 if (problems.length) fail('check-dist', problems);
 console.log('check-dist: ok');

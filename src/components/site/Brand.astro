@@ -1,0 +1,17 @@
+---
+/** Horizontal lock-up: mark + live-text wordmark; the link's name is the brand name. */
+import Mark from './Mark.astro';
+
+interface Props {
+  name: string;
+  href: string;
+  size?: 'm' | 'l';
+  class?: string;
+}
+const { name, href, size = 'm', class: className } = Astro.props;
+---
+
+<a class:list={['brand', className]} href={href}>
+  <Mark size={size} />
+  <span class="brand__name">{name}</span>
+</a>

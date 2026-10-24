@@ -93,6 +93,12 @@ describe('preflight', () => {
       'SITE_URL must be an https',
     );
   });
+  it('fails in production when DEV_PAGES is set to any non-empty value', () => {
+    for (const v of ['1', 'true', '0'])
+      expect(run({ ...goodEnv, DEV_PAGES: v }).errors.join()).toContain('DEV_PAGES');
+    expect(run({ ...goodEnv, DEV_PAGES: '' }).errors).toEqual([]);
+    expect(run({ ...goodEnv, DEV_PAGES: '1' }, false).errors).toEqual([]);
+  });
   it('only warns about retention outside production', () => {
     const r = run({}, false);
     expect(r.errors).toEqual([]);

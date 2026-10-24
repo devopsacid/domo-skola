@@ -1,0 +1,122 @@
+/*
+ * Honest content states (system.md §6.11). Two different things, styled differently:
+ * A. .note-pending - public honesty labels that ship (illustrative, proposed, pending).
+ * B. .placeholder / .placeholder-media / .review-* - editorial markers for previews only.
+ */
+
+/* ----------------------------------------------- A. public labels ----- */
+
+.note-pending {
+  max-width: var(--measure);
+  padding: var(--space-s) var(--space-m);
+  border: var(--border-strong) dashed var(--color-draft-border);
+  border-radius: var(--radius-m);
+  background-color: var(--color-draft-bg);
+  color: var(--color-draft-text);
+}
+
+.note-pending__label {
+  color: var(--color-draft-label);
+  font-size: var(--step--2);
+  font-weight: var(--weight-bold);
+  line-height: 1.5;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.note-pending__body {
+  margin-block-start: var(--space-3xs);
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+.note-pending--inline {
+  display: inline-block;
+  max-width: 100%;
+  padding: var(--space-3xs) var(--space-xs);
+  border-width: var(--border-hairline);
+}
+
+/* --------------------------------------- B. editorial placeholders ---- */
+
+.placeholder {
+  padding: 0 0.25em;
+  border-radius: 2px;
+  outline: var(--border-hairline) dashed var(--color-draft-border);
+  outline-offset: 0;
+  background-color: var(--color-draft-bg);
+  color: var(--color-draft-text);
+  font-weight: var(--weight-bold);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.placeholder-media {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.placeholder-media__frame {
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pebble);
+  background-color: var(--color-surface-sage);
+  color: var(--color-deco-sage);
+}
+
+.placeholder-media__mark {
+  width: clamp(3rem, 20%, 6rem);
+  height: auto;
+}
+
+.placeholder-media__caption {
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+/* Preview-only review markers around needs-review / draft blocks. */
+.review-block {
+  position: relative;
+  padding: var(--space-2xs);
+  outline: var(--border-strong) dashed var(--color-review-outline);
+  outline-offset: 0;
+}
+
+.review-block[data-status='draft'] {
+  outline-color: var(--color-review-draft-bg);
+}
+
+.review-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  width: fit-content;
+  margin-block-end: var(--space-xs);
+  padding: 0.125rem var(--space-2xs);
+  border-radius: var(--radius-s);
+  background-color: var(--color-review-bg);
+  color: var(--color-review-text);
+  font-family: var(--font-body);
+  font-size: var(--step--2);
+  font-weight: var(--weight-bold);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.review-badge[data-status='draft'] {
+  background-color: var(--color-review-draft-bg);
+  color: var(--color-review-draft-text);
+}
+
+.review-badge--inline {
+  margin-block-end: 0;
+  margin-inline-end: var(--space-3xs);
+  vertical-align: 0.1em;
+}
+
+@media (forced-colors: active) {
+  .review-badge,
+  .placeholder {
+    border: 1px dashed CanvasText;
+  }
+}
