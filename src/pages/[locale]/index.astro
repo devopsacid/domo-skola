@@ -1,24 +1,56 @@
 ---
+/**
+ * Home (docs/ia.md §2.1, brief §5.1): sections A–L; M is the global footer.
+ * All copy comes from src/content (pages/<locale>/home, pillars, daySchedule, faqItems).
+ */
 import { LOCALES, type Locale } from '../../i18n/routes';
 import Base from '../../layouts/Base.astro';
+// After Base, so home rules come after the global stylesheet in the cascade.
+import '../../styles/home.css';
+import Hero from '../../components/home/Hero.astro';
+import Philosophy from '../../components/home/Philosophy.astro';
+import Pillars from '../../components/home/Pillars.astro';
+import Day from '../../components/home/Day.astro';
+import Outcomes from '../../components/home/Outcomes.astro';
+import Examples from '../../components/home/Examples.astro';
+import Environment from '../../components/home/Environment.astro';
+import Fit from '../../components/home/Fit.astro';
+import Regions from '../../components/home/Regions.astro';
+import Process from '../../components/home/Process.astro';
+import Faq from '../../components/home/Faq.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import {
+  getDaySchedule,
+  getFeaturedFaq,
+  getHome,
+  getPillars,
+} from '../../components/home/content';
 
 export function getStaticPaths() {
   return LOCALES.map((locale) => ({ params: { locale } }));
 }
 
 const locale = Astro.params.locale as Locale;
-// Placeholder until L3 builds the home sections.
-const placeholder: Record<Locale, string> = {
-  sk: 'Pripravujeme',
-  cs: 'Připravujeme',
-  en: 'Coming soon',
-};
+const [home, pillars, schedule, faq] = await Promise.all([
+  getHome(locale),
+  getPillars(locale),
+  getDaySchedule(locale),
+  getFeaturedFaq(locale),
+]);
+const s = home.sections;
 ---
 
-<Base locale={locale} page={{ key: 'home', locale }}>
-  <section class="section">
-    <div class="container">
-      <h1>{placeholder[locale]}</h1>
-    </div>
-  </section>
+<Base locale={locale} description={home.seo.description} page={{ key: 'home', locale }}>
+  <Hero locale={locale} data={s.hero} />
+  <Philosophy locale={locale} data={s.philosophy} />
+  <Pillars locale={locale} data={s.pillars} pillars={pillars} />
+  <Day locale={locale} data={s.day} schedule={schedule} />
+  <Outcomes locale={locale} data={s.outcomes} />
+  <Examples locale={locale} data={s.examples} />
+  <Environment locale={locale} data={s.environment} />
+  <Fit locale={locale} data={s.fit} />
+  <Regions locale={locale} data={s.regions} />
+  <Process locale={locale} data={s.process} />
+  <Faq locale={locale} data={s.faq} items={faq} />
+  <FinalCta locale={locale} data={s.finalCta} />
 </Base>

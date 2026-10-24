@@ -1,0 +1,29 @@
+---
+/** J. How enrolment works: four proposed steps, labelled until confirmed (brief §5.1 J). */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import NotePending from '../status/NotePending.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Steps from '../ui/Steps.astro';
+import type { HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['process'];
+}
+const { locale, data } = Astro.props;
+---
+
+<section class="section surface-sunk home-process" aria-labelledby="home-process-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.process" quiet class="container">
+    <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-process-title" />
+    <NotePending locale={locale} kind="proposed" class="home-process__note">
+      <p>{data.note}</p>
+    </NotePending>
+    <Steps steps={data.steps} />
+    <div class="btn-group home-process__ctas">
+      <a class="btn btn-primary" href={localePath('enrol', locale)}>{data.ctaPrimary}</a>
+      <a class="btn btn-secondary" href={`${localePath('contact', locale)}?subject=visit`}>{data.ctaSecondary}</a>
+    </div>
+  </Reviewable>
+</section>

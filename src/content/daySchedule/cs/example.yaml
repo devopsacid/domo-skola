@@ -1,0 +1,24 @@
+# Illustrative day rhythm, Czech placeholder translation. An example, NOT a confirmed timetable.
+isExample: true
+status: needs-review
+reviewNote: L3 placeholder translation; times and details to be confirmed by the owner.
+disclaimer: Ilustrativní příklad. Nejde o potvrzený rozvrh, skutečný den se může lišit.
+items:
+  - kind: arrival
+    title: Příchod a ranní kruh
+    description: Děti se pozdraví, řeknou, jak se mají, a společně si projdou, co je ten den čeká.
+  - kind: independent
+    title: Samostatné objevování
+    description: Každé dítě si vybere práci s pomůckami a pracuje vlastním tempem. Průvodce pozoruje a pomáhá.
+  - kind: math_language
+    title: Matematika a jazyk
+    description: Úlohy z Hejného prostředí, čtení a psaní, samostatně i v menších skupinách.
+  - kind: outdoor
+    title: Čas venku
+    description: Pohyb, hra a pozorování přírody. I venku se dá měřit, počítat a zkoumat.
+  - kind: project
+    title: Projektová práce
+    description: Společné téma, které propojuje více předmětů, například voda, stromy nebo mapa okolí.
+  - kind: reflection
+    title: Společné shrnutí
+    description: Na konci dne se děti vrátí k tomu, co se jim povedlo, co je překvapilo a co chtějí zkusit zítra.

@@ -1,0 +1,12 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+id: compulsory-education
+category: legal
+order: 2
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.legalModel]
+question: "Jak se plní povinná školní docházka?"
+answer: |-
+  Tuto informaci zatím ověřujeme. Záleží na právním modelu komunity a na škole, ve které bude dítě formálně zapsané.
+
+  Dokud to nebude potvrzené, nebudeme vám nic slibovat. Rádi si o tom s vámi promluvíme osobně.

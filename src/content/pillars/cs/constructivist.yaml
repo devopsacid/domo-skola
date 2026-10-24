@@ -1,0 +1,18 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+key: constructivist
+order: 3
+status: needs-review
+title: Konstruktivistické učení
+anchor: konstruktivismus
+summary: Děti si porozumění budují samy, zkušeností, pokusem a otázkami, ne jen tím, že si ho zapamatují.
+parentBenefits:
+  - Učivo staví na tom, co dítě už ví a co ho zajímá.
+  - Projekty propojují matematiku, jazyk, přírodu i umění.
+  - Dítě se učí klást otázky a hledat odpovědi.
+whatItMeans: Konstruktivismus vychází z toho, že poznání se nedá jednoduše „přenést“ do hlavy. Dítě si ho skládá samo, když zkoumá, porovnává a ověřuje si své představy.
+inPractice: Učení často začíná otázkou nebo problémem. Děti vysloví odhad, vyzkoušejí ho, porovnají výsledky a společně hledají vysvětlení. Průvodce klade otázky a pomáhá shrnout, na co přišly.
+examples:
+  - Při projektu o vodě děti měří, kolik vody se odpaří z různých nádob, a výsledky zapisují do tabulky.
+  - Text o zvířatech z okolí napíšou poté, co je samy pozorovaly venku.
+benefits: Hlubší porozumění, kritické myšlení a radost z objevování.
+parentsCanExpect: Ukázky projektů a prací, na kterých uvidíte, co dítě zkoumalo a jak o tom přemýšlí.

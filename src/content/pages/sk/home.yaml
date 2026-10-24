@@ -1,0 +1,146 @@
+# Home page (docs/ia.md §2.1, brief §5.1). Working Slovak copy: needs-review by the content owner.
+# Sections are typed in src/components/home/content.ts.
+key: home
+status: needs-review
+reviewNote: L3 working copy built from brief §3 messaging; owner and native review before verified.
+seo:
+  title: Komunitné vzdelávanie pre 1.–4. ročník
+  description: Malá vzdelávacia komunita pre deti 1.–4. ročníka. Učenie objavovaním, inšpirácia princípmi Montessori, rešpektujúci prístup a Hejného matematika. Pre rodiny z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša.
+sections:
+  hero:
+    status: needs-review
+    eyebrow: Komunitné vzdelávanie pre 1.–4. ročník
+    headline: Miesto, kde deti objavujú svet vlastným tempom.
+    lead: Vytvárame rešpektujúce prostredie pre deti 1. až 4. ročníka, kde sa učenie opiera o objavovanie, skúsenosti, samostatnosť a spoluprácu. Inšpirujeme sa princípmi Montessori, staviame na konštruktivistickom učení a v matematike pracujeme s Hejného metódou.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Spoznajte náš prístup
+    facts:
+      - 1.–4. ročník, približne 6 až 10 rokov
+      - Pre rodiny z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša
+  philosophy:
+    status: needs-review
+    eyebrow: Naša filozofia
+    title: Deti sa najlepšie učia, keď môžu skúmať, pýtať sa a byť pri tom v bezpečí.
+    body:
+      - Veríme, že učenie sa začína vo vzťahoch. Dieťa, ktoré sa cíti prijaté, sa odváži skúšať, mýliť sa a skúšať znova.
+      - Preto dávame deťom čas, skutočné úlohy a dospelých, ktorí počúvajú. Jasné ciele a hranice k tomu patria rovnako ako sloboda vybrať si, čím začať.
+    points:
+      - title: Vzťahy
+        text: Pokojná komunikácia medzi deťmi, sprievodcami aj rodičmi.
+      - title: Objavovanie
+        text: Deti prichádzajú na veci samy, s pomôckami a otázkami.
+      - title: Aktívna účasť
+        text: Deti spoluvytvárajú pravidlá, projekty aj spoločný deň.
+    link: Ako sa učíme
+  pillars:
+    status: needs-review
+    eyebrow: Štyri piliere
+    title: Štyri prístupy, ktoré sa navzájom dopĺňajú
+    intro: Žiadny z nich nepoužívame ako dogmu. Berieme z nich to, čo deťom pomáha rozumieť, spolupracovať a byť samostatné.
+    benefitsLabel: Čo to znamená pre vaše dieťa
+    links:
+      montessori: Viac o princípoch Montessori
+      respectful: Viac o rešpektujúcom prístupe
+      constructivist: Viac o konštruktivistickom učení
+      hejny: Viac o Hejného matematike
+  day:
+    status: needs-review
+    eyebrow: Deň v komunite
+    title: Ako môže vyzerať jeden deň
+    intro: Deň má pokojný rytmus. Striedajú sa v ňom samostatná práca, spoločné projekty a čas vonku.
+    link: Viac o dni v komunite
+  outcomes:
+    status: needs-review
+    eyebrow: Čo deti rozvíjajú
+    title: Schopnosti, ktoré deti potrebujú aj mimo triedy
+    intro: Nesľubujeme rovnaké výsledky pre každé dieťa. Tieto schopnosti však vedome podporujeme každý deň, v malých a konkrétnych situáciách.
+    items:
+      - title: Samostatnosť
+        text: Dieťa si vyberie prácu, pripraví si pomôcky a dokončí, čo začalo.
+      - title: Kritické myslenie
+        text: Pýta sa „prečo“ a overuje si, či odpoveď naozaj platí.
+      - title: Spolupráca
+        text: Vie sa dohodnúť, rozdeliť si úlohy a pomôcť spolužiakovi.
+      - title: Matematické uvažovanie
+        text: Hľadá vzorce, odhaduje a vysvetľuje svoj postup.
+      - title: Komunikácia
+        text: Povie, čo si myslí, a vypočuje si iný názor.
+      - title: Tvorivosť
+        text: Skúša viac riešení a nebojí sa nového nápadu.
+      - title: Zodpovednosť
+        text: Stará sa o pomôcky, priestor aj o dohody v skupine.
+      - title: Zvedavosť
+        text: Má chuť pýtať sa a ísť vo veci o krok ďalej.
+  examples:
+    status: needs-review
+    eyebrow: Ako učenie funguje
+    title: Učenie, ktoré sa dá chytiť do rúk
+    intro: Dva príklady z prvého stupňa. Ukazujú, ako sa z otázky stane pochopenie.
+    items:
+      - key: measurement
+        title: Meranie najprv krokmi, potom metrom
+        text: Deti chcú postaviť domček pre zvieratko z kartónu a dreva. Najprv merajú triedu aj diely vlastnými krokmi a dlaňami a porovnávajú výsledky. Zistia, že každý nameral niečo iné, a samy prídu na to, prečo ľudia potrebujú jednotnú mieru. Až potom siahnu po metri a pravítku.
+        takeaway: Meranie pochopia skôr, než sa ho naučia zapisovať.
+      - key: hejny
+        title: Matematika v Hejného prostrediach
+        text: V prostredí Krokovanie deti chodia po čiare dopredu a dozadu a krokmi objavujú sčítanie a odčítanie. V Schodoch a Autobuse hľadajú pravidlá a overujú ich. Každý môže prísť k výsledku inou cestou a v skupine vysvetlí, prečo jeho riešenie platí.
+        takeaway: Dieťa nerobí len výpočty. Vie povedať, prečo výsledok platí.
+  environment:
+    status: needs-review
+    eyebrow: Prostredie
+    title: Priestor, pomôcky a príroda okolo
+    intro: Pripravené prostredie je pre nás rovnako dôležité ako program. Fotografie priestorov, pomôcok a času vonku sem doplníme, keď ich budeme mať.
+    tiles:
+      - kind: venue
+        label: Priestory komunity
+      - kind: materials
+        label: Pomôcky a materiály
+      - kind: outdoor
+        label: Učenie vonku
+  fit:
+    status: needs-review
+    eyebrow: Pre koho
+    title: Komu môže naša komunita vyhovovať
+    intro: Každé dieťa je iné. Komunita môže byť dobrou voľbou pre rodiny, ktoré…
+    items:
+      - chcú, aby dieťa učivu rozumelo, nielen si ho zapamätalo,
+      - oceňujú vlastné tempo dieťaťa a zároveň jasné ciele a štruktúru,
+      - hľadajú pokojné a rešpektujúce prostredie s menšou skupinou detí,
+      - chcú s komunitou spolupracovať a pravidelne sa rozprávať o pokroku dieťaťa,
+      - majú radi, keď sa učenie odohráva aj vonku a pri skutočných úlohách.
+    closing: Nie ste si istí, či je to pre vaše dieťa to pravé? Porozprávajme sa. Spoločne zvážime, čo vaše dieťa potrebuje.
+    cta: Dohodnúť si stretnutie
+  regions:
+    status: needs-review
+    eyebrow: Regióny
+    title: Pre rodiny z troch regiónov
+    intro: Sme jedna komunita, nie sieť pobočiek. Radi privítame rodiny z Banskej Bystrice, Ružomberka, Liptovského Mikuláša a ich okolia.
+    pending: Presné miesto stretávania a informácie o dochádzaní zverejníme po potvrdení. Ak máte otázku k dochádzaniu, napíšte nám.
+  process:
+    status: needs-review
+    eyebrow: Prihlásenie
+    title: Ako prebieha prihlásenie
+    note: Postup ešte upresňujeme. Prihláška je prejavom záujmu, nie potvrdením prijatia.
+    steps:
+      - title: Ozvete sa nám
+        text: Vyplníte krátku prihlášku alebo nám napíšete. Odpovieme vám a navrhneme termín rozhovoru.
+      - title: Úvodný rozhovor
+        text: Porozprávame sa o vašom dieťati, o tom, čo hľadáte, a odpovieme na vaše otázky.
+      - title: Vzájomné spoznanie
+        text: Dieťa aj vy spoznáte prostredie a ľudí. Spoločne zvážime, či si navzájom vyhovujeme.
+      - title: Dohoda o ďalších krokoch
+        text: Dohodneme sa na ďalšom postupe a povieme vám, aké podmienky a dokumenty sú potrebné.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie
+  faq:
+    status: needs-review
+    eyebrow: Časté otázky
+    title: Na čo sa rodičia pýtajú najčastejšie
+    link: Všetky otázky a odpovede
+    pendingLink: Napíšte nám
+  finalCta:
+    status: needs-review
+    title: Chcete zistiť, či je to miesto pre vaše dieťa?
+    text: Najlepšie je prísť sa pozrieť a porozprávať sa. Začať môžete krátkou prihláškou alebo správou.
+    ctaPrimary: Prihlásiť dieťa
+    ctaSecondary: Dohodnúť si stretnutie

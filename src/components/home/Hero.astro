@@ -1,0 +1,40 @@
+---
+/**
+ * A. Hero, option B (system.md §6.2): type-led, then a full-bleed landscape band.
+ * Mobile: eyebrow, h1, lead, CTAs, facts, band. From 64rem: h1 left (7fr), lead,
+ * CTAs and facts right (5fr), band below. Primary CTA above the fold at 360 x 800.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import HeroLandscape from '../art/HeroLandscape.astro';
+import type { HomeSections } from './content';
+import { keepRanges } from './text';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['hero'];
+}
+const { locale, data } = Astro.props;
+---
+
+<section class="home-hero" aria-labelledby="home-hero-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.hero" quiet class="container home-hero__grid">
+    <div class="home-hero__head">
+      <p class="eyebrow">{keepRanges(data.eyebrow)}</p>
+      <h1 class="heading-hero home-hero__title" id="home-hero-title">{data.headline}</h1>
+    </div>
+    <div class="home-hero__body">
+      <p class="home-hero__lead">{data.lead}</p>
+      <div class="btn-group home-hero__ctas">
+        <a class="btn btn-primary" href={localePath('enrol', locale)}>{data.ctaPrimary}</a>
+        <a class="btn btn-secondary" href={localePath('approach', locale)}>{data.ctaSecondary}</a>
+      </div>
+      <ul class="home-hero__facts">
+        {data.facts.map((f) => <li>{keepRanges(f)}</li>)}
+      </ul>
+    </div>
+  </Reviewable>
+  <div class="home-hero__band">
+    <HeroLandscape />
+  </div>
+</section>

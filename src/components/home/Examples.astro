@@ -1,0 +1,40 @@
+---
+/** F. How learning works: two concrete classroom examples (brief §5.1 F). */
+import type { Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Motif, { type MotifName } from '../art/Motif.astro';
+import type { HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['examples'];
+}
+const { locale, data } = Astro.props;
+const MOTIF: Record<HomeSections['examples']['items'][number]['key'], MotifName> = {
+  measurement: 'steps',
+  hejny: 'numberline',
+};
+---
+
+<section class="section surface-sage home-examples" aria-labelledby="home-examples-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.examples" quiet class="container">
+    <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-examples-title" landing>
+      <p>{data.intro}</p>
+    </SectionHeading>
+    <div class="example-list">
+      {
+        data.items.map((ex) => (
+          <article class="example" aria-labelledby={`home-example-${ex.key}`}>
+            <Motif name={MOTIF[ex.key]} class="example__motif" />
+            <h3 class="example__title" id={`home-example-${ex.key}`}>
+              {ex.title}
+            </h3>
+            <p class="example__text">{ex.text}</p>
+            <p class="example__takeaway">{ex.takeaway}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Reviewable>
+</section>

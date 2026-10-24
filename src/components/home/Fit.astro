@@ -1,0 +1,31 @@
+---
+/** H. Who it may suit: inclusive wording, what we offer rather than who is unwelcome. */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import type { HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['fit'];
+}
+const { locale, data } = Astro.props;
+---
+
+<section class="section surface-clay home-fit" aria-labelledby="home-fit-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.fit" quiet class="container home-split">
+    <div class="home-split__head">
+      <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-fit-title" />
+    </div>
+    <div class="home-split__body stack stack-l">
+      <p class="lead home-fit__intro">{data.intro}</p>
+      <ul class="fit-list">
+        {data.items.map((it) => <li>{it}</li>)}
+      </ul>
+      <div class="home-fit__closing stack stack-m">
+        <p>{data.closing}</p>
+        <a class="btn btn-secondary" href={`${localePath('contact', locale)}?subject=visit`}>{data.cta}</a>
+      </div>
+    </div>
+  </Reviewable>
+</section>

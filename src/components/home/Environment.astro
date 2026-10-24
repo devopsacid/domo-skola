@@ -1,0 +1,47 @@
+---
+/**
+ * G. Educational environment: placeholder frames until real, rights-confirmed photos
+ * exist (brand.md §5.1). No stock children, no AI imagery; each frame carries a
+ * quiet illustration and the visible "to be replaced by a photo" caption.
+ */
+import type { Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import PlaceholderMedia from '../status/PlaceholderMedia.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Motif, { type MotifName } from '../art/Motif.astro';
+import type { HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['environment'];
+}
+const { locale, data } = Astro.props;
+const MOTIF: Record<HomeSections['environment']['tiles'][number]['kind'], MotifName> = {
+  venue: 'window',
+  materials: 'beads',
+  outdoor: 'hills',
+};
+---
+
+<section class="section home-environment" aria-labelledby="home-environment-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.environment" quiet class="container">
+    <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-environment-title" landing>
+      <p>{data.intro}</p>
+    </SectionHeading>
+    <div class="gallery-grid">
+      {
+        data.tiles.map((tile, i) => (
+          <PlaceholderMedia
+            locale={locale}
+            field={`gallery.${tile.kind}`}
+            label={tile.label}
+            ratio={i === 0 ? '4x3' : '16x9'}
+            class={`gallery-grid__item gallery-grid__item--${i + 1}`}
+          >
+            <Motif name={MOTIF[tile.kind]} class="gallery-grid__motif" />
+          </PlaceholderMedia>
+        ))
+      }
+    </div>
+  </Reviewable>
+</section>

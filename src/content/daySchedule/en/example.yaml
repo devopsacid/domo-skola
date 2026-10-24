@@ -1,0 +1,24 @@
+# Illustrative day rhythm, English placeholder translation. An example, NOT a confirmed timetable.
+isExample: true
+status: needs-review
+reviewNote: L3 placeholder translation; times and details to be confirmed by the owner.
+disclaimer: An illustrative example, not a confirmed timetable. A real day may differ.
+items:
+  - kind: arrival
+    title: Arrival and morning circle
+    description: Children greet each other, say how they are and look together at what the day holds.
+  - kind: independent
+    title: Independent exploration
+    description: Each child chooses work with the materials and goes at their own pace. The guide observes and helps.
+  - kind: math_language
+    title: Maths and language
+    description: Tasks from Hejný environments, reading and writing, alone and in small groups.
+  - kind: outdoor
+    title: Time outdoors
+    description: Movement, play and observing nature. Outside is a good place to measure, count and explore too.
+  - kind: project
+    title: Project work
+    description: A shared theme that links several subjects, such as water, trees or a map of the area.
+  - kind: reflection
+    title: Looking back together
+    description: At the end of the day, children come back to what went well, what surprised them and what they want to try tomorrow.

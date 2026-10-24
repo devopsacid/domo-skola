@@ -1,0 +1,10 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+id: cost
+category: costs
+order: 6
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.fees]
+question: "Kolik stojí účast v komunitě?"
+answer: |-
+  Výši příspěvku zveřejníme po potvrzení. Napište nám a rádi vám řekneme, jak o nákladech uvažujeme.

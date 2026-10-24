@@ -1,0 +1,12 @@
+# English placeholder translation (not literal), needs-review: native review in L9.
+id: compulsory-education
+category: legal
+order: 2
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.legalModel]
+question: "How is compulsory school attendance fulfilled?"
+answer: |-
+  We are still confirming this. It depends on the community's legal model and on the school where your child will be formally enrolled.
+
+  Until that is confirmed, we won't promise anything. We are happy to talk it through with you in person.

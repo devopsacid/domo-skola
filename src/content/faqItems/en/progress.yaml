@@ -1,0 +1,12 @@
+# English placeholder translation (not literal), needs-review: native review in L9.
+id: progress
+category: parents
+order: 4
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.legalModel]
+question: "How do you follow a child's progress?"
+answer: |-
+  We follow progress continuously: we observe children as they work, keep a record of their work and talk with you about it regularly.
+
+  How formal assessment and examinations will work depends on the school where your child is enrolled. We are still confirming this part.

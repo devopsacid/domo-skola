@@ -1,0 +1,10 @@
+# English placeholder translation (not literal), needs-review: native review in L9.
+id: cost
+category: costs
+order: 6
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.fees]
+question: "How much does it cost to take part?"
+answer: |-
+  We will publish the fee once it is confirmed. Write to us and we'll gladly tell you how we are thinking about costs.

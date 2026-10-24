@@ -1,0 +1,12 @@
+# English placeholder translation (not literal), needs-review: native review in L9.
+id: difference-traditional
+category: philosophy
+order: 1
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.legalModel]
+question: "How is a home-education community different from a traditional school?"
+answer: |-
+  The main difference is how children learn. We work in a small group, children learn through discovery, with hands-on materials and in projects, and each one moves at their own pace. The learning goals for the first years of primary school still matter to us.
+
+  We are still confirming how the community is organised legally and which school it works with. We will publish this on the For parents page.

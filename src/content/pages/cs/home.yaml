@@ -1,0 +1,145 @@
+# Home page, Czech. Placeholder translation (not literal), needs-review: native Czech review in L9.
+key: home
+status: needs-review
+reviewNote: L3 placeholder translation from the SK working copy; native review before verified.
+seo:
+  title: Komunitní vzdělávání pro 1.–4. ročník
+  description: Malá vzdělávací komunita pro děti 1.–4. ročníku. Učení objevováním, inspirace principy Montessori, respektující přístup a Hejného metoda. Pro rodiny z okolí Banské Bystrice, Ružomberku a Liptovského Mikuláše.
+sections:
+  hero:
+    status: needs-review
+    eyebrow: Komunitní vzdělávání pro 1.–4. ročník
+    headline: Místo, kde děti objevují svět vlastním tempem.
+    lead: Vytváříme respektující prostředí pro děti 1. až 4. ročníku, kde učení stojí na objevování, zkušenosti, samostatnosti a spolupráci. Inspirujeme se principy Montessori, vycházíme z konstruktivistického učení a v matematice pracujeme s Hejného metodou.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Poznejte náš přístup
+    facts:
+      - 1.–4. ročník, přibližně 6 až 10 let
+      - Pro rodiny z okolí Banské Bystrice, Ružomberku a Liptovského Mikuláše
+  philosophy:
+    status: needs-review
+    eyebrow: Naše filozofie
+    title: Děti se nejlépe učí, když mohou zkoumat, ptát se a cítit se přitom bezpečně.
+    body:
+      - Věříme, že učení začíná ve vztazích. Dítě, které se cítí přijaté, se nebojí zkoušet, chybovat a zkoušet znovu.
+      - Proto dětem dáváme čas, skutečné úkoly a dospělé, kteří naslouchají. Jasné cíle a hranice k tomu patří stejně jako svoboda vybrat si, čím začít.
+    points:
+      - title: Vztahy
+        text: Klidná komunikace mezi dětmi, průvodci i rodiči.
+      - title: Objevování
+        text: Děti na věci přicházejí samy, s pomůckami a otázkami.
+      - title: Aktivní účast
+        text: Děti spoluvytvářejí pravidla, projekty i společný den.
+    link: Jak se učíme
+  pillars:
+    status: needs-review
+    eyebrow: Čtyři pilíře
+    title: Čtyři přístupy, které se navzájem doplňují
+    intro: Žádný z nich nebereme jako dogma. Vybíráme to, co dětem pomáhá rozumět, spolupracovat a být samostatné.
+    benefitsLabel: Co to znamená pro vaše dítě
+    links:
+      montessori: Více o principech Montessori
+      respectful: Více o respektujícím přístupu
+      constructivist: Více o konstruktivistickém učení
+      hejny: Více o Hejného metodě
+  day:
+    status: needs-review
+    eyebrow: Den v komunitě
+    title: Jak může vypadat jeden den
+    intro: Den má klidný rytmus. Střídá se v něm samostatná práce, společné projekty a čas venku.
+    link: Více o dni v komunitě
+  outcomes:
+    status: needs-review
+    eyebrow: Co děti rozvíjejí
+    title: Dovednosti, které děti potřebují i mimo třídu
+    intro: Neslibujeme stejné výsledky pro každé dítě. Tyto dovednosti ale vědomě podporujeme každý den, v malých a konkrétních situacích.
+    items:
+      - title: Samostatnost
+        text: Dítě si vybere práci, připraví si pomůcky a dokončí, co začalo.
+      - title: Kritické myšlení
+        text: Ptá se „proč“ a ověřuje si, jestli odpověď opravdu platí.
+      - title: Spolupráce
+        text: Umí se domluvit, rozdělit si úkoly a pomoct spolužákovi.
+      - title: Matematické uvažování
+        text: Hledá zákonitosti, odhaduje a vysvětluje svůj postup.
+      - title: Komunikace
+        text: Řekne, co si myslí, a vyslechne jiný názor.
+      - title: Tvořivost
+        text: Zkouší víc řešení a nebojí se nového nápadu.
+      - title: Odpovědnost
+        text: Stará se o pomůcky, prostor i o dohody ve skupině.
+      - title: Zvídavost
+        text: Má chuť se ptát a jít ve věci o krok dál.
+  examples:
+    status: needs-review
+    eyebrow: Jak učení funguje
+    title: Učení, které se dá vzít do rukou
+    intro: Dva příklady z prvního stupně. Ukazují, jak se z otázky stane porozumění.
+    items:
+      - key: measurement
+        title: Měření nejdřív kroky, potom metrem
+        text: Děti chtějí postavit domeček pro zvířátko z kartonu a dřeva. Nejdřív měří třídu i jednotlivé díly vlastními kroky a dlaněmi a porovnávají výsledky. Zjistí, že každému vyšlo něco jiného, a samy přijdou na to, proč lidé potřebují jednotnou míru. Teprve potom sáhnou po metru a pravítku.
+        takeaway: Měření pochopí dřív, než se ho naučí zapisovat.
+      - key: hejny
+        title: Matematika v Hejného prostředích
+        text: V prostředí Krokování děti chodí po čáře dopředu a dozadu a kroky objevují sčítání a odčítání. Ve Schodech a v Autobusu hledají pravidla a ověřují je. Každý může dojít k výsledku jinou cestou a ve skupině vysvětlí, proč jeho řešení platí.
+        takeaway: Dítě jen nepočítá. Umí říct, proč výsledek platí.
+  environment:
+    status: needs-review
+    eyebrow: Prostředí
+    title: Prostor, pomůcky a příroda kolem
+    intro: Připravené prostředí je pro nás stejně důležité jako program. Fotografie prostor, pomůcek a času venku sem doplníme, jakmile je budeme mít.
+    tiles:
+      - kind: venue
+        label: Prostory komunity
+      - kind: materials
+        label: Pomůcky a materiály
+      - kind: outdoor
+        label: Učení venku
+  fit:
+    status: needs-review
+    eyebrow: Pro koho
+    title: Komu může naše komunita vyhovovat
+    intro: Každé dítě je jiné. Komunita může být dobrou volbou pro rodiny, které…
+    items:
+      - chtějí, aby dítě učivu rozumělo, a ne si ho jen zapamatovalo,
+      - oceňují vlastní tempo dítěte a zároveň jasné cíle a strukturu,
+      - hledají klidné a respektující prostředí s menší skupinou dětí,
+      - chtějí s komunitou spolupracovat a pravidelně mluvit o pokroku dítěte,
+      - mají rády, když se učení odehrává i venku a při skutečných úkolech.
+    closing: Nejste si jistí, jestli je to pro vaše dítě to pravé? Pojďme si promluvit. Společně zvážíme, co vaše dítě potřebuje.
+    cta: Domluvit si schůzku
+  regions:
+    status: needs-review
+    eyebrow: Regiony
+    title: Pro rodiny ze tří regionů
+    intro: Jsme jedna komunita, ne síť poboček. Rádi přivítáme rodiny z Banské Bystrice, Ružomberku, Liptovského Mikuláše a jejich okolí.
+    pending: Přesné místo setkávání a informace o dojíždění zveřejníme po potvrzení. Pokud máte k dojíždění otázku, napište nám.
+  process:
+    status: needs-review
+    eyebrow: Přihlášení
+    title: Jak probíhá přihlášení
+    note: Postup ještě upřesňujeme. Přihláška je projevem zájmu, ne potvrzením přijetí.
+    steps:
+      - title: Ozvete se nám
+        text: Vyplníte krátkou přihlášku nebo nám napíšete. Odpovíme a navrhneme termín rozhovoru.
+      - title: Úvodní rozhovor
+        text: Promluvíme si o vašem dítěti, o tom, co hledáte, a odpovíme na vaše otázky.
+      - title: Vzájemné seznámení
+        text: Dítě i vy poznáte prostředí a lidi. Společně zvážíme, jestli si navzájem vyhovujeme.
+      - title: Dohoda o dalších krocích
+        text: Domluvíme se na dalším postupu a řekneme vám, jaké podmínky a dokumenty jsou potřeba.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Domluvit si schůzku
+  faq:
+    status: needs-review
+    eyebrow: Časté dotazy
+    title: Na co se rodiče ptají nejčastěji
+    link: Všechny otázky a odpovědi
+    pendingLink: Napište nám
+  finalCta:
+    status: needs-review
+    title: Chcete zjistit, jestli je to místo pro vaše dítě?
+    text: Nejlepší je přijít se podívat a promluvit si. Začít můžete krátkou přihláškou nebo zprávou.
+    ctaPrimary: Přihlásit dítě
+    ctaSecondary: Domluvit si schůzku

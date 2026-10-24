@@ -1,0 +1,146 @@
+# Home page, English. Placeholder translation (not literal), needs-review: native review in L9.
+# Never implies English-language instruction (brief §8): instruction languages are a settings fact.
+key: home
+status: needs-review
+reviewNote: L3 placeholder translation from the SK working copy; native review before verified.
+seo:
+  title: Community learning for grades 1–4
+  description: A small learning community for children in grades 1–4. Learning by discovery, inspired by Montessori principles, respectful education and the Hejný mathematics method. For families around Banská Bystrica, Ružomberok and Liptovský Mikuláš.
+sections:
+  hero:
+    status: needs-review
+    eyebrow: Community learning for grades 1–4
+    headline: A place where children discover the world at their own pace.
+    lead: We create a respectful environment for children in grades 1 to 4, where learning grows from discovery, experience, independence and working together. We draw on Montessori principles, build on constructivist learning and teach maths with the Hejný method.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Discover our approach
+    facts:
+      - Grades 1–4, roughly ages 6 to 10
+      - For families around Banská Bystrica, Ružomberok and Liptovský Mikuláš
+  philosophy:
+    status: needs-review
+    eyebrow: Our philosophy
+    title: Children learn best when they can explore, ask questions and feel safe doing it.
+    body:
+      - We believe learning starts with relationships. A child who feels accepted dares to try, to get things wrong and to try again.
+      - So we give children time, real tasks and adults who listen. Clear goals and boundaries matter here just as much as the freedom to choose where to begin.
+    points:
+      - title: Relationships
+        text: Calm communication between children, guides and parents.
+      - title: Discovery
+        text: Children work things out for themselves, with materials and questions.
+      - title: Taking part
+        text: Children help shape the rules, the projects and the day.
+    link: How we learn
+  pillars:
+    status: needs-review
+    eyebrow: Four pillars
+    title: Four approaches that work together
+    intro: We don't treat any of them as dogma. We take what helps children understand, cooperate and become independent.
+    benefitsLabel: What it means for your child
+    links:
+      montessori: More about Montessori principles
+      respectful: More about respectful education
+      constructivist: More about constructivist learning
+      hejny: More about Hejný mathematics
+  day:
+    status: needs-review
+    eyebrow: A day with us
+    title: What a day can look like
+    intro: The day has a calm rhythm, moving between independent work, shared projects and time outdoors.
+    link: More about a day with us
+  outcomes:
+    status: needs-review
+    eyebrow: What children develop
+    title: Skills children need beyond the classroom
+    intro: We don't promise the same results for every child. But we deliberately support these skills every day, in small, concrete moments.
+    items:
+      - title: Independence
+        text: Choosing a task, getting the materials ready and finishing what they started.
+      - title: Critical thinking
+        text: Asking “why?” and checking whether an answer really holds.
+      - title: Cooperation
+        text: Agreeing, sharing out tasks and helping a classmate.
+      - title: Mathematical reasoning
+        text: Looking for patterns, estimating and explaining the steps.
+      - title: Communication
+        text: Saying what they think and listening to a different view.
+      - title: Creativity
+        text: Trying more than one solution and welcoming new ideas.
+      - title: Responsibility
+        text: Caring for materials, the space and the group's agreements.
+      - title: Curiosity
+        text: Wanting to ask more and take an idea one step further.
+  examples:
+    status: needs-review
+    eyebrow: How learning works
+    title: Learning you can hold in your hands
+    intro: Two examples from the first years of primary school, showing how a question turns into understanding.
+    items:
+      - key: measurement
+        title: Measuring with footsteps first, then a tape measure
+        text: The children want to build a small house for an animal out of cardboard and wood. First they measure the room and the parts with their own steps and hands, and compare results. Everyone gets a different number, and they work out for themselves why people need a shared unit. Only then do they pick up the tape measure and ruler.
+        takeaway: They understand measuring before they learn to write it down.
+      - key: hejny
+        title: Maths in Hejný environments
+        text: In the Stepping environment, children walk forwards and backwards along a line and discover addition and subtraction through their steps. In Stairs and Bus they look for rules and test them. Each child can reach the answer a different way, then explain to the group why their solution works.
+        takeaway: Children don't just calculate. They can say why the answer is right.
+  environment:
+    status: needs-review
+    eyebrow: Environment
+    title: Space, materials and nature around us
+    intro: A prepared environment matters to us as much as the programme. We'll add photos of the space, the materials and time outdoors once we have them.
+    tiles:
+      - kind: venue
+        label: Our learning space
+      - kind: materials
+        label: Learning materials
+      - kind: outdoor
+        label: Learning outdoors
+  fit:
+    status: needs-review
+    eyebrow: Who it suits
+    title: Who our community may suit
+    intro: Every child is different. The community may be a good choice for families who…
+    items:
+      - want their child to understand, not just memorise,
+      - value their child's own pace alongside clear goals and structure,
+      - are looking for a calm, respectful setting with a smaller group of children,
+      - want to work with the community and talk regularly about their child's progress,
+      - like learning to happen outdoors and through real tasks, too.
+    closing: Not sure whether it's right for your child? Let's talk. Together we'll think about what your child needs.
+    cta: Arrange a meeting
+  regions:
+    status: needs-review
+    eyebrow: Regions
+    title: For families from three regions
+    intro: We are one community, not a network of branches. Families from Banská Bystrica, Ružomberok, Liptovský Mikuláš and the surrounding areas are all welcome.
+    pending: We will publish the exact meeting place and travel information once confirmed. If you have a question about getting here, write to us.
+  process:
+    status: needs-review
+    eyebrow: Applying
+    title: How applying works
+    note: We are still finalising the process. An application is an expression of interest, not a confirmation of a place.
+    steps:
+      - title: You get in touch
+        text: Fill in a short application or write to us. We'll reply and suggest a time to talk.
+      - title: First conversation
+        text: We talk about your child and what you are looking for, and answer your questions.
+      - title: Getting to know each other
+        text: You and your child see the space and meet the people. Together we consider whether it's a good fit.
+      - title: Agreeing next steps
+        text: We agree on what happens next and explain which conditions and documents are needed.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Arrange a meeting
+  faq:
+    status: needs-review
+    eyebrow: Questions
+    title: What parents ask most often
+    link: All questions and answers
+    pendingLink: Write to us
+  finalCta:
+    status: needs-review
+    title: Would you like to find out if this is the place for your child?
+    text: The best way is to come, have a look and talk. You can start with a short application or a message.
+    ctaPrimary: Apply for your child
+    ctaSecondary: Arrange a meeting

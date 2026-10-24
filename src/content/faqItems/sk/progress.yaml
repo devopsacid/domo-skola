@@ -1,0 +1,11 @@
+id: progress
+category: parents
+order: 4
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.legalModel]
+question: Ako sledujete pokrok dieťaťa?
+answer: |-
+  Pokrok sledujeme priebežne: pozorujeme dieťa pri práci, zbierame jeho práce a pravidelne sa o nich s vami rozprávame.
+
+  Ako bude prebiehať formálne hodnotenie a preskúšanie, závisí od školy, v ktorej bude dieťa zapísané. Túto časť zatiaľ potvrdzujeme.

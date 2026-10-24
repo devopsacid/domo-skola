@@ -1,0 +1,25 @@
+# Illustrative day rhythm (brief §5.1 D, §5.3). An example, NOT a confirmed timetable.
+# approxTime is a Fact: leave it out (or unverified) and only the order is shown.
+isExample: true
+status: needs-review
+reviewNote: L3 working copy; times and details to be confirmed by the owner.
+disclaimer: Ilustračný príklad. Nie je to potvrdený rozvrh, skutočný deň sa môže líšiť.
+items:
+  - kind: arrival
+    title: Príchod a ranný kruh
+    description: Deti sa pozdravia, povedia, ako sa majú, a spoločne si prejdú, čo ich v ten deň čaká.
+  - kind: independent
+    title: Samostatné objavovanie
+    description: Každé dieťa si vyberie prácu s pomôckami a pracuje vlastným tempom. Sprievodca pozoruje a pomáha.
+  - kind: math_language
+    title: Matematika a jazyk
+    description: Úlohy z Hejného prostredí, čítanie a písanie, samostatne aj v menších skupinách.
+  - kind: outdoor
+    title: Čas vonku
+    description: Pohyb, hra a pozorovanie prírody. Vonku sa dá aj merať, počítať a skúmať.
+  - kind: project
+    title: Projektová práca
+    description: Spoločná téma, ktorá spája viac predmetov, napríklad voda, stromy alebo mapa okolia.
+  - kind: reflection
+    title: Spoločné zhrnutie
+    description: Na konci dňa sa deti vrátia k tomu, čo sa im podarilo, čo ich prekvapilo a čo chcú skúsiť zajtra.

@@ -1,0 +1,9 @@
+id: cost
+category: costs
+order: 6
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.fees]
+question: Koľko stojí účasť v komunite?
+answer: |-
+  Výšku príspevku zverejníme po potvrdení. Napíšte nám a radi vám povieme, ako o nákladoch uvažujeme.

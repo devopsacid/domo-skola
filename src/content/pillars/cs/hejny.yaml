@@ -1,0 +1,19 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+key: hejny
+order: 4
+status: needs-review
+title: Hejného metoda
+anchor: hejneho-metoda
+summary: Matematika objevováním ve známých prostředích, kde děti hledají pravidla a vysvětlují, proč řešení platí.
+parentBenefits:
+  - Dítě matematice rozumí, nepočítá jen podle návodu.
+  - Chyba je příležitost k rozhovoru, ne důvod ke strachu.
+  - Roste sebedůvěra i chuť pustit se do náročnějších úloh.
+whatItMeans: Metoda profesora Milana Hejného stojí na tom, že si dítě matematické představy buduje samo. Pracuje v prostředích, která zná z běžného života, například Krokování, Schody nebo Autobus.
+inPractice: Děti řeší úlohy samy i ve skupinách, diskutují o postupech a samy hledají chyby. Učitel neprozradí výsledek, ale klade otázky, které pomohou pokročit.
+examples:
+  - V Krokování děti chodí po čáře a kroky objevují sčítání, odčítání a později i záporná čísla.
+  - V součtových trojúhelnících hledají chybějící čísla a pravidla, která platí vždy.
+benefits: Matematické uvažování, sebedůvěra a schopnost vysvětlit svůj postup.
+parentsCanExpect: Ukázky úloh, na kterých uvidíte, jak dítě uvažuje. Ukážeme vám, jak můžete s dítětem o matematice mluvit doma.
+disclaimer: V matematice pracujeme s přístupem Hejného metody. Neuvádíme tím oficiální certifikaci.

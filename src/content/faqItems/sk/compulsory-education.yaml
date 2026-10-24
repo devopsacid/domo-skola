@@ -1,0 +1,11 @@
+id: compulsory-education
+category: legal
+order: 2
+featuredOnHome: true
+status: needs-review
+dependsOnFacts: [settings.legalModel]
+question: Ako sa plní povinná školská dochádzka?
+answer: |-
+  Túto informáciu zatiaľ potvrdzujeme. Závisí od právneho modelu komunity a od školy, v ktorej bude dieťa formálne zapísané.
+
+  Kým to nebude potvrdené, nebudeme vám nič sľubovať. Radi sa s vami o tom porozprávame osobne.
