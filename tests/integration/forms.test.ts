@@ -79,7 +79,7 @@ describe('POST /api/contact', () => {
     const conf = m.find((x) => x.tag === 'sender_confirmation');
     expect(conf).toMatchObject({ to: 'jana@example.sk', replyTo: 'info@skola.example' });
     expect(conf?.subject).toBe('Ďakujeme za vašu správu');
-    expect(conf?.text + conf?.html).not.toMatch(/Jana|Nováková|ukážka|\+421/);
+    expect(`${conf?.text}${conf?.html}`).not.toMatch(/Jana|Nováková|ukážka|\+421/);
     const adm = m.find((x) => x.tag === 'admin_notification');
     expect(adm).toMatchObject({ to: 'staff@skola.example', replyTo: 'jana@example.sk' });
     expect(adm?.text).toContain(`/admin/#/inquiries/${r?.id}`);
@@ -124,7 +124,8 @@ describe('POST /api/contact', () => {
   });
 
   it('rejects a foreign, missing or cross-site origin with 403 and stores nothing', async () => {
-    for (const h of [{ Origin: 'https://evil.example' }, { Origin: 'null' }, { 'Sec-Fetch-Site': 'cross-site' }]) {
+    const bad: Record<string, string>[] = [{ Origin: 'https://evil.example' }, { Origin: 'null' }, { 'Sec-Fetch-Site': 'cross-site' }];
+    for (const h of bad) {
       const res = await contact(post('/api/contact', contactBody(), h));
       expect(res.status).toBe(403);
       expect(await res.json()).toEqual({ ok: false, error: 'origin' });
@@ -139,13 +140,14 @@ describe('POST /api/contact', () => {
   });
 
   it('honeypot: any non-empty hp is a silent fake success with nothing stored or sent', async () => {
+    const env = { ...f.env, RATE_LIMIT_PER_10MIN: '100' };
     for (const hp of ['x', ' ', 0, false, {}, ['a']]) {
-      const res = await contact(post('/api/contact', contactBody({ hp })));
+      const res = await contact(post('/api/contact', contactBody({ hp })), env);
       expect(res.status).toBe(201);
       expect(await res.json()).toEqual({ ok: true });
     }
     // even when the rest is invalid, a bot learns nothing
-    const bad = await contact(post('/api/contact', { locale: 'sk', fields: {}, hp: 'bot' }));
+    const bad = await contact(post('/api/contact', { locale: 'sk', fields: {}, hp: 'bot' }), env);
     expect(bad.status).toBe(201);
     expect(await inquiries()).toHaveLength(0);
     expect(await rows(f.db, 'SELECT * FROM email_deliveries')).toHaveLength(0);
@@ -344,7 +346,7 @@ describe('POST /api/applications', () => {
     const conf = m.find((x) => x.tag === 'sender_confirmation');
     expect(conf?.to).toBe('petra@example.cz');
     expect(conf?.text).toMatch(/Děkujeme/);
-    expect(conf?.text + conf?.html).not.toMatch(/Adam|Horváthová|Ružomberok|ročník|2027/);
+    expect(`${conf?.text}${conf?.html}`).not.toMatch(/Adam|Horváthová|Ružomberok|ročník|2027/);
     const adm = m.find((x) => x.tag === 'admin_notification');
     expect(adm?.text).toContain(`/admin/#/applications/${a?.id}`);
     expect(adm?.text).not.toMatch(/Adam|Horváth/);

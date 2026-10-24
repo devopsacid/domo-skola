@@ -280,8 +280,9 @@ describe('POST /api/admin/export (admin only, audited)', () => {
     expect(res.headers.get('Content-Type')).toBe('text/csv; charset=utf-8');
     expect(res.headers.get('Content-Disposition')).toMatch(/^attachment; filename="inquiry-export-2026-10-24\.csv"$/);
     expect(res.headers.get('Cache-Control')).toBe('no-store');
+    const bytes = new Uint8Array(await res.clone().arrayBuffer());
+    expect([...bytes.slice(0, 3)]).toEqual([0xef, 0xbb, 0xbf]); // Response.text() would strip the BOM
     const csv = await res.text();
-    expect(csv.startsWith('﻿')).toBe(true);
     expect(csv).toContain(`"'=HYPERLINK(""http://evil"",""x"")"`);
     expect(csv).toContain("'@cmd|calc");
     expect(csv).toContain("'-2+3");

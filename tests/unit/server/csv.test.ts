@@ -31,7 +31,7 @@ describe('escapeCsvCell', () => {
 describe('toCsv', () => {
   it('emits a BOM, a header row and CRLF line endings', () => {
     const out = toCsv(['a', 'b'], [{ a: 1, b: '=x' }, { a: 2, b: null }], { bom: true });
-    expect(out.startsWith('﻿')).toBe(true);
+    expect(out.charCodeAt(0)).toBe(0xfeff);
     expect(out.slice(1)).toBe("a,b\r\n1,'=x\r\n2,\r\n");
   });
   it('omits the BOM by default', () => {

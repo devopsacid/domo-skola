@@ -156,7 +156,8 @@ describe('D1 triggers re-asserted (docs/architecture.md section 4.5)', () => {
   });
   it('DELETE aborts unless the guard is set, even for a single row or a WHERE clause', async () => {
     await expect(f.db.prepare('DELETE FROM audit_log').run()).rejects.toThrow(/retention purge|SQLITE_CONSTRAINT/i);
-    await expect(f.db.prepare('DELETE FROM audit_log WHERE id = 1').run()).rejects.toThrow();
+    const [{ id }] = (await rows<{ id: number }>(f.db, 'SELECT id FROM audit_log')) as [{ id: number }];
+    await expect(f.db.prepare('DELETE FROM audit_log WHERE id = ?').bind(id).run()).rejects.toThrow();
     await expect(f.db.prepare("DELETE FROM audit_log WHERE at < '2999-01-01'").run()).rejects.toThrow();
     expect(await count('audit_log')).toBe(1);
   });

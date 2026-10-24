@@ -3,6 +3,8 @@
  * A text cell that starts with = + - @ TAB or CR gets a leading apostrophe, which spreadsheets
  * show as text. RFC 4180 quoting applies afterwards.
  */
+/** UTF-8 BOM so Excel opens the file as UTF-8. */
+const BOM = String.fromCharCode(0xfeff);
 const FORMULA_START = /^[=+\-@\t\r]/;
 
 export function escapeCsvCell(value: unknown): string {
@@ -21,5 +23,5 @@ export function toCsv(
 ): string {
   const lines = [columns.map(escapeCsvCell).join(',')];
   for (const row of rows) lines.push(columns.map((c) => escapeCsvCell(row[c])).join(','));
-  return `${opts.bom ? '﻿' : ''}${lines.join('\r\n')}\r\n`;
+  return `${opts.bom ? BOM : ''}${lines.join('\r\n')}\r\n`;
 }

@@ -1,6 +1,6 @@
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { SignJWT, exportJWK, generateKeyPair } from 'jose';
 import { getPlatformProxy } from 'wrangler';
 import { startMockMail } from '../../tools/mock-mail/server.mjs';
@@ -34,7 +34,7 @@ export interface SignOptions {
 export async function openFixture(): Promise<Fixture> {
   const dir = process.env.D1_PERSIST_DIR;
   if (!dir) throw new Error('D1_PERSIST_DIR missing: global setup did not run');
-  const proxy = await getPlatformProxy({ configPath: resolve('wrangler.jsonc'), persist: { path: dir } });
+  const proxy = await getPlatformProxy({ configPath: resolve('wrangler.jsonc'), persist: { path: join(dir, 'v3') } });
   const db = proxy.env.DB as unknown as D1Like;
 
   const mail = await startMockMail({ port: 0 });
