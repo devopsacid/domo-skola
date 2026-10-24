@@ -129,7 +129,16 @@ export function makeDue(table: 'applications' | 'contact_inquiries', id: string)
 }
 
 export async function mailFail(status: number | null) {
-  await fetch(`${MAIL_URL}/mode`, { method: 'PUT', body: JSON.stringify({ fail: status }) });
+  // A pooled keep-alive socket may have been closed by the mock server while idle ("other side closed"):
+  // the PUT is idempotent, so retry on a fresh connection.
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await fetch(`${MAIL_URL}/mode`, { method: 'PUT', body: JSON.stringify({ fail: status }) });
+      return;
+    } catch (e) {
+      if (attempt >= 3) throw e;
+    }
+  }
 }
 
 /** Opens the admin as the given Access identity (the dev proxy keeps it in a cookie). */
