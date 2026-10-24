@@ -1,0 +1,164 @@
+---
+/**
+ * Small decorative motifs (brand.md §5.2): paper-cut shapes and Hejný-style line
+ * drawings at low visual weight. Always decorative (aria-hidden); the text next to
+ * them carries the meaning. Colours via art.css classes; no style attributes.
+ */
+export type MotifName =
+  | 'blocks'
+  | 'circles'
+  | 'arch'
+  | 'triangle'
+  | 'sunrise'
+  | 'beads'
+  | 'leaf'
+  | 'paper'
+  | 'ring'
+  | 'steps'
+  | 'numberline'
+  | 'window'
+  | 'hills';
+
+interface Props {
+  name: MotifName;
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['motif', `motif--${name}`, className]}
+  viewBox="0 0 64 64"
+  width="64"
+  height="64"
+  aria-hidden="true"
+  focusable="false"
+>
+  {
+    name === 'blocks' && (
+      <g>
+        <rect class="art-sage" x="8" y="48" width="48" height="10" rx="2" />
+        <rect class="art-sage-200" x="14" y="38" width="36" height="10" rx="2" />
+        <rect class="art-sage" x="20" y="28" width="24" height="10" rx="2" />
+        <rect class="art-sage-200" x="26" y="18" width="12" height="10" rx="2" />
+        <rect class="art-forest" x="29" y="10" width="6" height="8" rx="1.5" />
+      </g>
+    )
+  }
+  {
+    name === 'circles' && (
+      <g>
+        <circle class="art-clay" cx="25" cy="34" r="17" />
+        <circle class="art-line" cx="40" cy="30" r="17" />
+      </g>
+    )
+  }
+  {
+    name === 'arch' && (
+      <g>
+        <path class="art-sun" d="M6 56V40a26 26 0 0 1 52 0v16H46V40a14 14 0 0 0-28 0v16Z" />
+        <path class="art-line art-line--thin" d="M6 44h12M46 44h12M14 24l8 8M50 24l-8 8M32 14v12" />
+      </g>
+    )
+  }
+  {
+    name === 'triangle' && (
+      <g class="art-line">
+        <path d="M29 17l-9 16M35 17l9 16M27 42h10" />
+        <circle cx="32" cy="12" r="6" />
+        <circle cx="18" cy="42" r="6" />
+        <circle cx="46" cy="42" r="6" />
+        <path class="art-line--thin" d="M10 56h44" />
+      </g>
+    )
+  }
+  {
+    name === 'sunrise' && (
+      <g>
+        <path class="art-sun" d="M14 44a18 18 0 0 1 36 0Z" />
+        <path class="art-line" d="M6 44h52M32 14v6M14 22l4 4M50 22l-4 4" />
+      </g>
+    )
+  }
+  {
+    name === 'beads' && (
+      <g>
+        <path class="art-line art-line--thin" d="M8 20h48M8 32h48M8 44h48" />
+        <circle class="art-clay" cx="14" cy="20" r="4" />
+        <circle class="art-clay" cx="23" cy="20" r="4" />
+        <circle class="art-sun" cx="14" cy="32" r="4" />
+        <circle class="art-sun" cx="23" cy="32" r="4" />
+        <circle class="art-sun" cx="32" cy="32" r="4" />
+        <circle class="art-sage" cx="14" cy="44" r="4" />
+        <circle class="art-forest" cx="50" cy="44" r="4" />
+      </g>
+    )
+  }
+  {
+    name === 'leaf' && (
+      <g>
+        <path class="art-sage" d="M12 52C10 30 26 12 54 10c2 26-14 44-42 42Z" />
+        <path class="art-line art-line--thin" d="M12 52L44 20M24 40h10M30 34V24" />
+      </g>
+    )
+  }
+  {
+    name === 'paper' && (
+      <g>
+        <path class="art-cream-2" d="M14 8h26l12 12v36H14Z" />
+        <path class="art-line art-line--thin" d="M14 8h26l12 12v36H14ZM40 8v12h12M21 32h22M21 40h22M21 48h14" />
+      </g>
+    )
+  }
+  {
+    name === 'ring' && (
+      <g>
+        <circle class="art-line art-line--thin" cx="32" cy="32" r="20" />
+        <circle class="art-forest" cx="32" cy="12" r="4.5" />
+        <circle class="art-clay" cx="51" cy="26" r="4.5" />
+        <circle class="art-sun" cx="44" cy="48" r="4.5" />
+        <circle class="art-sage" cx="20" cy="48" r="4.5" />
+        <circle class="art-forest" cx="13" cy="26" r="4.5" />
+      </g>
+    )
+  }
+  {
+    name === 'steps' && (
+      <g>
+        <path class="art-line art-line--thin" d="M4 58h56" />
+        <path class="art-clay" d="M10 46c0-4 3-7 6-7s5 3 4 7-3 8-6 8-4-4-4-8Z" />
+        <path class="art-clay" d="M30 30c0-4 3-7 6-7s5 3 4 7-3 8-6 8-4-4-4-8Z" />
+        <path class="art-dots art-dots--small" d="M18 36c4-10 10-14 16-16M40 20c4-6 10-8 16-8" />
+      </g>
+    )
+  }
+  {
+    name === 'numberline' && (
+      <g class="art-line">
+        <path d="M4 46h56" />
+        <path class="art-line--thin" d="M12 42v8M22 42v8M32 42v8M42 42v8M52 42v8" />
+        <path d="M12 38c2-12 18-12 20 0M32 38c2-12 18-12 20 0" />
+        <path class="art-line--thin" d="M48 34l4 4 2-6" />
+      </g>
+    )
+  }
+  {
+    name === 'window' && (
+      <g>
+        <path class="art-sage-200" d="M14 58V28a18 18 0 0 1 36 0v30Z" />
+        <path class="art-line art-line--thin" d="M14 58V28a18 18 0 0 1 36 0v30ZM32 10v48M14 34h36" />
+        <rect class="art-clay" x="8" y="56" width="48" height="4" rx="2" />
+      </g>
+    )
+  }
+  {
+    name === 'hills' && (
+      <g>
+        <circle class="art-sun" cx="46" cy="18" r="7" />
+        <path class="art-sage-200" d="M2 46c10-10 20-16 32-14s20 10 28 12v14H2Z" />
+        <path class="art-sage" d="M2 52c14-8 30-10 42-6 8 2 14 4 18 4v8H2Z" />
+        <path class="art-forest" d="M16 44c-4-8-3-17 3-22 6 5 7 14 3 22Z" />
+      </g>
+    )
+  }
+</svg>

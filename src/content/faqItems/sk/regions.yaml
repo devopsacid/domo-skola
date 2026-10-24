@@ -1,0 +1,12 @@
+# Home FAQ item, Slovak working copy (needs-review).
+id: regions
+category: location
+order: 5
+featuredOnHome: true
+status: needs-review
+reviewNote: "Regional reach only, no branches implied; venue and travel details stay pending until settings.venue is verified."
+dependsOnFacts: [settings.venue]
+question: "Môžu sa prihlásiť rodiny zo všetkých troch regiónov?"
+answer: |-
+  Áno. Radi privítame rodiny z okolia Banskej Bystrice, Ružomberka aj Liptovského Mikuláša. Sme jedna komunita, nie pobočky v každom meste.
+pendingNote: "Presné miesto stretávania a možnosti dochádzania zatiaľ potvrdzujeme."

@@ -1,0 +1,12 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+id: compulsory-education
+category: legal
+order: 2
+featuredOnHome: true
+status: needs-review
+reviewNote: "Answer must be rewritten with the verified legal model before the pendingNote can go; no legal claim until then."
+dependsOnFacts: [settings.legalModel]
+question: "Jak se plní povinná školní docházka?"
+answer: |-
+  Záleží to na právním modelu komunity a na škole, ve které bude dítě formálně zapsané. Rádi si o tom s vámi promluvíme osobně.
+pendingNote: "Tuto informaci zatím ověřujeme. Dokud nebude potvrzená, nebudeme vám nic slibovat."

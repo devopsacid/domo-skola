@@ -1,0 +1,38 @@
+---
+/** B. Our philosophy: heading left, text and three principles right (from 64rem). */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import LinkArrow from '../ui/LinkArrow.astro';
+import type { HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['philosophy'];
+}
+const { locale, data } = Astro.props;
+---
+
+<section class="section surface-sage home-philosophy" aria-labelledby="home-philosophy-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.philosophy" quiet class="container home-split">
+    <div class="home-split__head">
+      <p class="eyebrow">{data.eyebrow}</p>
+      <h2 class="home-philosophy__title" id="home-philosophy-title">{data.title}</h2>
+    </div>
+    <div class="home-split__body stack stack-l">
+      <div class="stack">
+        {data.body.map((p, i) => <p class:list={[i === 0 && 'lead home-philosophy__lead']}>{p}</p>)}
+      </div>
+      <dl class="principles">
+        {
+          data.points.map((pt) => (
+            <div class="principles__item">
+              <dt>{pt.title}</dt>
+              <dd>{pt.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <LinkArrow href={localePath('approach', locale)}>{data.link}</LinkArrow>
+    </div>
+  </Reviewable>
+</section>

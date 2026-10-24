@@ -1,0 +1,51 @@
+---
+/**
+ * K. Featured FAQ (max 6) as a no-JS accordion. Answers that depend on unverified
+ * settings facts get their pendingNote and a contact link (never an invented answer,
+ * brief §5.7).
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import FaqAccordion from '../ui/FaqAccordion.astro';
+import LinkArrow from '../ui/LinkArrow.astro';
+import { factsVerified } from '../site/facts';
+import { worstStatus, type FaqItem, type HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['faq'];
+  items: FaqItem[];
+  /** Site settings (passed in, so the section renders without the content store). */
+  settings: Record<string, unknown>;
+}
+const { locale, data, items, settings } = Astro.props;
+const list = items.map((f) => ({
+  id: f.id,
+  question: f.question,
+  answer: f.answer,
+  pendingNote: f.pendingNote,
+  pending: !f.dependsOnFacts.every((path) => factsVerified(settings, path)),
+}));
+const status = worstStatus(data.status, ...items.map((f) => f.status));
+---
+
+<section class="section home-faq" aria-labelledby="home-faq-title">
+  <Reviewable locale={locale} status={status} name="pages/home.faq + faqItems" quiet class="container home-split">
+    <div class="home-split__head">
+      <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-faq-title">
+        <Fragment slot="link">
+          <LinkArrow href={localePath('faq', locale)}>{data.link}</LinkArrow>
+        </Fragment>
+      </SectionHeading>
+    </div>
+    <div class="home-split__body">
+      <FaqAccordion
+        items={list}
+        name="faq-home"
+        idPrefix="otazka-"
+        pendingLink={{ href: localePath('contact', locale), label: data.pendingLink }}
+      />
+    </div>
+  </Reviewable>
+</section>

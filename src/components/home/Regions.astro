@@ -1,0 +1,52 @@
+---
+/**
+ * I. Regions: reach, not locations (brief §2, §9). Region names come from settings and
+ * render as words, never as pins. The venue shows only once its facts are verified.
+ */
+import type { Locale } from '../../i18n/routes';
+import { verifiedValue } from '../../content-schemas';
+import Reviewable from '../status/Reviewable.astro';
+import NotePending from '../status/NotePending.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Motif from '../art/Motif.astro';
+import type { HomeSections, Settings } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['regions'];
+  /** Site settings (passed in, so the section renders without the content store). */
+  settings: Pick<Settings, 'regions' | 'venue'>;
+}
+const { locale, data, settings } = Astro.props;
+const regions = settings.regions.map((r) => r.label[locale]).filter(Boolean);
+const venueName = verifiedValue(settings.venue.name)?.[locale];
+const venueTown = verifiedValue(settings.venue.municipality);
+const venue = [venueName, venueTown].filter(Boolean).join(', ');
+---
+
+<section class="section home-regions" aria-labelledby="home-regions-title">
+  <Reviewable locale={locale} status={data.status} name="pages/home.regions" quiet class="container home-split">
+    <div class="home-split__head">
+      <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-regions-title">
+        <p>{data.intro}</p>
+      </SectionHeading>
+    </div>
+    <div class="home-split__body stack stack-l">
+      <div class="home-regions__names">
+        <Motif name="hills" class="home-regions__motif" />
+        <ul class="region-list">
+          {regions.map((r) => <li>{r}</li>)}
+        </ul>
+      </div>
+      {
+        venue ? (
+          <p class="home-regions__venue">{venue}</p>
+        ) : (
+          <NotePending locale={locale} kind="pending">
+            <p>{data.pending}</p>
+          </NotePending>
+        )
+      }
+    </div>
+  </Reviewable>
+</section>

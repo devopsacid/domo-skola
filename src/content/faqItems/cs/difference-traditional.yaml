@@ -1,0 +1,12 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+id: difference-traditional
+category: philosophy
+order: 1
+featuredOnHome: true
+status: needs-review
+reviewNote: "Answer describes the intended practice; \"menšia skupina\" (smaller group) wording awaits the owner (group size not confirmed). Legal part stays in pendingNote until settings.legalModel is verified."
+dependsOnFacts: [settings.legalModel]
+question: "Jaký je rozdíl mezi domoškolou a tradiční školou?"
+answer: |-
+  Rozdíl je hlavně ve způsobu učení. Děti se učí v menší skupině, objevováním, s pomůckami a v projektech a každé postupuje vlastním tempem. Cíle vzdělávání pro 1. stupeň jsou přitom důležité i pro nás.
+pendingNote: "Jak je komunita uspořádaná po právní stránce a se kterou školou spolupracuje, zatím ověřujeme. Zveřejníme to na stránce Pro rodiče."

@@ -1,0 +1,64 @@
+---
+/**
+ * C. Four pillars (system.md §6.4): a numbered editorial list with hairlines, one motif
+ * and accent per pillar, no cards. Links go to the matching anchor on the approach page.
+ * Montessori and Hejný rows carry their non-accreditation disclaimer (brief §2).
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import Reviewable from '../status/Reviewable.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import LinkArrow from '../ui/LinkArrow.astro';
+import Motif, { type MotifName } from '../art/Motif.astro';
+import { worstStatus, type HomeSections, type Pillar } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['pillars'];
+  pillars: Pillar[];
+}
+const { locale, data, pillars } = Astro.props;
+const MOTIF: Record<Pillar['key'], MotifName> = {
+  montessori: 'blocks',
+  respectful: 'circles',
+  constructivist: 'arch',
+  hejny: 'triangle',
+};
+const approach = localePath('approach', locale);
+const status = worstStatus(data.status, ...pillars.map((p) => p.status));
+---
+
+<section class="section home-pillars" aria-labelledby="home-pillars-title">
+  <Reviewable locale={locale} status={status} name="pages/home.pillars + pillars" quiet class="container">
+    <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-pillars-title" landing>
+      <p>{data.intro}</p>
+    </SectionHeading>
+    <ol class="pillar-list">
+      {
+        pillars.map((p, i) => (
+          <li class="pillar" data-pillar={p.key}>
+            <span class="pillar__num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <Motif name={MOTIF[p.key]} class="pillar__motif" />
+            <div class="pillar__body">
+              <h3 class="pillar__title">{p.title}</h3>
+              <p class="pillar__summary">{p.summary}</p>
+              {p.parentBenefits.length > 0 && (
+                <>
+                  <p class="pillar__benefits-label">{data.benefitsLabel}</p>
+                  <ul class="pillar__benefits">
+                    {p.parentBenefits.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {p.disclaimer && <p class="pillar__disclaimer">{p.disclaimer}</p>}
+              <LinkArrow href={`${approach}#${p.anchor}`}>{data.links[p.key]}</LinkArrow>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Reviewable>
+</section>

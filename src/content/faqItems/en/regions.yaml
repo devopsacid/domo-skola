@@ -1,0 +1,12 @@
+# English placeholder translation (not literal), needs-review: native review in L9.
+id: regions
+category: location
+order: 5
+featuredOnHome: true
+status: needs-review
+reviewNote: "Regional reach only, no branches implied; venue and travel details stay pending until settings.venue is verified."
+dependsOnFacts: [settings.venue]
+question: "Can families from all three regions apply?"
+answer: |-
+  Yes. Families from around Banská Bystrica, Ružomberok and Liptovský Mikuláš are all welcome. We are one community, not a branch in each town.
+pendingNote: "We are still confirming the exact meeting place and travel options."

@@ -1,0 +1,12 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+id: regions
+category: location
+order: 5
+featuredOnHome: true
+status: needs-review
+reviewNote: "Regional reach only, no branches implied; venue and travel details stay pending until settings.venue is verified."
+dependsOnFacts: [settings.venue]
+question: "Mohou se přihlásit rodiny ze všech tří regionů?"
+answer: |-
+  Ano. Rádi přivítáme rodiny z okolí Banské Bystrice, Ružomberku i Liptovského Mikuláše. Jsme jedna komunita, ne pobočky v každém městě.
+pendingNote: "Přesné místo setkávání a možnosti dojíždění zatím ověřujeme."

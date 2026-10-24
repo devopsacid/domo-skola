@@ -1,0 +1,20 @@
+# English placeholder translation (not literal), needs-review: native review in L9.
+key: montessori
+order: 1
+status: needs-review
+reviewNote: "Placeholder translation; the examples describe possible practice (materials and mixed-age work not confirmed). Native review in L9."
+title: Montessori principles
+anchor: montessori-principles
+summary: A prepared environment where children choose their work, go at their own pace and finish what they start.
+parentBenefits:
+  - Your child learns to plan their work and take care of it.
+  - Hands-on materials give abstract ideas a concrete shape.
+  - They can stay with a harder task for as long as they need.
+whatItMeans: We draw on Maria Montessori's pedagogy. The environment is prepared so that a child can choose meaningful work, concentrate and check the result for themselves.
+inPractice: Materials have their place on the shelves. A child chooses a task, sets it up, works on it and puts it back. The guide observes, offers new challenges and helps when needed.
+examples:
+  - For example, counting with materials such as beads can show how big the difference between ten and a hundred really is.
+  - Where younger and older children are in the same group, they can work side by side and learn from each other.
+benefits: Independence, concentration and confidence in their own abilities.
+parentsCanExpect: Regular updates on what your child is working on, and the chance to see the materials and the space for yourself.
+disclaimer: Our approach is inspired by Montessori principles. This does not mean Montessori accreditation or certification.

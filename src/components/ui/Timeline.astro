@@ -1,0 +1,37 @@
+---
+/**
+ * Day-rhythm timeline (system.md §6.5): an <ol> with a sage line and forest nodes.
+ * A time shows only when it is given (a verified Fact); otherwise the order alone
+ * carries the rhythm. Always pair with <NotePending kind="illustrative">.
+ * Each item may name a decorative motif (art/Motif.astro). Times are free text
+ * ("okolo 8:00"), so they render as text, not <time>.
+ */
+import Motif, { type MotifName } from '../art/Motif.astro';
+
+interface Item {
+  title: string;
+  description: string;
+  time?: string | null;
+  motif?: MotifName;
+}
+interface Props {
+  items: Item[];
+  level?: 3 | 4;
+  class?: string;
+}
+const { items, level = 3, class: className } = Astro.props;
+const H = `h${level}` as 'h3' | 'h4';
+---
+
+<ol class:list={['timeline', className]}>
+  {
+    items.map((item) => (
+      <li class="timeline__item">
+        {item.motif && <Motif name={item.motif} class="timeline__motif" />}
+        {item.time && <p class="timeline__time">{item.time}</p>}
+        <H class="timeline__title">{item.title}</H>
+        <p class="timeline__text">{item.description}</p>
+      </li>
+    ))
+  }
+</ol>

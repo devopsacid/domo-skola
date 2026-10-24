@@ -1,0 +1,59 @@
+---
+/**
+ * D. A day in our community (system.md §6.5): heading block (sticky from 64rem) with
+ * the "illustrative example" label, and the rhythm as a timeline. Times appear only
+ * when a verified time fact exists.
+ */
+import { localePath, type Locale } from '../../i18n/routes';
+import { verifiedValue } from '../../content-schemas';
+import Reviewable from '../status/Reviewable.astro';
+import NotePending from '../status/NotePending.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Timeline from '../ui/Timeline.astro';
+import LinkArrow from '../ui/LinkArrow.astro';
+import type { MotifName } from '../art/Motif.astro';
+import { worstStatus, type DaySchedule, type HomeSections } from './content';
+
+interface Props {
+  locale: Locale;
+  data: HomeSections['day'];
+  schedule: DaySchedule;
+}
+const { locale, data, schedule } = Astro.props;
+const MOTIF: Record<DaySchedule['items'][number]['kind'], MotifName> = {
+  arrival: 'sunrise',
+  independent: 'beads',
+  guided: 'steps',
+  project: 'paper',
+  math_language: 'numberline',
+  outdoor: 'leaf',
+  creative: 'paper',
+  rest: 'leaf',
+  social: 'ring',
+  reflection: 'ring',
+};
+const items = schedule.items.map((it) => ({
+  title: it.title,
+  description: it.description,
+  time: verifiedValue(it.approxTime),
+  motif: MOTIF[it.kind],
+}));
+const status = worstStatus(data.status, schedule.status);
+---
+
+<section class="section surface-sunk home-day" aria-labelledby="home-day-title">
+  <Reviewable locale={locale} status={status} name="pages/home.day + daySchedule" quiet class="container home-split">
+    <div class="home-split__head home-day__head">
+      <SectionHeading eyebrow={data.eyebrow} title={data.title} id="home-day-title">
+        <p>{data.intro}</p>
+      </SectionHeading>
+      <NotePending locale={locale} kind="illustrative">
+        <p>{schedule.disclaimer}</p>
+      </NotePending>
+      <LinkArrow href={localePath('day', locale)}>{data.link}</LinkArrow>
+    </div>
+    <div class="home-split__body">
+      <Timeline items={items} />
+    </div>
+  </Reviewable>
+</section>

@@ -1,0 +1,622 @@
+/*
+ * Home page sections A–L (docs/ia.md §2.1; system.md §6.2–§6.7, §6.12).
+ * Loaded only by the home page. Mobile first; layout rules are scoped per section.
+ * Bands: base < 40rem, sm 40rem, md 48rem, lg 64rem, xl 75rem.
+ * Surfaces: hero cream → philosophy sage → pillars cream → day sunk → outcomes cream →
+ * examples sage → environment cream → fit clay → regions cream → process sunk →
+ * faq cream → final night (continuous with the footer).
+ */
+
+/* ------------------------------------------------------- A. Hero ----- */
+
+.home-hero {
+  padding-block-start: var(--space-l);
+}
+
+.home-hero__grid {
+  display: grid;
+  gap: var(--space-s);
+}
+
+.home-hero__head {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.home-hero__body {
+  display: grid;
+  gap: var(--space-s);
+  align-content: start;
+}
+
+.home-hero__lead {
+  max-width: var(--measure-narrow);
+  color: var(--color-text);
+  font-size: var(--step-0);
+  line-height: 1.5;
+}
+
+.home-hero__facts {
+  display: grid;
+  gap: var(--space-2xs);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: 1.45;
+  list-style: none;
+}
+
+.home-hero__facts li {
+  position: relative;
+  padding-inline-start: 1.25rem;
+}
+
+.home-hero__facts li::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.45em;
+  inset-inline-start: 0;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background-color: var(--color-deco-sage);
+}
+
+.home-hero__facts li:first-child::before {
+  background-color: var(--color-deco-clay);
+}
+
+/* Full-bleed band; the SVG slices from the bottom centre, so the hills always meet
+ * the sage philosophy band below without a seam. */
+.home-hero__band {
+  position: relative;
+  z-index: 1;
+  margin-block: var(--space-l) -1px; /* overlap 1 px: no sub-pixel seam above the sage band */
+  line-height: 0;
+}
+
+.hero-landscape {
+  width: 100%;
+  height: clamp(10rem, 20.83vw, 25rem); /* 1440:300 */
+}
+
+.hero-landscape .art-ground {
+  fill: var(--color-surface-sage);
+}
+
+@media (min-width: 48rem) {
+  .home-hero {
+    padding-block-start: var(--space-2xl);
+  }
+
+  .home-hero__grid,
+  .home-hero__body {
+    gap: var(--space-m);
+  }
+
+  .home-hero__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .home-hero__facts {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-l);
+  }
+}
+
+@media (min-width: 64rem) {
+  .home-hero {
+    padding-block-start: var(--space-xl);
+  }
+
+  /* Top-aligned: the lead starts on the h1's first line (eyebrow height + gap). */
+  .home-hero__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .home-hero__body {
+    padding-block-start: calc(var(--step--1) * 1.5 + var(--space-2xs) + 0.5rem);
+  }
+
+  .home-hero__facts {
+    display: grid;
+  }
+
+  .home-hero__band {
+    margin-block-start: var(--space-m);
+  }
+}
+
+/* Gentle settle of the landscape layers on load (transform + opacity only). */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-landscape__mid,
+  .hero-landscape__far,
+  .hero-landscape__sun {
+    animation: home-settle var(--duration-slow) var(--ease-organic) both;
+  }
+
+  .hero-landscape__far {
+    animation-delay: 60ms;
+  }
+
+  .hero-landscape__sun {
+    animation-delay: 160ms;
+  }
+}
+
+@keyframes home-settle {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+}
+
+/* ------------------------------------------ Shared two-column split -- */
+
+.home-split {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.home-split__head .section-heading {
+  margin-block-end: 0;
+}
+
+@media (min-width: 64rem) {
+  .home-split {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--space-2xl);
+    align-items: start;
+  }
+}
+
+/* ------------------------------------------------- B. Philosophy ----- */
+
+.home-philosophy__title {
+  max-width: 14em;
+}
+
+.home-philosophy__lead {
+  color: var(--color-text);
+}
+
+.principles {
+  display: grid;
+  gap: var(--space-m);
+}
+
+.principles__item {
+  display: grid;
+  gap: var(--space-3xs);
+  padding-block-start: var(--space-s);
+  border-block-start: var(--border-strong) solid var(--color-deco-sage);
+}
+
+.principles dt {
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+  line-height: var(--leading-heading);
+}
+
+.principles dd {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 40rem) {
+  .principles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+}
+
+/* ---------------------------------------------------- C. Pillars ----- */
+
+.pillar-list {
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--border-hairline) solid var(--color-border-strong);
+  list-style: none;
+}
+
+.pillar {
+  --pillar-accent: var(--color-deco-sage);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'num motif'
+    'body body';
+  gap: var(--space-s) var(--grid-gap);
+  padding-block: var(--space-xl);
+  border-block-end: var(--border-hairline) solid var(--color-border-strong);
+}
+
+/* Accent rule on the hairline: the pillar's colour, not a box. */
+.pillar::before {
+  content: '';
+  position: absolute;
+  inset-block-start: -2px;
+  inset-inline-start: 0;
+  width: 3rem;
+  height: 3px;
+  background-color: var(--pillar-accent);
+}
+
+.pillar[data-pillar='montessori'] {
+  --pillar-accent: var(--color-pillar-montessori);
+}
+.pillar[data-pillar='respectful'] {
+  --pillar-accent: var(--color-pillar-respect);
+}
+.pillar[data-pillar='constructivist'] {
+  --pillar-accent: var(--color-pillar-constructivism);
+}
+.pillar[data-pillar='hejny'] {
+  --pillar-accent: var(--color-pillar-hejny);
+}
+
+.pillar__num {
+  grid-area: num;
+  align-self: center;
+  color: var(--color-accent-text);
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: var(--weight-display);
+  line-height: 1;
+}
+
+.pillar__motif {
+  grid-area: motif;
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.pillar__body {
+  grid-area: body;
+  display: grid;
+  gap: var(--space-s);
+  justify-items: start;
+  max-width: var(--measure);
+}
+
+.pillar__title {
+  font-size: var(--step-2);
+}
+
+.pillar__summary {
+  font-size: var(--step-0);
+}
+
+.pillar__benefits-label {
+  margin-block-end: calc(-1 * var(--space-2xs));
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+}
+
+.pillar__benefits {
+  display: grid;
+  gap: var(--space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pillar__benefits li {
+  position: relative;
+  padding-inline-start: 1.5rem;
+}
+
+.pillar__benefits li::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.55em;
+  inset-inline-start: 0.125rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: var(--border-strong) solid var(--color-deco-forest);
+  border-radius: 50%;
+}
+
+.pillar__disclaimer {
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+@media (min-width: 64rem) {
+  .pillar {
+    grid-template-columns: 7rem minmax(0, 38rem) minmax(0, 1fr);
+    grid-template-areas: 'num body motif';
+    column-gap: var(--space-xl);
+  }
+
+  .pillar__num {
+    align-self: start;
+  }
+
+  .pillar__motif {
+    justify-self: end;
+    width: 8rem;
+    height: 8rem;
+  }
+}
+
+/* ------------------------------------------------------- D. Day ----- */
+
+.home-day__head {
+  display: grid;
+  gap: var(--space-l);
+  justify-items: start;
+}
+
+/* Sticky only when the viewport is tall enough to show the whole heading block,
+ * so its link stays reachable on short landscape screens. */
+@media (min-width: 64rem) and (min-height: 48rem) {
+  .home-day__head {
+    position: sticky;
+    inset-block-start: calc(var(--header-height) + var(--space-l));
+  }
+}
+
+/* -------------------------------------------------- E. Outcomes ----- */
+
+.outcome-list {
+  display: grid;
+  column-gap: var(--grid-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.outcome {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2xs);
+  padding-block: var(--space-m);
+  border-block-start: var(--border-hairline) solid var(--color-border-strong);
+}
+
+.outcome__title {
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+}
+
+.outcome__text {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 40rem) {
+  .outcome-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .outcome-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* -------------------------------------------------- F. Examples ----- */
+
+.example-list {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+.example {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: var(--space-s);
+  max-width: var(--measure);
+}
+
+.example__motif {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.example__title {
+  font-size: var(--step-2);
+}
+
+.example__takeaway {
+  padding-inline-start: var(--space-s);
+  border-inline-start: 3px solid var(--color-deco-clay);
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  line-height: var(--leading-heading);
+}
+
+@media (min-width: 64rem) {
+  .example-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-2xl);
+  }
+}
+
+/* ----------------------------------------------- G. Environment ----- */
+
+.gallery-grid {
+  display: grid;
+  gap: var(--space-l) var(--grid-gap);
+}
+
+.gallery-grid__motif {
+  width: clamp(4rem, 28%, 8rem);
+  height: auto;
+}
+
+@media (min-width: 40rem) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery-grid__item--1 {
+    grid-column: 1 / -1;
+  }
+
+  .gallery-grid__item--1 .placeholder-media__frame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .gallery-grid__item:not(.gallery-grid__item--1) .placeholder-media__frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (min-width: 64rem) {
+  .gallery-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  .gallery-grid__item--1 {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .gallery-grid__item--1 .placeholder-media__frame {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+
+  .gallery-grid__item:not(.gallery-grid__item--1) .placeholder-media__frame {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* -------------------------------------------------------- H. Fit ----- */
+
+.home-fit__intro {
+  color: var(--color-text);
+}
+
+.fit-list {
+  display: grid;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fit-list li {
+  position: relative;
+  padding-inline-start: 2rem;
+}
+
+.fit-list li::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.3em;
+  inset-inline-start: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 46% 54% 42% 58% / 52% 44% 56% 48%;
+  background-color: var(--color-deco-clay);
+}
+
+.home-fit__closing {
+  justify-items: start;
+  padding-block-start: var(--space-l);
+  border-block-start: var(--border-hairline) solid var(--color-border-strong);
+}
+
+.home-fit__closing > .btn {
+  align-self: flex-start;
+}
+
+/* ---------------------------------------------------- I. Regions ----- */
+
+.home-regions__names {
+  display: flex;
+  align-items: center;
+  gap: var(--space-l);
+}
+
+.home-regions__motif {
+  width: 5rem;
+  height: 5rem;
+}
+
+.region-list {
+  display: grid;
+  gap: var(--space-3xs);
+  margin: 0;
+  padding: 0;
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-heading);
+  list-style: none;
+}
+
+.home-regions__venue {
+  font-weight: var(--weight-bold);
+}
+
+@media (min-width: 64rem) {
+  .home-regions__motif {
+    width: 7rem;
+    height: 7rem;
+  }
+}
+
+/* ---------------------------------------------------- J. Process ----- */
+
+.home-process__note {
+  margin-block-end: var(--space-xl);
+}
+
+.home-process__ctas {
+  margin-block-start: var(--space-xl);
+}
+
+/* -------------------------------------------------- L. Final CTA ----- */
+
+.home-final {
+  padding-block-end: var(--space-2xl);
+}
+
+.home-final__inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-m);
+  max-width: 44rem;
+  text-align: center;
+}
+
+.home-final__title {
+  max-width: 14em;
+  font-size: var(--step-4);
+  line-height: var(--leading-tight);
+}
+
+.home-final__text {
+  max-width: var(--measure-narrow);
+  color: var(--color-text-muted);
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.home-final__ctas {
+  justify-content: center;
+  margin-block-start: var(--space-xs);
+}
+
+/* Centred band: centre the preview badge too. */
+.home-final .review-block--quiet > .review-badge {
+  inset-inline-start: 50%;
+  translate: -50% 0;
+}

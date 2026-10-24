@@ -1,0 +1,14 @@
+# Czech placeholder translation (not literal), needs-review: native review in L9.
+id: progress
+category: parents
+order: 4
+featuredOnHome: true
+status: needs-review
+reviewNote: "Day-to-day observation is intended practice (owner to confirm); formal assessment depends on the registered school (pendingNote)."
+dependsOnFacts: [settings.legalModel]
+question: "Jak sledujete pokrok dítěte?"
+answer: |-
+  Pokrok sledujeme průběžně: pozorujeme dítě při práci, sbíráme jeho práce a pravidelně o nich s vámi mluvíme.
+
+  Jak bude probíhat formální hodnocení a přezkoušení, záleží na škole, ve které bude dítě zapsané.
+pendingNote: "Tuto část zatím ověřujeme."

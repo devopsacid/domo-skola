@@ -1,0 +1,11 @@
+# Home FAQ item, Slovak working copy (needs-review).
+id: cost
+category: costs
+order: 6
+featuredOnHome: true
+status: needs-review
+reviewNote: "No fee information until settings.fees is verified; owner to supply the wording."
+dependsOnFacts: [settings.fees]
+question: "Koľko stojí účasť v komunite?"
+answer: |-
+  Výšku príspevku zverejníme po potvrdení. Napíšte nám a radi vám povieme, ako o nákladoch uvažujeme.

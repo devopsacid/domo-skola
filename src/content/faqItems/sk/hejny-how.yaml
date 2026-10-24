@@ -1,0 +1,12 @@
+# Home FAQ item, Slovak working copy (needs-review).
+id: hejny-how
+category: philosophy
+order: 3
+featuredOnHome: true
+status: needs-review
+reviewNote: "Describes the Hejný approach in general terms; no certification claimed. Content owner to confirm wording."
+question: "Ako funguje Hejného matematika?"
+answer: |-
+  Deti nedostanú hotový postup, ale úlohu v prostredí, ktoré poznajú, napríklad Krokovanie alebo Schody. Riešia ju samy alebo v skupine, hľadajú pravidlá a vysvetľujú si, prečo výsledok platí.
+
+  Sprievodca výsledok neprezradí. Kladie otázky, ktoré deťom pomôžu pokročiť. Chyba je súčasť učenia a spoločne sa k nej vraciame.

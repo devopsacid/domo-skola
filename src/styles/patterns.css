@@ -1,0 +1,249 @@
+/*
+ * Shared content patterns (system.md §6.5–§6.7), reused by home and the L4 pages:
+ * .steps (process), .faq-list (accordion), .timeline (day rhythm).
+ * Breakpoints: 48rem md, 64rem lg.
+ */
+
+/* ------------------------------------------------------- Steps §6.6 --- */
+
+.steps {
+  display: grid;
+  gap: var(--space-l);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  column-gap: var(--space-s);
+  row-gap: var(--space-3xs);
+}
+
+.steps__num {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: var(--border-strong) solid var(--color-link);
+  border-radius: 50%;
+  background-color: var(--color-bg);
+  color: var(--color-link);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+  line-height: 1;
+}
+
+/* Decorative connector from one numeral to the next. */
+.steps__item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  inset-block: 3.25rem calc(-1 * var(--space-l) + 0.25rem);
+  inset-inline-start: calc(1.5rem - 1px);
+  width: 2px;
+  background-color: var(--color-deco-sage);
+}
+
+.steps__title {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  font-size: var(--step-1);
+}
+
+.steps__text {
+  grid-column: 2;
+  max-width: var(--measure);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 64rem) {
+  .steps {
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    column-gap: var(--grid-gap);
+  }
+
+  .steps__item {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    row-gap: var(--space-xs);
+  }
+
+  .steps__num {
+    grid-row: auto;
+  }
+
+  .steps__title {
+    display: block;
+    min-height: 0;
+    margin-block-start: var(--space-2xs);
+  }
+
+  .steps__text {
+    grid-column: 1;
+  }
+
+  .steps__item:not(:last-child)::before {
+    inset-block: calc(1.5rem - 1px) auto;
+    inset-inline: 3.75rem calc(-1 * var(--grid-gap) + 0.75rem);
+    width: auto;
+    height: 2px;
+  }
+}
+
+/* ---------------------------------------------------- FAQ §6.7 -------- */
+
+.faq-list {
+  border-block-start: var(--border-hairline) solid var(--color-border-strong);
+  interpolate-size: allow-keywords;
+}
+
+.faq-item {
+  border-block-end: var(--border-hairline) solid var(--color-border-strong);
+}
+
+.faq-item__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  min-height: 3.5rem;
+  padding-block: var(--space-s);
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-heading);
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq-item__q::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item__q:hover .faq-item__q-text {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.faq-item__icon {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-accent-text);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.faq-item[open] .faq-item__icon {
+  transform: rotate(45deg);
+}
+
+.faq-item__pending {
+  color: var(--color-text-muted);
+}
+
+.faq-item__a {
+  display: grid;
+  gap: var(--space-s);
+  max-width: var(--measure);
+  padding-block-end: var(--space-m);
+  color: var(--color-text);
+}
+
+/* Progressive open animation; instant where unsupported or with reduced motion. */
+.faq-item::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size var(--duration-base) var(--ease-out),
+    content-visibility var(--duration-base) allow-discrete;
+}
+
+.faq-item[open]::details-content {
+  block-size: auto;
+}
+
+/* ------------------------------------------------- Timeline §6.5 ------ */
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--space-s);
+  row-gap: var(--space-3xs);
+  padding-inline-start: 2.25rem;
+  padding-block-end: var(--space-xl);
+}
+
+.timeline__item:last-child {
+  padding-block-end: 0;
+}
+
+/* Node */
+.timeline__item::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.55rem;
+  inset-inline-start: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--color-deco-forest);
+}
+
+/* Line to the next node */
+.timeline__item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  inset-block: 1.6rem 0.3rem;
+  inset-inline-start: calc(0.375rem - 1px);
+  width: 2px;
+  background-color: var(--color-deco-sage);
+}
+
+.timeline__item > :not(.timeline__motif) {
+  grid-column: 1;
+}
+
+.timeline__motif {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 3rem;
+  height: 3rem;
+}
+
+.timeline__time {
+  color: var(--color-accent-text);
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+}
+
+.timeline__title {
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+}
+
+.timeline__text {
+  max-width: var(--measure);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 48rem) {
+  .timeline__motif {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}

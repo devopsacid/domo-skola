@@ -614,3 +614,11 @@ For each page:
 - **architect:** confirm the CSP allows `font-src 'self'`, `img-src 'self' data:` (only if SVG data URIs are used; prefer files), and no `style-src 'unsafe-inline'`. Popover/`<details>` need no script. Note that `element.style.setProperty` from an external script is allowed under a strict `style-src` (CSSOM is not blocked), but `style=""` attributes are.
 - **seo-expert:** titles, meta, hreflang, OG images (use the stacked lock-up on cream, 1200 × 630), and JSON-LD `Organization` with a configurable name.
 - **illustration (owner or illustrator):** final mark and wordmark once the name is chosen; the hero landscape; four pillar motifs; six day-rhythm motifs. The scratchpad sketches are geometry studies, not final art.
+
+## 10. Implementation notes (L3 home)
+
+- **Shared patterns for L4** (`src/components/ui/`, styles in `src/styles/patterns.css`): `Steps.astro` (§6.6), `FaqAccordion.astro` (§6.7, `<details name>`, no JS, contact link for answers whose facts are unverified), `Timeline.astro` (§6.5, time only from a verified fact).
+- **Art** (`src/components/art/`, colours in `src/styles/art.css`): `HeroLandscape.astro` (option B band, no pins, ≈4 KB) and `Motif.astro` (pillar, day, example and gallery motifs). Colours come from the decorative roles `--color-deco-*`, including the new `--color-deco-sage-light`, `--color-deco-forest-deep`, `--color-deco-paper` and `--color-deco-dots`.
+- **Status components:** `Reviewable quiet` places the preview badge in the section's top padding (no outline), so preview and launch layouts match; `PlaceholderMedia` takes a decorative illustration in its default slot.
+- **Language switcher:** `LangSwitcher bare` renders the footer list without a second "Jazyk" landmark (axe landmark-unique).
+- **Section rhythm:** `.section + .section` drops the top padding only when both bands are on the default surface.

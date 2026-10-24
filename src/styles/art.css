@@ -1,0 +1,74 @@
+/*
+ * Illustration colours (brand.md §5.2): SVG art uses these classes instead of style
+ * attributes or hard-coded fills, so every colour is a decorative role token.
+ */
+
+.art-sun {
+  fill: var(--color-deco-sun);
+}
+.art-sage {
+  fill: var(--color-deco-sage);
+}
+.art-sage-200 {
+  fill: var(--color-deco-sage-light);
+}
+.art-clay {
+  fill: var(--color-deco-clay);
+}
+.art-forest {
+  fill: var(--color-deco-forest);
+}
+.art-forest-700 {
+  fill: var(--color-deco-forest-deep);
+}
+.art-cream-2 {
+  fill: var(--color-deco-paper);
+}
+
+/* Teacher's-sketch line drawings (Hejný motifs). */
+.art-line,
+.art-line * {
+  fill: none;
+  stroke: var(--color-deco-forest);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.art-line--thin,
+.art-line .art-line--thin {
+  stroke-width: 1.75;
+}
+
+/* Filled shapes inside a line group keep their own fill. */
+.art-line circle.art-forest {
+  fill: var(--color-deco-forest);
+}
+
+/* Dotted stepping path (krokovanie). */
+.art-dots {
+  fill: none;
+  stroke: var(--color-deco-dots);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 0 20;
+}
+
+.art-dots--small {
+  stroke: var(--color-deco-clay);
+  stroke-width: 3.5;
+  stroke-dasharray: 0 7;
+}
+
+.motif {
+  flex: none;
+  width: 4rem;
+  height: 4rem;
+}
+
+@media (forced-colors: active) {
+  .art-line,
+  .art-line * {
+    stroke: CanvasText;
+  }
+}
