@@ -1,0 +1,67 @@
+---
+/**
+ * Section heading pattern (system.md §6.3): optional ornament, eyebrow <p> (not
+ * part of the heading's name), heading (h2 by default; size from the token, not
+ * the level), optional intro (default slot) and optional link (slot "link").
+ */
+interface Props {
+  title: string;
+  eyebrow?: string;
+  level?: 1 | 2 | 3;
+  id?: string;
+  /** Larger intro text on landing sections. */
+  landing?: boolean;
+  center?: boolean;
+  /** Visual size: defaults to the level's natural size. */
+  size?: 'hero' | '4' | '3' | '2';
+  class?: string;
+}
+const {
+  title,
+  eyebrow,
+  level = 2,
+  id,
+  landing = false,
+  center = false,
+  size,
+  class: className,
+} = Astro.props;
+const H = `h${level}` as 'h1' | 'h2' | 'h3';
+const sizeClass = size === 'hero' ? 'heading-hero' : size ? `heading-${size}` : undefined;
+const hasIntro = Astro.slots.has('default');
+const hasLink = Astro.slots.has('link');
+const hasOrnament = Astro.slots.has('ornament');
+---
+
+<div
+  class:list={[
+    'section-heading',
+    landing && 'section-heading--landing',
+    center && 'section-heading--center',
+    className,
+  ]}
+>
+  {
+    hasOrnament && (
+      <div class="section-heading__ornament" aria-hidden="true">
+        <slot name="ornament" />
+      </div>
+    )
+  }
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <H class:list={['section-heading__title', sizeClass]} id={id}>{title}</H>
+  {
+    hasIntro && (
+      <div class="section-heading__intro">
+        <slot />
+      </div>
+    )
+  }
+  {
+    hasLink && (
+      <div class="section-heading__link">
+        <slot name="link" />
+      </div>
+    )
+  }
+</div>

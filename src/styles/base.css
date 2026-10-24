@@ -1,0 +1,217 @@
+/*
+ * Base styles: reset, document, type, links, focus and accessibility helpers.
+ * Uses role tokens only (tokens.css). Spec: docs/design/system.md §1-§7.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Anchor targets and focused fields clear the sticky header (WCAG 2.4.11).
+   * --header-height is measured by header.ts; the token holds the fallback. */
+  scroll-padding-top: calc(var(--header-height) + var(--space-s));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Same-origin cross-document cross-fade (brand.md §6.4); off for reduced motion. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-body);
+  overflow-wrap: break-word;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+main:focus {
+  outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-heading);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--step-4);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+h2 {
+  font-size: var(--step-3);
+}
+
+h3 {
+  font-size: var(--step-2);
+}
+
+h4 {
+  font-size: var(--step-1);
+  font-weight: var(--weight-display-strong);
+}
+
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+
+img,
+svg,
+video,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+strong,
+b {
+  font-weight: var(--weight-bold);
+}
+
+/* Links: always underlined (colour is never the only cue). */
+a {
+  color: var(--color-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition:
+    color var(--duration-instant) var(--ease-standard),
+    text-decoration-thickness var(--duration-instant) var(--ease-standard);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+  text-decoration-thickness: 2px;
+}
+
+/* Focus ring on every interactive element; surface classes remap the colour. */
+:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+::selection {
+  background-color: var(--color-surface-sun);
+  color: var(--color-draft-text);
+}
+
+/* ------------------------------------------------------------ Helpers -- */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Skip link: first focusable element, visible only on focus. */
+.skip-link {
+  position: absolute;
+  z-index: var(--z-skip);
+  top: var(--space-2xs);
+  left: var(--space-2xs);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: var(--space-2xs) var(--space-s);
+  border-radius: var(--radius-s);
+  background-color: var(--color-surface);
+  color: var(--color-link);
+  font-weight: var(--weight-bold);
+  box-shadow: var(--shadow-m);
+  transform: translateY(calc(-100% - var(--space-s)));
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Surfaces paint their own background and inherit the remapped roles. */
+.surface-paper,
+.surface-sunk,
+.surface-sage,
+.surface-sun,
+.surface-clay,
+.surface-forest,
+.surface-night {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}

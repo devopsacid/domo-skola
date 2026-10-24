@@ -1,0 +1,37 @@
+---
+/**
+ * Wraps a content block that carries a status (docs/ia.md §4):
+ * verified -> plain; preview build -> dashed outline + review badge;
+ * launch build (CONTENT_STRICT=1) -> draft omitted, needs-review fails the build.
+ */
+import type { Locale } from '../../i18n/routes';
+import ReviewBadge from './ReviewBadge.astro';
+import { isStrictBuild, renderMode, type ContentStatus } from './mode';
+
+interface Props {
+  locale: Locale;
+  status: ContentStatus;
+  /** Shown in the strict-build error, e.g. "pages/home.hero". */
+  name?: string;
+  as?: 'div' | 'section' | 'article' | 'li';
+  class?: string;
+}
+const { locale, status, name = 'content', as: Tag = 'div', class: className } = Astro.props;
+const mode = renderMode(status, isStrictBuild(), name);
+---
+
+{
+  mode === 'plain' && (
+    <Tag class={className}>
+      <slot />
+    </Tag>
+  )
+}
+{
+  mode === 'marked' && (
+    <Tag class:list={['review-block', className]} data-status={status}>
+      <ReviewBadge locale={locale} status={status} />
+      <slot />
+    </Tag>
+  )
+}

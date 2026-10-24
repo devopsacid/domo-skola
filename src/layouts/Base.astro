@@ -1,0 +1,98 @@
+---
+/**
+ * Base document for every public page: html lang, head basics, font preloads,
+ * skip link, header, <main id="main"> and footer. The single home of the noindex
+ * logic (isNoindex). Titles, canonical, hreflang and OG are basics only; the full
+ * SEO pass is L9 (seo-expert).
+ */
+import '../styles/index.css';
+import {
+  LOCALES,
+  hreflangAlternates,
+  switcherHref,
+  type Alternate,
+  type CurrentPage,
+  type Locale,
+} from '../i18n/routes';
+import { isNoindex } from '../shared/noindex';
+import Header from '../components/site/Header.astro';
+import Footer from '../components/site/Footer.astro';
+import { chrome } from '../components/site/strings';
+import { getBrandName } from '../components/site/settings';
+
+interface Props {
+  locale: Locale;
+  /** Page title without the brand; omit on the home page. */
+  title?: string;
+  description?: string;
+  /** The route this document renders; drives switcher, hreflang, canonical and aria-current. */
+  page?: CurrentPage;
+  /** Only for documents outside the route map (e.g. /dev/): explicit switcher targets. */
+  langHrefs?: Record<Locale, string>;
+  /** Force noindex for this document regardless of PUBLIC_NOINDEX (e.g. submitted pages). */
+  noindex?: boolean;
+}
+
+const { locale, title, description, page, langHrefs: hrefOverride, noindex = false } = Astro.props;
+const t = chrome(locale);
+const brandName = await getBrandName();
+const site = (Astro.site?.toString() ?? '').replace(/\/+$/, '');
+
+const robotsNoindex = noindex || isNoindex(import.meta.env.PUBLIC_NOINDEX);
+const fullTitle = title ? `${title} – ${brandName}` : `${brandName} – ${t.descriptor}`;
+
+const langHrefs: Record<Locale, string> =
+  hrefOverride ??
+  (Object.fromEntries(
+    LOCALES.map((l) => [l, page ? switcherHref(page, l) : switcherHref({ key: 'home', locale }, l)]),
+  ) as Record<Locale, string>);
+
+let alternates: Alternate[] = [];
+if (page && site) {
+  alternates =
+    page.key === 'post'
+      ? hreflangAlternates(
+          { key: 'post', slugs: { ...page.translations, [page.locale]: page.slug } },
+          site,
+        )
+      : hreflangAlternates({ key: page.key }, site);
+}
+const canonical = page && site ? site + switcherHref(page, locale) : undefined;
+---
+
+<!doctype html>
+<html lang={locale} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {robotsNoindex && <meta name="robots" content="noindex, nofollow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <meta name="theme-color" content="#f8f5ed" />
+    <meta name="color-scheme" content="light" />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-roman.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/atkinson-next-roman.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skipLink}</a>
+    <Header locale={locale} brandName={brandName} langHrefs={langHrefs} current={page?.key} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer locale={locale} brandName={brandName} langHrefs={langHrefs} />
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+/** Tertiary text link with an arrow. The visible text must name the target. */
+interface Props {
+  href: string;
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+---
+
+<a class:list={['link-arrow', className]} href={href}>
+  <span><slot /></span>
+  <svg
+    class="link-arrow__icon"
+    viewBox="0 0 16 16"
+    width="16"
+    height="16"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      d="M2 8h11M9 4l4 4-4 4"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</a>

@@ -1,0 +1,55 @@
+---
+/**
+ * Button or CTA link (system.md §6.10). With `href` it renders a link styled as a
+ * button (navigation); without, a <button> (action). Prefer the CSS classes
+ * directly in islands: .btn .btn-primary | .btn-secondary [.btn-s] [.is-loading].
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  variant?: 'primary' | 'secondary';
+  size?: 'm' | 's';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  block?: boolean;
+  loading?: boolean;
+  class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'class' | 'style'>;
+
+const {
+  variant = 'primary',
+  size = 'm',
+  href,
+  type = 'button',
+  block = false,
+  loading = false,
+  class: className,
+  ...rest
+} = Astro.props;
+const classes = [
+  'btn',
+  `btn-${variant}`,
+  size === 's' && 'btn-s',
+  block && 'btn-block',
+  loading && 'is-loading',
+  className,
+];
+---
+
+{
+  href ? (
+    <a class:list={classes} href={href} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button
+      class:list={classes}
+      type={type}
+      aria-disabled={loading ? 'true' : undefined}
+      aria-busy={loading ? 'true' : undefined}
+      {...rest}
+    >
+      <slot />
+    </button>
+  )
+}

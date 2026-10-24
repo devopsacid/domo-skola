@@ -1,0 +1,23 @@
+---
+/**
+ * Editorial placeholder for a missing fact (system.md §6.11 B): `[DOPLNIŤ: …]`.
+ * Must never ship: it throws in launch builds (CONTENT_STRICT=1), and the
+ * data-placeholder attribute lets the output gate find any that slip through.
+ */
+import type { Locale } from '../../i18n/routes';
+import { chrome } from '../site/strings';
+import { isStrictBuild } from './mode';
+
+interface Props {
+  locale: Locale;
+  /** Settings path or content key that is missing, e.g. "venue.address". */
+  field: string;
+  /** What is missing, in the page language. */
+  label: string;
+}
+const { locale, field, label } = Astro.props;
+if (isStrictBuild()) throw new Error(`CONTENT_STRICT=1: placeholder "${field}" would be rendered`);
+const prefix = chrome(locale).status.placeholderPrefix;
+---
+
+<mark class="placeholder" data-placeholder={field}>[{prefix}: {label}]</mark>

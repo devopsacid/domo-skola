@@ -1,0 +1,24 @@
+---
+/** Preview-only chip for draft / needs-review content. Renders nothing for verified. */
+import type { Locale } from '../../i18n/routes';
+import { chrome } from '../site/strings';
+import type { ContentStatus } from './mode';
+
+interface Props {
+  locale: Locale;
+  status: ContentStatus;
+  inline?: boolean;
+}
+const { locale, status, inline = false } = Astro.props;
+const t = chrome(locale).status;
+const text = status === 'draft' ? t.draft : t.review;
+const Tag = inline ? 'span' : 'p';
+---
+
+{
+  status !== 'verified' && (
+    <Tag class:list={['review-badge', inline && 'review-badge--inline']} data-status={status}>
+      {text}
+    </Tag>
+  )
+}
