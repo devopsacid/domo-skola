@@ -76,6 +76,8 @@ export function preflight({ production, env, wrangler, redirects, routes, devVar
   }
 
   // Production gate.
+  if (!blank(env.DEV_PAGES))
+    errors.push('DEV_PAGES must be unset in production (it builds /dev/components/)');
   if (!blank(env.ACCESS_CERTS_URL) || !blank(prodVars.ACCESS_CERTS_URL))
     errors.push('ACCESS_CERTS_URL must be unset in production (it replaces the Access JWKS)');
   for (const k of RETENTION_KEYS) {

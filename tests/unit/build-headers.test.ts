@@ -236,3 +236,13 @@ describe('cms COOP', () => {
     );
   });
 });
+
+describe('/dev/* headers', () => {
+  it('detaches the inherited robots header and sets noindex, always', () => {
+    for (const noindex of [true, false]) {
+      const out = renderHeaders(template, { hashes: [], noindex });
+      const dev = out.slice(out.indexOf('/dev/*'), out.indexOf('/admin/*'));
+      expect(dev).toMatch(/! X-Robots-Tag\n\s+X-Robots-Tag: noindex, nofollow/);
+    }
+  });
+});
