@@ -99,7 +99,16 @@ function init(root: HTMLElement) {
       apply('');
     }
     target.open = true;
-    target.querySelector<HTMLElement>('summary')?.focus();
+    const summary = target.querySelector<HTMLElement>('summary');
+    // On first load the browser's own fragment handling runs after this module and drops
+    // focus to <body>; focusing again after `load` (next frame) keeps it on the item.
+    if (document.readyState === 'complete') summary?.focus();
+    else {
+      summary?.focus();
+      window.addEventListener('load', () => requestAnimationFrame(() => summary?.focus()), {
+        once: true,
+      });
+    }
   }
   window.addEventListener('hashchange', openHash);
   openHash();
