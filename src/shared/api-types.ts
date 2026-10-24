@@ -1,75 +1,99 @@
 /**
  * Request and response contracts shared by islands and Functions.
- * Zod schemas for the field sets arrive with the forms lane (src/shared/schemas/).
+ * Field sets are inferred from src/shared/schemas/.
  */
-import type {
-  ApplicationStatus,
-  ContactSubject,
-  Grade,
-  InquiryStatus,
-  Locale,
-  Region,
-} from './enums';
-import type { ErrorCode } from './errors';
+import type { ApplicationStatus, InquiryStatus, Locale, Region } from './enums';
+import type { FieldErrorCode } from './schemas/common';
+import type { ApplicationFieldsData } from './schemas/application';
+import type { ContactFieldsData } from './schemas/contact';
 
 export interface ApiOk<T = Record<string, never>> {
   ok: true;
   data?: T;
 }
 
-export interface ApiError {
+/** 400 */
+export interface ApiBadRequest {
   ok: false;
-  error: ErrorCode;
-  /** Field path -> validation error code (only with `validation`). */
-  fields?: Record<string, string>;
+  error: 'bad_request';
 }
+/** 403 */
+export interface ApiOriginError {
+  ok: false;
+  error: 'origin';
+}
+/** 409, enrolment only: applications are not being accepted. */
+export interface ApiClosed {
+  ok: false;
+  error: 'closed';
+}
+/** 422 with a field -> code map. Field names match the `fields` keys of the request. Codes, never messages. */
+export interface ApiValidationError {
+  ok: false;
+  error: 'validation';
+  fields: Record<string, FieldErrorCode>;
+}
+/** 429; `retry_after` (seconds) mirrors the Retry-After header. */
+export interface ApiRateLimited {
+  ok: false;
+  error: 'rate_limited';
+  retry_after?: number;
+}
+/** 500: no detail, no stack, no field map. */
+export interface ApiServerError {
+  ok: false;
+  error: 'server';
+}
+
+/** Every error body, discriminated by `error` (and by `ok: false`). */
+export type ApiError =
+  ApiBadRequest | ApiOriginError | ApiClosed | ApiValidationError | ApiRateLimited | ApiServerError;
 
 export type ApiResponse<T = Record<string, never>> = ApiOk<T> | ApiError;
 
-export interface ContactFields {
-  parent_name: string;
-  email: string;
-  phone?: string;
-  region: Region;
-  subject: ContactSubject;
-  message: string;
-  privacy_ack: boolean;
-  marketing_consent?: boolean;
-}
+/** Success is `201 {ok:true}` for both forms. No record id and no submitted data is echoed back. */
+export type ContactSuccess = ApiOk;
+export type ApplicationSuccess = ApiOk;
+export type ContactResponse =
+  | ContactSuccess
+  | ApiBadRequest
+  | ApiOriginError
+  | ApiValidationError
+  | ApiRateLimited
+  | ApiServerError;
+export type ApplicationResponse =
+  | ApplicationSuccess
+  | ApiBadRequest
+  | ApiOriginError
+  | ApiClosed
+  | ApiValidationError
+  | ApiRateLimited
+  | ApiServerError;
+
+export const isApiError = <T>(r: ApiResponse<T>): r is ApiError => r.ok === false;
+export const isValidationError = <T>(r: ApiResponse<T>): r is ApiValidationError =>
+  r.ok === false && r.error === 'validation';
+export const isRateLimited = <T>(r: ApiResponse<T>): r is ApiRateLimited =>
+  r.ok === false && r.error === 'rate_limited';
+
+/** Field sets are derived from the Zod schemas so the contract cannot drift. */
+export type ContactFields = ContactFieldsData;
+export type ApplicationFields = ApplicationFieldsData;
 
 export interface ContactRequest {
   locale: Locale;
   fields: ContactFields;
   /** Honeypot; must be empty. */
   hp: string;
-  /** Epoch ms when the form was rendered (timing heuristic). */
-  renderedAt: number;
-}
-
-export interface ApplicationFields {
-  parent_name: string;
-  email: string;
-  phone: string;
-  municipality: string;
-  region: Region;
-  preferred_language: Locale;
-  child_name: string;
-  intended_grade: Grade;
-  intended_school_year: string;
-  current_arrangement?: string;
-  motivation?: string;
-  environment_priorities?: string;
-  questions?: string;
-  preferred_next_step: 'call' | 'visit' | 'info';
-  privacy_ack: boolean;
-  marketing_consent?: boolean;
+  /** Ms from mount to submit, from performance.now() (timing heuristic; ADR-0001 D6 item 5). */
+  elapsedMs: number;
 }
 
 export interface ApplicationRequest {
   locale: Locale;
   fields: ApplicationFields;
   hp: string;
-  renderedAt: number;
+  elapsedMs: number;
 }
 
 export interface AdminMe {
