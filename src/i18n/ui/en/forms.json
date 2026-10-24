@@ -1,0 +1,210 @@
+{
+  "common": {
+    "requiredNote": "All fields are required unless marked optional.",
+    "optional": "(optional)",
+    "select": "Choose…",
+    "privacyBefore": "I have read the ",
+    "privacyLink": "information on how personal data is processed",
+    "privacyAfter": ".",
+    "summaryTitle": "Please check these fields:",
+    "sending": "Sending…",
+    "retry": "Try again",
+    "reloadHint": "Reload the page",
+    "contactLink": "Write to us",
+    "regionOther": "Another region",
+    "languageNames": {
+      "sk": "Slovenčina",
+      "cs": "Čeština",
+      "en": "English"
+    },
+    "errors": {
+      "required": "Please fill in this field.",
+      "invalid_type": "Please check the value you entered.",
+      "too_long": "This text is too long.",
+      "invalid_option": "Please choose one of the options.",
+      "email_invalid": "Please enter a valid email address.",
+      "phone_invalid": "Please enter a valid phone number, for example +421 900 000 000.",
+      "name_invalid": "The name must not contain digits.",
+      "school_year_invalid": "Enter the school year as YYYY/YYYY, for example 2027/2028.",
+      "privacy_ack_required": "Please confirm that you have read the information on how personal data is processed before sending.",
+      "consent_version_required": "We could not verify the wording of the consent. Please reload the page.",
+      "consent_version_stale": "The wording of the consent has changed in the meantime. Please reload the page and try again."
+    },
+    "fail": {
+      "network": {
+        "title": "We could not send your message",
+        "text": "Check your connection and try again. Your answers are kept."
+      },
+      "server": {
+        "title": "Something went wrong",
+        "text": "The problem is on our side. Your answers are kept, please try again in a moment."
+      },
+      "rate": {
+        "title": "Too many attempts",
+        "text": "Please try again {time}. Your answers are kept."
+      },
+      "closed": {
+        "title": "We are not taking applications at the moment",
+        "text": "Write to us through the contact form and we will gladly answer."
+      },
+      "stale": {
+        "title": "The wording of the consent has changed",
+        "text": "Please reload the page. Your answers will be kept, you only need to confirm the consent again."
+      },
+      "generic": {
+        "title": "The form could not be sent",
+        "text": "Please check your answers and try again."
+      }
+    },
+    "time": {
+      "seconds": "in {n} s",
+      "minutes": "in {n} min",
+      "soon": "in a moment"
+    }
+  },
+  "contact": {
+    "formLabel": "Contact form",
+    "fields": {
+      "parent_name": {
+        "label": "Your name",
+        "help": "How we may address you."
+      },
+      "email": {
+        "label": "Email",
+        "help": "We will reply to this address."
+      },
+      "phone": {
+        "label": "Phone",
+        "help": ""
+      },
+      "region": {
+        "label": "Region",
+        "help": ""
+      },
+      "subject": {
+        "label": "Subject",
+        "help": ""
+      },
+      "message": {
+        "label": "Message",
+        "help": "Please do not include sensitive information about your child, such as health details."
+      }
+    },
+    "subjects": {
+      "general": "General inquiry",
+      "visit": "Introductory visit",
+      "enrollment": "Application",
+      "other": "Other"
+    },
+    "privacyHeading": "Privacy",
+    "submit": "Send message",
+    "success": {
+      "title": "Message sent",
+      "text": "Thank you, we have received your message. We will reply to the email address you gave."
+    }
+  },
+  "enrol": {
+    "formLabel": "Application",
+    "stepperLabel": "Application progress",
+    "stepOf": "Step {n} of {total}",
+    "documentTitle": "Step {n} of {total}",
+    "steps": ["Parent", "Child", "Expectations", "Review"],
+    "stepTitles": [
+      "Parent or legal guardian",
+      "About your child",
+      "Your expectations",
+      "Review and send"
+    ],
+    "stepsDone": "completed",
+    "next": "Continue",
+    "back": "Back",
+    "submit": "Send application",
+    "fields": {
+      "parent_name": {
+        "label": "Full name of the parent or legal guardian",
+        "help": ""
+      },
+      "email": {
+        "label": "Email",
+        "help": "We will reply to this address."
+      },
+      "phone": {
+        "label": "Phone",
+        "help": ""
+      },
+      "municipality": {
+        "label": "Town or village",
+        "help": ""
+      },
+      "region": {
+        "label": "Region",
+        "help": ""
+      },
+      "preferred_language": {
+        "label": "Preferred language of communication",
+        "help": ""
+      },
+      "child_name": {
+        "label": "Child's first or preferred name",
+        "help": "A first name or nickname is enough. Please do not enter a surname, a birth number or health details."
+      },
+      "intended_grade": {
+        "label": "Intended grade",
+        "help": ""
+      },
+      "intended_school_year": {
+        "label": "Intended school year",
+        "help": "Write it as YYYY/YYYY, for example 2027/2028."
+      },
+      "current_arrangement": {
+        "label": "Child's current education",
+        "help": "It helps us prepare for our conversation."
+      },
+      "motivation": {
+        "label": "Why does this approach to education interest you?",
+        "help": ""
+      },
+      "environment_priorities": {
+        "label": "What matters in your child's learning environment?",
+        "help": ""
+      },
+      "questions": {
+        "label": "What would you like to know?",
+        "help": ""
+      },
+      "preferred_next_step": {
+        "label": "Which next step would suit you?",
+        "help": ""
+      }
+    },
+    "textHelp": "Please do not include sensitive information about your child, such as diagnoses or health.",
+    "grades": {
+      "1": "Grade 1",
+      "2": "Grade 2",
+      "3": "Grade 3",
+      "4": "Grade 4"
+    },
+    "arrangements": {
+      "kindergarten": "Kindergarten",
+      "registered_school": "The school where the child is enrolled",
+      "individual_education": "Individual education",
+      "other": "Other",
+      "prefer_not_say": "Prefer not to say"
+    },
+    "nextSteps": {
+      "call": "An introductory call",
+      "visit": "A visit",
+      "info": "More information by email"
+    },
+    "review": {
+      "intro": "Please check your answers before sending. You can edit each part.",
+      "edit": "Edit",
+      "editLabels": ["Edit parent details", "Edit child details", "Edit expectations"],
+      "empty": "Not provided",
+      "privacyHeading": "Privacy",
+      "privacyText": "We use the details in your application to handle it and to stay in touch with you.",
+      "applicationNote": "An application is an expression of interest, not a confirmation of acceptance."
+    },
+    "draftNote": "Your draft is kept only in this browser tab and is deleted once you send the application."
+  }
+}

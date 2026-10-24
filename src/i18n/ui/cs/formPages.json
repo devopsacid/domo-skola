@@ -1,0 +1,71 @@
+{
+  "enrol": {
+    "title": "Přihláška",
+    "description": "Přihláška do komunitního vzdělávání pro 1.–4. ročník. Přihláška je projevem zájmu, nikoli potvrzením přijetí.",
+    "lead": "Přihláška je projevem zájmu, nikoli potvrzením přijetí.",
+    "offerHeading": "Co nabízíme",
+    "offer": "Komunitní vzdělávání inspirované Montessori pro děti prvního stupně. Podrobnosti o našem přístupu najdete na samostatné stránce.",
+    "offerLink": "Poznejte náš přístup",
+    "gradesHeading": "Pro které ročníky",
+    "grades": "Přihlášku můžete podat pro 1., 2., 3. nebo 4. ročník.",
+    "nextHeading": "Podmínky a další kroky",
+    "next": "Po odeslání přihlášky se vám ozveme ohledně dalšího postupu. Podmínky přijetí a kapacitu zatím upřesňujeme.",
+    "processHeading": "Jak to probíhá",
+    "processNote": "Postup je zatím návrh a ještě ho potvrdíme.",
+    "process": [
+      {
+        "title": "Kontaktujete nás",
+        "text": "Vyplníte přihlášku nebo nám napíšete."
+      },
+      {
+        "title": "Úvodní rozhovor",
+        "text": "Zavoláme nebo napíšeme a projdeme vaše otázky."
+      },
+      {
+        "title": "Vzájemné poznání",
+        "text": "Domluvíme se na setkání, kde se poznáme."
+      },
+      {
+        "title": "Dohoda o dalších krocích",
+        "text": "Společně se rozhodneme, jak pokračovat."
+      }
+    ],
+    "formHeading": "Přihláška",
+    "privacyHeading": "Jak zpracováváme vaše údaje",
+    "privacy": "Údaje z přihlášky použijeme k vyřízení vaší přihlášky a ke komunikaci s vámi. Nežádáme rodná čísla ani zdravotní údaje. Podrobnosti najdete v informacích o ochraně osobních údajů.",
+    "privacyLink": "Ochrana osobních údajů",
+    "closedHeading": "Přihlášky momentálně nepřijímáme",
+    "closedText": "Pokud se chcete zeptat na další postup, napište nám.",
+    "closedLink": "Napsat nám",
+    "waitlistNote": "Vedeme pořadník. Přihláška vás do něj zařadí, ale neznamená přijetí."
+  },
+  "enrolSubmitted": {
+    "title": "Přihláška odeslána",
+    "confirmation": "Děkujeme za váš zájem. Vaši přihlášku jsme přijali a ozveme se vám ohledně dalšího postupu.",
+    "note": "Přihláška je projevem zájmu, nikoli potvrzením přijetí.",
+    "home": "Zpět na úvodní stránku"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "description": "Napište nám, domluvte si úvodní návštěvu nebo setkání.",
+    "lead": "Napište nám nebo si domluvte úvodní návštěvu či setkání. Rádi vám odpovíme.",
+    "formHeading": "Napište nám",
+    "detailsHeading": "Kontaktní údaje",
+    "detailsPending": "Kontaktní údaje zatím ověřujeme. Zatím nám napište přes formulář.",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Telefon",
+    "regionsHeading": "Pro které regiony",
+    "regionsLead": "Pro rodiny z regionů:",
+    "venueHeading": "Prostory",
+    "venuePending": "Prostory ještě potvrzujeme. Adresu a způsob dopravy zveřejníme, až budou jisté.",
+    "venueAddress": "Adresa:",
+    "visitHeading": "Úvodní návštěva nebo setkání",
+    "visit": "Chcete se přijít podívat nebo si domluvit úvodní setkání? Ve formuláři vyberte téma „Úvodní návštěva“ a napište nám, kdy by se vám to hodilo.",
+    "mapLink": "Zobrazit na mapě"
+  },
+  "contactSent": {
+    "title": "Zpráva odeslána",
+    "confirmation": "Děkujeme, vaši zprávu jsme přijali. Ozveme se vám na uvedený e-mail.",
+    "home": "Zpět na úvodní stránku"
+  }
+}

@@ -1,9 +1,11 @@
 import { defineConfig } from 'astro/config';
+import preact from '@astrojs/preact';
 
-// Fully static, no adapter (ADR-0001 D1). Sitemap and Preact arrive with later lanes.
+// Fully static, no adapter (ADR-0001 D1). Preact islands for the forms (ADR-0001 D2); sitemap arrives with a later lane.
 export default defineConfig({
   site: process.env.SITE_URL || 'http://localhost:4321',
   output: 'static',
+  integrations: [preact()],
   trailingSlash: 'always',
   build: {
     format: 'directory',

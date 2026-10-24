@@ -1,0 +1,124 @@
+---
+/**
+ * Enrolment page (brief §5.5, ia.md §2.5). The static copy is needs-review working copy; the form is
+ * the EnrollmentForm island (a complete no-JS <form> in the server-rendered HTML).
+ */
+import Base from '../../layouts/Base.astro';
+import NotePending from '../../components/status/NotePending.astro';
+import Reviewable from '../../components/status/Reviewable.astro';
+import Button from '../../components/ui/Button.astro';
+import EnrollmentForm from '../../islands/EnrollmentForm';
+import { localePath, type Locale } from '../../i18n/routes';
+import { formPageStrings, formStrings } from '../../i18n/forms';
+import { formPageData } from './settings';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const p = formPageStrings(locale).enrol;
+const ui = formStrings(locale);
+const { availability, years, regions, marketing } = await formPageData(locale);
+const status = 'needs-review' as const;
+const formProps = {
+  locale,
+  t: { common: ui.common, enrol: ui.enrol },
+  regions,
+  years,
+  privacyHref: localePath('privacy', locale),
+  submittedHref: localePath('enrol-submitted', locale),
+  contactHref: localePath('contact', locale),
+  marketing,
+};
+---
+
+<Base
+  locale={locale}
+  title={p.title}
+  description={p.description}
+  page={{ key: 'enrol', locale }}
+>
+  <section class="section">
+    <div class="container stack stack-xl">
+      <header class="stack">
+        <h1 class="heading-1">{p.title}</h1>
+        <p class="lead">{p.lead}</p>
+      </header>
+
+      <div class="stack stack-l measure">
+        <Reviewable locale={locale} status={status} name="pages/enrol.offer" class="stack stack-xs">
+          <h2 class="heading-3">{p.offerHeading}</h2>
+          <p>{p.offer}</p>
+          <a class="link-arrow" href={localePath('approach', locale)}>{p.offerLink}</a>
+        </Reviewable>
+        <Reviewable locale={locale} status={status} name="pages/enrol.grades" class="stack stack-xs">
+          <h2 class="heading-3">{p.gradesHeading}</h2>
+          <p>{p.grades}</p>
+        </Reviewable>
+        <Reviewable locale={locale} status={status} name="pages/enrol.next" class="stack stack-xs">
+          <h2 class="heading-3">{p.nextHeading}</h2>
+          <p>{p.next}</p>
+        </Reviewable>
+        <Reviewable locale={locale} status={status} name="pages/enrol.process" class="stack stack-xs">
+          <h2 class="heading-3">{p.processHeading}</h2>
+          <NotePending locale={locale} kind="proposed">
+            <p>{p.processNote}</p>
+          </NotePending>
+          <ol class="prose">
+            {
+              p.process.map((s) => (
+                <li>
+                  <strong>{s.title}.</strong> {s.text}
+                </li>
+              ))
+            }
+          </ol>
+        </Reviewable>
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-sage" aria-labelledby="enrol-form-heading">
+    <div class="container stack stack-l">
+      <h2 class="heading-2" id="enrol-form-heading">{p.formHeading}</h2>
+      {
+        availability === 'closed' ? (
+          <div class="stack stack-xs measure">
+            <h3 class="heading-3">{p.closedHeading}</h3>
+            <p>{p.closedText}</p>
+            <Button variant="primary" href={localePath('contact', locale)}>
+              {p.closedLink}
+            </Button>
+          </div>
+        ) : (
+          <>
+            {availability === 'waitlist' && (
+              <NotePending locale={locale} kind="pending">
+                <p>{p.waitlistNote}</p>
+              </NotePending>
+            )}
+            <div class="form-panel">
+              <div data-island="enrol" data-props={JSON.stringify(formProps)}>
+                <EnrollmentForm {...formProps} />
+              </div>
+            </div>
+          </>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <Reviewable locale={locale} status={status} name="pages/enrol.privacy" class="stack stack-xs measure">
+        <h2 class="heading-3">{p.privacyHeading}</h2>
+        <p>{p.privacy}</p>
+        <a class="link-arrow" href={localePath('privacy', locale)}>{p.privacyLink}</a>
+      </Reviewable>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../islands/mount-enrol';
+</script>

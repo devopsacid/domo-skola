@@ -1,0 +1,71 @@
+{
+  "enrol": {
+    "title": "Prihláška",
+    "description": "Prihláška do komunitného vzdelávania pre 1.–4. ročník. Prihláška je prejavom záujmu, nie potvrdením prijatia.",
+    "lead": "Prihláška je prejavom záujmu, nie potvrdením prijatia.",
+    "offerHeading": "Čo ponúkame",
+    "offer": "Komunitné vzdelávanie inšpirované Montessori pre deti prvého stupňa. Podrobnosti o našom prístupe nájdete na samostatnej stránke.",
+    "offerLink": "Spoznajte náš prístup",
+    "gradesHeading": "Pre ktoré ročníky",
+    "grades": "Prihlášku môžete podať pre 1., 2., 3. alebo 4. ročník.",
+    "nextHeading": "Podmienky a ďalšie kroky",
+    "next": "Po odoslaní prihlášky sa vám ozveme ohľadom ďalšieho postupu. Podmienky prijatia a kapacitu zatiaľ upresňujeme.",
+    "processHeading": "Ako to prebieha",
+    "processNote": "Postup je zatiaľ návrh a ešte ho potvrdíme.",
+    "process": [
+      {
+        "title": "Kontaktujete nás",
+        "text": "Vyplníte prihlášku alebo nám napíšete."
+      },
+      {
+        "title": "Úvodný rozhovor",
+        "text": "Zavoláme alebo napíšeme a prejdeme vaše otázky."
+      },
+      {
+        "title": "Vzájomné spoznanie",
+        "text": "Dohodneme sa na stretnutí, kde sa spoznáme."
+      },
+      {
+        "title": "Dohoda o ďalších krokoch",
+        "text": "Spolu sa rozhodneme, ako pokračovať."
+      }
+    ],
+    "formHeading": "Prihláška",
+    "privacyHeading": "Ako spracúvame vaše údaje",
+    "privacy": "Údaje z prihlášky použijeme na vybavenie vašej prihlášky a komunikáciu s vami. Nežiadame rodné čísla ani zdravotné údaje. Podrobnosti nájdete v informáciách o ochrane osobných údajov.",
+    "privacyLink": "Ochrana osobných údajov",
+    "closedHeading": "Prihlášky momentálne neprijímame",
+    "closedText": "Ak sa chcete spýtať na ďalší postup, napíšte nám.",
+    "closedLink": "Napísať nám",
+    "waitlistNote": "Evidujeme čakaciu listinu. Prihláška vás na ňu zaradí, ale neznamená prijatie."
+  },
+  "enrolSubmitted": {
+    "title": "Prihláška odoslaná",
+    "confirmation": "Ďakujeme za váš záujem. Vašu prihlášku sme prijali a ozveme sa vám ohľadom ďalšieho postupu.",
+    "note": "Prihláška je prejavom záujmu, nie potvrdením prijatia.",
+    "home": "Späť na úvodnú stránku"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "description": "Napíšte nám, dohodnite si úvodnú návštevu alebo stretnutie.",
+    "lead": "Napíšte nám alebo si dohodnite úvodnú návštevu či stretnutie. Radi vám odpovieme.",
+    "formHeading": "Napíšte nám",
+    "detailsHeading": "Kontaktné údaje",
+    "detailsPending": "Kontaktné údaje zatiaľ potvrdzujeme. Zatiaľ nám napíšte cez formulár.",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Telefón",
+    "regionsHeading": "Pre ktoré regióny",
+    "regionsLead": "Pre rodiny z regiónov:",
+    "venueHeading": "Priestory",
+    "venuePending": "Priestory ešte potvrdzujeme. Adresu a spôsob dopravy zverejníme, keď budú isté.",
+    "venueAddress": "Adresa:",
+    "visitHeading": "Úvodná návšteva alebo stretnutie",
+    "visit": "Chcete sa prísť pozrieť alebo si dohodnúť úvodné stretnutie? Vo formulári vyberte tému „Úvodná návšteva“ a napíšte nám, kedy by vám to vyhovovalo.",
+    "mapLink": "Zobraziť na mape"
+  },
+  "contactSent": {
+    "title": "Správa odoslaná",
+    "confirmation": "Ďakujeme, vašu správu sme prijali. Ozveme sa vám na uvedený e-mail.",
+    "home": "Späť na úvodnú stránku"
+  }
+}

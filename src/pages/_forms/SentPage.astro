@@ -1,0 +1,39 @@
+---
+/**
+ * Success page shared by the enrolment (brief §7 confirmation) and the contact form; also the 303
+ * target of the no-JS post. Always noindex. Contains no submitted data.
+ */
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.astro';
+import { localePath, type Locale } from '../../i18n/routes';
+import { formPageStrings } from '../../i18n/forms';
+
+interface Props {
+  locale: Locale;
+  kind: 'enrol' | 'contact';
+}
+const { locale, kind } = Astro.props;
+const strings = formPageStrings(locale);
+const p = kind === 'enrol' ? strings.enrolSubmitted : strings.contactSent;
+const note = kind === 'enrol' ? strings.enrolSubmitted.note : null;
+---
+
+<Base
+  locale={locale}
+  title={p.title}
+  page={{ key: kind === 'enrol' ? 'enrol-submitted' : 'contact-sent', locale }}
+  noindex
+>
+  <section class="section">
+    <div class="container">
+      <div class="success-panel measure" data-state="success">
+        <h1 class="success-panel__title heading-2">{p.title}</h1>
+        <p>{p.confirmation}</p>
+        {note && <p class="form-note">{note}</p>}
+        <p>
+          <Button variant="secondary" href={localePath('home', locale)}>{p.home}</Button>
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
