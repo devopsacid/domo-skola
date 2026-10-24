@@ -31,3 +31,36 @@ describe('content models', () => {
     expect(item.status).toBe('draft');
   });
 });
+
+import * as schemas from '../../src/content-schemas';
+
+describe('verifiedValue', () => {
+  it('returns the value only for verified facts', () => {
+    expect(schemas.verifiedValue({ value: 'x', status: 'verified' })).toBe('x');
+    expect(schemas.verifiedValue({ value: 'x', status: 'needs-review' })).toBeNull();
+    expect(schemas.verifiedValue({ value: 'x', status: 'draft' })).toBeNull();
+    expect(schemas.verifiedValue({ value: null, status: 'verified' })).toBeNull();
+    expect(schemas.verifiedValue(undefined)).toBeNull();
+  });
+});
+
+describe('collection schemas', () => {
+  const collections = {
+    pages: schemas.pagesSchema,
+    pillars: schemas.pillarsSchema,
+    daySchedule: schemas.dayScheduleSchema,
+    faqCategories: schemas.faqCategoriesSchema,
+    faqItems: schemas.faqItemsSchema,
+    team: schemas.teamSchema,
+    gallery: schemas.gallerySchema,
+    posts: schemas.postsSchema,
+  };
+  for (const [name, schema] of Object.entries(collections)) {
+    it(`${name} has a status key that rejects unknown values`, () => {
+      expect(Object.keys(schema.shape)).toContain('status');
+      expect(schema.shape.status.safeParse('published').success).toBe(false);
+      for (const ok of ['draft', 'needs-review', 'verified'])
+        expect(schema.shape.status.safeParse(ok).success).toBe(true);
+    });
+  }
+});
