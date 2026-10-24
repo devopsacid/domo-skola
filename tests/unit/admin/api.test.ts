@@ -169,6 +169,16 @@ describe('responses', () => {
     const { api } = fake(json({ ok: false, error: 'conflict' }, 409));
     expect(await api.export({ type: 'inquiry' })).toMatchObject({ ok: false, kind: 'conflict' });
   });
+  it('treats a followed redirect on the export as unauthorized (an Access login page)', async () => {
+    const res = new Response('<html>login</html>', { status: 200, headers: { 'Content-Type': 'text/html' } });
+    Object.defineProperty(res, 'redirected', { value: true });
+    const api = createApi(async () => res);
+    expect(await api.export({ type: 'inquiry' })).toEqual({
+      ok: false,
+      kind: 'unauthorized',
+      status: 401,
+    });
+  });
   it('filenameOf falls back for odd headers', () => {
     expect(filenameOf(null)).toBe('export.csv');
     expect(filenameOf('attachment; filename="../../etc"')).toBe('export.csv');
