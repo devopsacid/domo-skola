@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Runs after `astro build`: hashes inline scripts, enforces the no-inline-style rule, writes dist/_headers.
+// Runs after `astro build`: rejects inline scripts and styles, writes dist/_headers.
 // Usage: node tools/build-headers.mjs [distDir]   (env: PUBLIC_NOINDEX, PUBLIC_TURNSTILE_SITE_KEY)
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -17,15 +17,13 @@ if ((process.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim() !== '') {
   ]);
 }
 
-const hashes = [];
 const problems = [];
 for (const file of walk(dist).filter((f) => f.endsWith('.html'))) {
   const url = urlOf(dist, file);
-  const { hashes: h, violations } = scanHtml(readFileSync(file, 'utf8'), {
+  const { violations } = scanHtml(readFileSync(file, 'utf8'), {
     cms: url.startsWith('/cms/'),
     rootRedirect: url === '/',
   });
-  if (!url.startsWith('/cms/')) hashes.push(...h);
   for (const v of violations) problems.push(`${url}: ${v}`);
 }
 if (problems.length) fail('build-headers', problems);
@@ -33,7 +31,6 @@ if (problems.length) fail('build-headers', problems);
 let text;
 try {
   text = renderHeaders(readFileSync(resolve('config/headers.template'), 'utf8'), {
-    hashes,
     noindex,
   });
 } catch (e) {
@@ -41,5 +38,5 @@ try {
 }
 writeFileSync(resolve(dist, '_headers'), text);
 console.log(
-  `build-headers: wrote dist/_headers (${new Set(hashes).size} inline-script hash(es), noindex ${noindex ? 'on' : 'off'})`,
+  `build-headers: wrote dist/_headers (no inline scripts, noindex ${noindex ? 'on' : 'off'})`,
 );

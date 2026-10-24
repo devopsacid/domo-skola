@@ -1,21 +1,28 @@
-import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { renderHeaders, scanHtml, validateHeadersFile } from '../../tools/lib/headers.mjs';
+import {
+  adminCspProblems,
+  parseHeadersFile,
+  renderHeaders,
+  scanHtml,
+  validateHeadersFile,
+} from '../../tools/lib/headers.mjs';
 
 const template = readFileSync(resolve('config/headers.template'), 'utf8');
 const page = (head: string, body = '<p>x</p>') =>
   `<!doctype html><html><head><meta charset="utf-8">${head}</head><body>${body}</body></html>`;
 
 describe('scanHtml', () => {
-  it('hashes executable inline scripts exactly (sha256 base64 of the body)', () => {
-    const body = 'console.log(1)';
-    const { hashes, violations } = scanHtml(page(`<script>${body}</script>`));
-    expect(violations).toEqual([]);
-    expect(hashes).toEqual(['sha256-' + createHash('sha256').update(body).digest('base64')]);
+  it('rejects every executable inline script (no hashes, ADR-0001 A4.4)', () => {
+    for (const tag of [
+      '<script>console.log(1)</script>',
+      '<script type="module">import("/a.js")</script>',
+      '<script></script>',
+    ])
+      expect(scanHtml(page(tag)).violations.join(), tag).toContain('inline script');
   });
   it('exempts JSON-LD and external same-origin scripts', () => {
     const r = scanHtml(
@@ -23,7 +30,6 @@ describe('scanHtml', () => {
         '<script type="application/ld+json">{"a":1}</script><script src="/_astro/a.js" type="module"></script>',
       ),
     );
-    expect(r.hashes).toEqual([]);
     expect(r.violations).toEqual([]);
   });
   it.each([
@@ -74,16 +80,13 @@ describe('scanHtml', () => {
 
 describe('renderHeaders', () => {
   const all = (h: string) => h.split('/_astro/*')[0];
-  it('emits hashes into script-src of the public policy only', () => {
-    const out = renderHeaders(template, {
-      hashes: ['sha256-bbb', 'sha256-aaa', 'sha256-aaa'],
-      noindex: true,
-    });
-    expect(out).toContain("script-src 'self' 'sha256-aaa' 'sha256-bbb'; style-src 'self'");
-    expect(out).not.toMatch(/\{\{/);
+  it('has script-src self only: no hashes, no placeholders left', () => {
+    const out = renderHeaders(template, { noindex: true });
+    expect(out).toContain("script-src 'self'; style-src 'self'");
+    expect(out).not.toMatch(/sha256-|\{\{/);
   });
   it('sets the required security headers and font-src self on /*', () => {
-    const g = all(renderHeaders(template, { hashes: [], noindex: false }));
+    const g = all(renderHeaders(template, { noindex: false }));
     for (const h of [
       'Strict-Transport-Security: max-age=31536000',
       'X-Content-Type-Options: nosniff',
@@ -97,7 +100,7 @@ describe('renderHeaders', () => {
     expect(g).not.toContain('unsafe-inline');
   });
   it('gives /cms/* its own CSP, detaching the inherited one', () => {
-    const out = renderHeaders(template, { hashes: [], noindex: false });
+    const out = renderHeaders(template, { noindex: false });
     const cms = out.slice(out.indexOf('/cms/*'));
     expect(cms).toMatch(
       /! Content-Security-Policy\n\s+Content-Security-Policy:.*style-src 'self' 'unsafe-inline'/,
@@ -105,27 +108,21 @@ describe('renderHeaders', () => {
     expect(cms).toContain("frame-ancestors 'none'");
   });
   it('X-Robots-Tag on /* follows noindex', () => {
-    expect(all(renderHeaders(template, { hashes: [], noindex: true }))).toContain(
+    expect(all(renderHeaders(template, { noindex: true }))).toContain(
       'X-Robots-Tag: noindex, nofollow',
     );
-    expect(all(renderHeaders(template, { hashes: [], noindex: false }))).not.toContain(
-      'X-Robots-Tag',
-    );
+    expect(all(renderHeaders(template, { noindex: false }))).not.toContain('X-Robots-Tag');
   });
   it('admin and cms are always noindex', () => {
-    const out = renderHeaders(template, { hashes: [], noindex: false });
+    const out = renderHeaders(template, { noindex: false });
     expect(out.slice(out.indexOf('/admin/*'))).toMatch(
       /X-Robots-Tag: noindex, nofollow[\s\S]*X-Robots-Tag: noindex, nofollow/,
     );
   });
-  it('fails on more than 6 distinct hashes', () => {
-    const hashes = Array.from({ length: 7 }, (_, i) => `sha256-${i}`);
-    expect(() => renderHeaders(template, { hashes, noindex: true })).toThrow(/max 6/);
-  });
   it('fails on unresolved placeholders and oversize lines', () => {
-    expect(() =>
-      renderHeaders(template + '\n  X: {{NOPE}}', { hashes: [], noindex: true }),
-    ).toThrow(/unresolved/);
+    expect(() => renderHeaders(template + '\n  X: {{NOPE}}', { noindex: true })).toThrow(
+      /unresolved/,
+    );
     expect(() => validateHeadersFile('/*\n  X: ' + 'a'.repeat(2001))).toThrow(/2000/);
   });
 });
@@ -153,11 +150,19 @@ describe('build-headers CLI (negative tests)', () => {
   it('fails on a planted inline <style>', () => {
     expect(run(page('<style>a{}</style>')).status).toBe(1);
   });
-  it('succeeds on clean markup and hashes the inline script', () => {
-    const r = run(page('<script>var a=1</script>'), { PUBLIC_NOINDEX: 'false' });
+  it('fails on a planted inline script and writes no _headers', () => {
+    const r = run(page('<script>var a=1</script>'));
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain('/sk/: inline script');
+    expect(() => readFileSync(join(r.dist, '_headers'))).toThrow();
+  });
+  it('succeeds on clean markup with an external module script', () => {
+    const r = run(page('<script type="module" src="/_astro/a.js"></script>'), {
+      PUBLIC_NOINDEX: 'false',
+    });
     expect(r.status).toBe(0);
     const h = readFileSync(join(r.dist, '_headers'), 'utf8');
-    expect(h).toContain("'sha256-" + createHash('sha256').update('var a=1').digest('base64') + "'");
+    expect(h).not.toContain('sha256-');
     expect(h.split('/_astro/*')[0]).not.toContain('X-Robots-Tag');
   });
 });
@@ -220,9 +225,8 @@ describe('scanHtml bypass attempts', () => {
       'external srcset',
     );
   });
-  it('does not hash scripts on /cms/ and flags them instead', () => {
+  it('flags scripts on /cms/ and allows its inline style', () => {
     const r = scanHtml(page('<script>x()</script><style>a{}</style>'), { cms: true });
-    expect(r.hashes).toEqual([]);
     expect(r.violations.join()).toContain('/cms/');
     expect(r.violations.join()).not.toContain('<style>');
   });
@@ -230,7 +234,7 @@ describe('scanHtml bypass attempts', () => {
 
 describe('cms COOP', () => {
   it('detaches COOP and allows popups on /cms/*', () => {
-    const out = renderHeaders(template, { hashes: [], noindex: true });
+    const out = renderHeaders(template, { noindex: true });
     expect(out.slice(out.indexOf('/cms/*'))).toMatch(
       /! Cross-Origin-Opener-Policy\n\s+Cross-Origin-Opener-Policy: same-origin-allow-popups/,
     );
@@ -240,9 +244,102 @@ describe('cms COOP', () => {
 describe('/dev/* headers', () => {
   it('detaches the inherited robots header and sets noindex, always', () => {
     for (const noindex of [true, false]) {
-      const out = renderHeaders(template, { hashes: [], noindex });
+      const out = renderHeaders(template, { noindex });
       const dev = out.slice(out.indexOf('/dev/*'), out.indexOf('/admin/*'));
       expect(dev).toMatch(/! X-Robots-Tag\n\s+X-Robots-Tag: noindex, nofollow/);
     }
+  });
+});
+
+describe('/admin/* Trusted Types policy (ADR-0001 A4.3)', () => {
+  const rendered = () => parseHeadersFile(renderHeaders(template, { noindex: true }));
+  const clone = () => structuredClone(rendered());
+  const admin = (b: ReturnType<typeof clone>) => b.find((x) => x.path === '/admin/*')!;
+  it('detaches the inherited CSP and sends the public policy plus require-trusted-types-for', () => {
+    const b = rendered();
+    const pub = b
+      .find((x) => x.path === '/*')!
+      .headers.find((h) => h.name === 'Content-Security-Policy')!;
+    const h = admin(b).headers.filter((x) => x.name === 'Content-Security-Policy');
+    expect(h.map((x) => x.detach)).toEqual([true, false]);
+    expect(h[1].value).toBe(`${pub.value}; require-trusted-types-for 'script'`);
+    expect(h[1].value).not.toMatch(/(^|;)\s*trusted-types\b/);
+    expect(adminCspProblems(b)).toEqual([]);
+  });
+  it('keeps the other /admin/* headers', () => {
+    const names = admin(rendered()).headers.map((x) => `${x.detach ? '!' : ''}${x.name}`);
+    expect(names).toEqual(
+      expect.arrayContaining(['!Referrer-Policy', 'X-Robots-Tag', 'Cache-Control']),
+    );
+  });
+  it('no other path sends require-trusted-types-for', () => {
+    const others = rendered().filter((x) => x.path !== '/admin/*');
+    expect(JSON.stringify(others)).not.toContain('require-trusted-types-for');
+  });
+  type Blocks = ReturnType<typeof parseHeadersFile>;
+  const find = (b: Blocks, path: string) => b.find((x) => x.path === path)!;
+  const ownCsp = (b: Blocks, path = '/admin/*') =>
+    find(b, path).headers.find((h) => !h.detach && h.name === 'Content-Security-Policy')!;
+  const cases: [string, (b: Blocks) => void, RegExp][] = [
+    [
+      'no detach',
+      (b) => {
+        const a = find(b, '/admin/*');
+        a.headers = a.headers.filter((h) => !h.detach || h.name !== 'Content-Security-Policy');
+      },
+      /detach/,
+    ],
+    [
+      'no directive',
+      (b) => {
+        ownCsp(b).value = "default-src 'none'";
+      },
+      /lacks require-trusted-types-for/,
+    ],
+    [
+      'trusted-types allow-list',
+      (b) => {
+        ownCsp(b).value += '; trusted-types a';
+      },
+      /allow-list/,
+    ],
+    [
+      'second CSP',
+      (b) => {
+        find(b, '/admin/*').headers.push({
+          name: 'Content-Security-Policy',
+          value: "default-src 'none'",
+          detach: false,
+        });
+      },
+      /exactly one/,
+    ],
+    [
+      'leak to /cms/*',
+      (b) => {
+        find(b, '/cms/*').headers.push({
+          name: 'Content-Security-Policy',
+          value: "require-trusted-types-for 'script'",
+          detach: false,
+        });
+      },
+      /\/cms\/\* must not send/,
+    ],
+    [
+      'drift from /*',
+      (b) => {
+        ownCsp(b, '/*').value += '; x';
+      },
+      /plus require-trusted-types-for/,
+    ],
+  ];
+  it.each(cases)('adminCspProblems flags: %s', (_n, mutate, re) => {
+    const b = clone();
+    mutate(b);
+    expect(adminCspProblems(b).join('|')).toMatch(re);
+  });
+  it('renderHeaders refuses a template whose /admin/* block is wrong', () => {
+    const bad = template.replace("; require-trusted-types-for 'script'", '');
+    expect(() => renderHeaders(bad, { noindex: true })).toThrow(/require-trusted-types-for/);
   });
 });
