@@ -11,3 +11,7 @@ export function preflight(i: {
   routes?: Json;
   devVarsExample?: string;
 }): { errors: string[]; warnings: string[] };
+export function detectProduction(i: { argv?: string[]; env: Record<string, string | undefined> }): {
+  production: boolean;
+  error?: string;
+};

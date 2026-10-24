@@ -3,11 +3,11 @@
 // Usage: node tools/build-headers.mjs [distDir]   (env: PUBLIC_NOINDEX, PUBLIC_TURNSTILE_SITE_KEY)
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { isNoindex } from './lib/noindex.mjs';
 import { renderHeaders, scanHtml } from './lib/headers.mjs';
 import { fail, urlOf, walk } from './lib/fs.mjs';
 
-/** Same rule as src/shared/noindex.ts: on unless explicitly false, 0 or off. */
-const noindex = !['false', '0', 'off'].includes((process.env.PUBLIC_NOINDEX ?? '').trim().toLowerCase());
+const noindex = isNoindex(process.env.PUBLIC_NOINDEX);
 const dist = resolve(process.argv[2] ?? 'dist');
 if (!existsSync(dist)) fail('build-headers', [`${dist} not found; run astro build first`]);
 
@@ -22,16 +22,20 @@ const problems = [];
 for (const file of walk(dist).filter((f) => f.endsWith('.html'))) {
   const url = urlOf(dist, file);
   const { hashes: h, violations } = scanHtml(readFileSync(file, 'utf8'), {
-    allowInlineStyle: url.startsWith('/cms/'),
+    cms: url.startsWith('/cms/'),
+    rootRedirect: url === '/',
   });
-  hashes.push(...h);
+  if (!url.startsWith('/cms/')) hashes.push(...h);
   for (const v of violations) problems.push(`${url}: ${v}`);
 }
 if (problems.length) fail('build-headers', problems);
 
 let text;
 try {
-  text = renderHeaders(readFileSync(resolve('config/headers.template'), 'utf8'), { hashes, noindex });
+  text = renderHeaders(readFileSync(resolve('config/headers.template'), 'utf8'), {
+    hashes,
+    noindex,
+  });
 } catch (e) {
   fail('build-headers', [e.message]);
 }

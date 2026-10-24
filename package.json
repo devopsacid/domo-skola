@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node tools/build-headers.mjs",
+    "build": "node tools/preflight.mjs && astro build && node tools/build-headers.mjs",
     "preview": "astro preview",
     "lint": "eslint .",
     "typecheck": "astro check",

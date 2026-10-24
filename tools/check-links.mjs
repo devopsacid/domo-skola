@@ -2,6 +2,7 @@
 // Internal link and fragment checker on dist/. Usage: node tools/check-links.mjs [distDir]
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { tokenize } from './lib/html.mjs';
 import { fail, urlOf, walk } from './lib/fs.mjs';
 
 const dist = resolve(process.argv[2] ?? 'dist');
@@ -18,7 +19,14 @@ const pages = new Map(); // url -> Set(ids)
 const files = walk(dist);
 for (const f of files.filter((x) => x.endsWith('.html'))) {
   const html = readFileSync(f, 'utf8');
-  pages.set(urlOf(dist, f), new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1])));
+  pages.set(
+    urlOf(dist, f),
+    new Set(
+      tokenize(html)
+        .tags.map((t) => t.get('id'))
+        .filter(Boolean),
+    ),
+  );
 }
 
 function exists(path) {
@@ -32,20 +40,30 @@ function exists(path) {
 const problems = [];
 for (const f of files.filter((x) => x.endsWith('.html'))) {
   const here = urlOf(dist, f);
-  const html = readFileSync(f, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
-  for (const m of html.matchAll(/<(a|link|img|script|source|form)\b[^>]*?\s(href|src|action)="([^"]*)"/g)) {
-    const [, tag, , raw] = m;
-    if (tag === 'link' && /rel="(alternate|canonical)"/.test(m[0])) continue; // hreflang tool handles these
+  const { tags } = tokenize(readFileSync(f, 'utf8'));
+  for (const t of tags) {
+    const attr = {
+      a: 'href',
+      link: 'href',
+      img: 'src',
+      script: 'src',
+      source: 'src',
+      form: 'action',
+    }[t.name];
+    if (!attr) continue;
+    if (t.name === 'link' && /\b(alternate|canonical)\b/.test(t.get('rel') ?? '')) continue; // check-hreflang
+    const raw = (t.get(attr) ?? '').trim();
     if (!raw || /^(https?:|mailto:|tel:|data:|blob:|javascript:|\/\/)/i.test(raw)) continue;
     const u = new URL(raw, 'http://x' + here);
     const path = decodeURIComponent(u.pathname);
     if (!exists(path)) {
-      problems.push(`${here}: broken ${tag} ${raw}`);
+      problems.push(`${here}: broken ${t.name} ${raw}`);
       continue;
     }
-    if (u.hash.length > 1 && tag === 'a' && pages.has(path)) {
+    if (u.hash.length > 1 && t.name === 'a' && pages.has(path)) {
       const id = decodeURIComponent(u.hash.slice(1));
-      if (!pages.get(path).has(id) && id !== 'top') problems.push(`${here}: missing fragment ${raw}`);
+      if (!pages.get(path).has(id) && id !== 'top')
+        problems.push(`${here}: missing fragment ${raw}`);
     }
   }
 }

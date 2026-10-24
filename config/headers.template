@@ -29,6 +29,8 @@
   Cache-Control: no-store
 
 /cms/*
+  ! Cross-Origin-Opener-Policy
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com; font-src 'self'; connect-src 'self' blob: data: https://api.github.com; media-src blob:; frame-src blob:; manifest-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
   ! X-Robots-Tag

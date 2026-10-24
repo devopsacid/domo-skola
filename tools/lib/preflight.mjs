@@ -43,8 +43,12 @@ export function preflight({ production, env, wrangler, redirects, routes, devVar
   const get = (k) => (!blank(env[k]) ? env[k] : prodVars[k]);
 
   // Always-on structural checks.
-  for (const scope of [wrangler?.vars ?? {}, ...Object.values(wrangler?.env ?? {}).map((e) => e?.vars ?? {})])
-    if ('ACCESS_CERTS_URL' in scope) errors.push('wrangler.jsonc must never define ACCESS_CERTS_URL (dev-only)');
+  for (const scope of [
+    wrangler?.vars ?? {},
+    ...Object.values(wrangler?.env ?? {}).map((e) => e?.vars ?? {}),
+  ])
+    if ('ACCESS_CERTS_URL' in scope)
+      errors.push('wrangler.jsonc must never define ACCESS_CERTS_URL (dev-only)');
   if (redirects !== undefined && !/^\/\s+\/sk\/\s+301\b/m.test(redirects))
     errors.push('public/_redirects must contain "/ /sk/ 301"');
   if (routes !== undefined) {
@@ -52,14 +56,22 @@ export function preflight({ production, env, wrangler, redirects, routes, devVar
     if (!ok) errors.push('_routes.json must have version 1 and include exactly ["/api/*"]');
   }
   if (devVarsExample !== undefined) {
-    for (const k of [...RETENTION_KEYS, 'IP_HASH_SECRET', 'EMAIL_API_KEY', 'ACCESS_AUD', 'ALLOWED_ORIGINS'])
-      if (!new RegExp(`^${k}=`, 'm').test(devVarsExample)) errors.push(`.dev.vars.example lacks ${k}`);
+    for (const k of [
+      ...RETENTION_KEYS,
+      'IP_HASH_SECRET',
+      'EMAIL_API_KEY',
+      'ACCESS_AUD',
+      'ALLOWED_ORIGINS',
+    ])
+      if (!new RegExp(`^${k}=`, 'm').test(devVarsExample))
+        errors.push(`.dev.vars.example lacks ${k}`);
     if (/^[A-Z_]*(SECRET|KEY|TOKEN)[A-Z_]*=(?!dummy|$)/m.test(devVarsExample))
       errors.push('.dev.vars.example contains a non-dummy secret value');
   }
 
   if (!production) {
-    for (const k of RETENTION_KEYS) if (blank(get(k))) warnings.push(`${k} unset (required in production)`);
+    for (const k of RETENTION_KEYS)
+      if (blank(get(k))) warnings.push(`${k} unset (required in production)`);
     return { errors, warnings };
   }
 
@@ -70,20 +82,33 @@ export function preflight({ production, env, wrangler, redirects, routes, devVar
     if (blank(get(k))) errors.push(`${k} is required in production (legal review; no default)`);
     else if (!isPosInt(get(k))) errors.push(`${k} must be a positive integer number of days`);
   }
-  for (const k of ['SITE_URL', 'ALLOWED_ORIGINS', 'ACCESS_TEAM_DOMAIN', 'ACCESS_AUD', 'EMAIL_PROVIDER']) {
+  for (const k of [
+    'SITE_URL',
+    'ALLOWED_ORIGINS',
+    'ACCESS_TEAM_DOMAIN',
+    'ACCESS_AUD',
+    'EMAIL_PROVIDER',
+  ]) {
     const v = get(k);
     if (blank(v)) errors.push(`${k} is required in production`);
     else if (/REPLACE_/.test(v)) errors.push(`${k} is still a placeholder`);
   }
   if (blank(env.SITE_URL))
-    errors.push('SITE_URL build variable is unset: astro.config.mjs would fall back to http://localhost:4321');
+    errors.push(
+      'SITE_URL build variable is unset: astro.config.mjs would fall back to http://localhost:4321',
+    );
   const site = get('SITE_URL');
-  if (!blank(site) && !/REPLACE_/.test(site) && (!/^https:\/\//.test(site) || /localhost|127\.0\.0\.1/.test(site)))
+  if (
+    !blank(site) &&
+    !/REPLACE_/.test(site) &&
+    (!/^https:\/\//.test(site) || /localhost|127\.0\.0\.1/.test(site))
+  )
     errors.push('SITE_URL must be an https production origin');
   const origins = get('ALLOWED_ORIGINS');
   if (!blank(origins) && !/REPLACE_/.test(origins)) {
     for (const o of origins.split(',').map((s) => s.trim())) {
-      if (!/^https:\/\/[^/]+$/.test(o) || /localhost|\*/.test(o)) errors.push(`ALLOWED_ORIGINS entry "${o}" must be an https origin`);
+      if (!/^https:\/\/[^/]+$/.test(o) || /localhost|\*/.test(o))
+        errors.push(`ALLOWED_ORIGINS entry "${o}" must be an https origin`);
     }
   }
   const provider = get('EMAIL_PROVIDER');
@@ -96,4 +121,26 @@ export function preflight({ production, env, wrangler, redirects, routes, devVar
   if (!/^(false|0|off)$/i.test((env.PUBLIC_NOINDEX ?? '').trim()))
     warnings.push('PUBLIC_NOINDEX is on (default): set it to false for the launch build');
   return { errors, warnings };
+}
+
+/**
+ * Decide whether this run is a production build. Fails closed.
+ *  - --production flag, ENVIRONMENT=production (case and whitespace ignored), or a Cloudflare Pages build
+ *    of the production branch (CF_PAGES=1 and CF_PAGES_BRANCH equal to PRODUCTION_BRANCH, default main)
+ *    all mean production. Production wins over a conflicting ENVIRONMENT value.
+ *  - An unrecognised non-empty ENVIRONMENT is an error.
+ * @returns {{ production: boolean, error?: string }}
+ */
+export function detectProduction({ argv = [], env }) {
+  const e = (env.ENVIRONMENT ?? '').trim().toLowerCase();
+  const prodBranch = (env.PRODUCTION_BRANCH ?? '').trim() || 'main';
+  const cfProd =
+    (env.CF_PAGES ?? '').trim() === '1' && (env.CF_PAGES_BRANCH ?? '').trim() === prodBranch;
+  if (argv.includes('--production') || e === 'production' || cfProd) return { production: true };
+  if (e !== '' && e !== 'development' && e !== 'preview')
+    return {
+      production: false,
+      error: `unrecognised ENVIRONMENT value (expected development, preview or production)`,
+    };
+  return { production: false };
 }

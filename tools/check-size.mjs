@@ -9,7 +9,12 @@ const KB = 1024;
 /** First matching rule wins. js = local scripts referenced by the page, gzip. */
 const BUDGETS = [
   { match: /^\/(admin|cms)\//, js: 200 * KB, css: 60 * KB, html: 40 * KB },
-  { match: /\/(enrol|prihlaska|prihlaska-dieta|contact|kontakt|kontakt-odoslany|enrol-submitted)\b/, js: 35 * KB, css: 40 * KB, html: 40 * KB },
+  {
+    match: /\/(enrol|prihlaska|prihlaska-dieta|contact|kontakt|kontakt-odoslany|enrol-submitted)\b/,
+    js: 35 * KB,
+    css: 40 * KB,
+    html: 40 * KB,
+  },
   { match: /./, js: 10 * KB, css: 40 * KB, html: 40 * KB },
 ];
 
@@ -26,11 +31,20 @@ for (const file of walk(dist).filter((f) => f.endsWith('.html'))) {
   let js = 0;
   let css = 0;
   for (const m of text.matchAll(/<script\b[^>]*\ssrc="([^"]+)"/g)) js += sizeOf(m[1]);
-  for (const m of text.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]+)"|<link\b[^>]*\shref="([^"]+)"[^>]*\srel="stylesheet"/g))
+  for (const m of text.matchAll(
+    /<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]+)"|<link\b[^>]*\shref="([^"]+)"[^>]*\srel="stylesheet"/g,
+  ))
     css += sizeOf(m[1] ?? m[2]);
-  for (const m of text.matchAll(/<script\b(?![^>]*\ssrc=)(?![^>]*ld\+json)[^>]*>([\s\S]*?)<\/script>/g)) js += gz(Buffer.from(m[1]));
+  for (const m of text.matchAll(
+    /<script\b(?![^>]*\ssrc=)(?![^>]*ld\+json)[^>]*>([\s\S]*?)<\/script>/g,
+  ))
+    js += gz(Buffer.from(m[1]));
   const h = gz(html);
-  for (const [k, v] of [['js', js], ['css', css], ['html', h]]) {
+  for (const [k, v] of [
+    ['js', js],
+    ['css', css],
+    ['html', h],
+  ]) {
     if (v > budget[k]) problems.push(`${url}: ${k} ${v} B gzip exceeds budget ${budget[k]} B`);
   }
 }
