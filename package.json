@@ -12,9 +12,15 @@
     "build": "node tools/preflight.mjs && astro build && node tools/build-headers.mjs",
     "preview": "astro preview",
     "lint": "eslint .",
-    "typecheck": "astro check",
+    "typecheck": "astro check && tsc -p functions/tsconfig.json",
     "test": "vitest run",
-    "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs"
+    "test:integration": "vitest run --config tests/integration/vitest.config.ts",
+    "check": "node tools/check-dist.mjs && node tools/check-size.mjs && node tools/check-links.mjs && node tools/check-hreflang.mjs && node tools/preflight.mjs",
+    "mock-mail": "node tools/mock-mail/index.mjs",
+    "dev:access": "node tools/dev-access-proxy/index.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:seed:admins": "wrangler d1 execute DB --local --file tools/dev-access-proxy/seed-admins.sql",
+    "dev:api": "wrangler pages dev dist"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -23,6 +29,7 @@
   },
   "dependencies": {
     "astro": "7.3.8",
+    "jose": "6.2.12",
     "zod": "4.6.5"
   },
   "devDependencies": {
@@ -35,6 +42,7 @@
     "prettier": "3.9.9",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
-    "vitest": "5.0.3"
+    "vitest": "5.0.3",
+    "wrangler": "4.149.0"
   }
 }

@@ -110,7 +110,7 @@ Facts that shape this ADR:
 - **Decision**, in order inside each public handler:
   1. Method, `Content-Type` and body-size check (at most 32 KB).
   2. Origin check (D7).
-  3. **D1-backed fixed-window limiter.** The key is HMAC-SHA256(IP, `IP_HASH_SECRET`) plus the route. Defaults, all configurable: 5 per 10 minutes and 20 per day per IP. The recipient address is also limited (HMAC of the email, 3 confirmations per day) to prevent mail-bombing. Rows expire after 24 hours.
+  3. **D1-backed fixed-window limiter.** The key is HMAC-SHA256(IP, `IP_HASH_SECRET`) plus the route. Defaults, all configurable: 5 per 10 minutes and 20 per day per IP. The recipient address is also limited (HMAC of the email, 3 confirmations per day) to prevent mail-bombing. Over that limit the submission is still stored and only the confirmation is skipped (amendment A2). Rows expire after 24 hours.
   4. **Honeypot field.** A hit returns a fake success and nothing is stored or sent.
   5. **Minimum fill time.** The island sends `elapsedMs`, the time from mount to submit measured with the client's monotonic clock (`performance.now()`); client and server wall clocks are never compared, so a skewed device clock cannot flag a real parent. If the form was filled in under 3 seconds, the record is stored with `suspected_spam = 1` and no confirmation email is sent. The no-JS form cannot measure time and sends no value (treated as unknown, not suspected); a JSON request without a positive `elapsedMs` is suspected, because the island always sends one. (Amended at the L5a sign-off, 2026-10-24; it replaces the earlier `renderedAt` render timestamp.)
   6. **Content heuristics.** More than 3 URLs in the free text marks the record as suspected.
@@ -214,7 +214,7 @@ Facts that shape this ADR:
   - schemas and error codes, normalization, enums against the SQL `CHECK` constraints
   - i18n key parity, route-map completeness, CSV escaping (formula-injection prefixes `= + - @ \t \r`)
   - email templates in all locales, the CSP header builder, content-status rules
-- **Integration:** `@cloudflare/vitest-pool-workers` runs handlers in workerd. D1 comes from Miniflare with migrations applied (`readD1Migrations` / `applyD1Migrations`) and email goes to the `mock` transport. Covers:
+- **Integration:** ~~`@cloudflare/vitest-pool-workers` runs handlers in workerd~~ (superseded by amendment A1). Vitest 5 in Node drives the real handlers against a real workerd D1 from wrangler's `getPlatformProxy`, with migrations applied by `wrangler d1 migrations apply --local`, plus a `wrangler pages dev` test of the real `functions/` tree. Email goes to the `mock` transport. Covers:
   - both forms end to end at the handler level: limiter, honeypot, origin
   - Access JWT verification against a test JWKS
   - the role matrix, audit writes, retention purge and CSV export
@@ -231,6 +231,32 @@ Facts that shape this ADR:
 - **pnpm:** pnpm 12.x through corepack, with the exact version and hash in `packageManager`. The deploy skill pins the same pnpm and wrangler versions.
 - **wrangler:** 4.x as a devDependency.
 - **Lint and types:** TypeScript strict, ESLint plus `astro check`, and Prettier.
+
+## Amendments
+
+### A1. Integration tests without `@cloudflare/vitest-pool-workers` (L5b sign-off, 2026-10-24; amends D14)
+- **Context:** every `@cloudflare/vitest-pool-workers` release up to the latest, 0.23.0 (2026-10-07, npm registry), declares peers `vitest ^4.1.0`, `@vitest/runner ^4.1.0` and `@vitest/snapshot ^4.1.0`. The repo is on Vitest 5.0.3 (D14).
+- **Options:** (a) downgrade the whole repo to Vitest 4; (b) a second Vitest 4 install only for integration tests; (c) Vitest 5 in Node with `getPlatformProxy` for a real workerd D1, migrations applied by the real `wrangler d1 migrations apply --local` (`tests/integration/global-setup.ts`), plus a `wrangler pages dev` test of `functions/` routing and middleware.
+- **Decision:** (c), as built in `tests/integration/`.
+- **Consequences:**
+  - Handlers run in Node, not workerd. Only the D1 binding is real. Runtime differences (Web Crypto, `fetch`, streams) are covered by the `wrangler pages dev` test and by the L6 and L7 e2e suites, which run on `wrangler pages dev dist`.
+  - Migrations are tested through the same command used in deploys, which is stronger than `applyD1Migrations`.
+  - Revisit when a pool-workers release supports Vitest 5.
+  - `pnpm test:integration` joins the CI gate now that L5b exists (plan §1).
+
+### A2. Recipient limit skips the confirmation instead of rejecting (L5b sign-off, 2026-10-24; amends D6 item 3)
+- **Context:** L5b answered 429 after validation when the per-recipient limit was hit, so the submission was lost.
+- **Options:** (a) 429 and drop the submission; (b) store it, skip the sender confirmation, still notify the admin.
+- **Decision:** (b). The recipient counter counts confirmations actually queued. Over the limit, the `sender_confirmation` delivery row is `skipped` with `last_error_code = 'recipient_limit'`, and the response is the normal success. The per-IP limiter (D6 item 3) still answers 429.
+- **Consequences:** a real parent who submits several forms in a day is never refused; an attacker learns nothing about the target address and still cannot make it receive more than the limit. Storage abuse stays bounded by the per-IP limiter.
+
+### A3. Admin API contract and routing (L5b sign-off, 2026-10-24; refines D7 and D8)
+- **Decision:**
+  - The admin contract is `src/shared/admin-api.ts`, additive to the frozen form contract.
+  - Routing is one auth middleware plus a catch-all with the route table and permission matrix in `src/server/admin/router.ts` (`docs/architecture.md` §5).
+  - A search term travels only in the JSON body of `POST /api/admin/records/search`; `GET /api/admin/records` rejects `q`. The search is a read, so it is exempt from "mutations only" but still meets the D7 checks for `POST` (`application/json`, `Origin`, `Sec-Fetch-Site`).
+  - Errors add 401 `unauthorized`, 403 `origin` and `forbidden`, 404 `not_found` and 409 `conflict` (`docs/architecture.md` §4.3).
+- **Consequences:** L7 builds only against `src/shared/admin-api.ts`. Changing it after L7 starts needs a coordinated PR (plan §5 risk 4). The remaining L5b decisions are in `docs/architecture.md` §4.6.
 
 ## Gaps: parts of the brief this stack cannot meet as written, and the fix
 
