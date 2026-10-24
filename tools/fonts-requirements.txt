@@ -1,0 +1,5 @@
+# Build-time only, for tools/build-fonts.sh (never shipped). Exact versions keep the
+# subset output byte-identical to src/assets/fonts/SHA256SUMS.
+# Install: python3 -m pip install -r tools/fonts-requirements.txt
+fonttools==4.61.1
+brotli==1.2.0

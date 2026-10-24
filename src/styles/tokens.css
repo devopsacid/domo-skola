@@ -2,11 +2,13 @@
  * Design tokens: Montessori-inspired domoškola marketing site
  * Source of truth for colour, type, space, radii, shadows and motion.
  * Shipped copy of docs/design/tokens.css (the design spec). Change both together;
- * this file adds the implementation roles marked "impl" below.
+ * this file adds the implementation roles marked "impl" below, and loads the fonts
+ * from src/assets/fonts/ so Vite emits them content-hashed under /_astro/
+ * (immutable cache is safe; rebuilt fonts get new URLs).
  * Spec and rationale: docs/design/system.md (contrast table in §4).
  *
  * Rules
- * - CSS only. No external origins: fonts are self-hosted from /fonts/ (same origin).
+ * - CSS only. No external origins: fonts are self-hosted, bundled from src/assets/fonts/.
  * - Components use ROLE tokens (--color-text, --color-cta-bg ...), never raw
  *   palette tokens (--palette-*), so a surface can remap roles in one place.
  * - Light theme only for v1 (see system.md §4.5 for why). `color-scheme: light`
@@ -33,11 +35,11 @@
  * (OFL-1.1, Braille Institute / Applied Design Works). Self-hosted, subset
  * to Basic Latin + Latin-1 + Latin Extended-A + typographic punctuation
  * (full SK/CS coverage) - see system.md §3 for the subset command.
- * The app owns the font files; paths below assume /fonts/ on the same origin.
+ * Files and licences: tools/build-fonts.sh, src/assets/fonts/SHA256SUMS, public/fonts/LICENSE-*.txt.
  */
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/fraunces-roman.woff2') format('woff2');
+  src: url('../assets/fonts/fraunces-roman.woff2') format('woff2');
   font-weight: 400 600;
   font-style: normal;
   font-display: swap;
@@ -45,7 +47,7 @@
 
 @font-face {
   font-family: 'Atkinson Hyperlegible Next';
-  src: url('/fonts/atkinson-next-roman.woff2') format('woff2');
+  src: url('../assets/fonts/atkinson-next-roman.woff2') format('woff2');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
@@ -53,7 +55,7 @@
 
 @font-face {
   font-family: 'Atkinson Hyperlegible Next';
-  src: url('/fonts/atkinson-next-italic.woff2') format('woff2');
+  src: url('../assets/fonts/atkinson-next-italic.woff2') format('woff2');
   font-weight: 400 700;
   font-style: italic;
   font-display: swap;

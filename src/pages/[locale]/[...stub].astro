@@ -1,18 +1,13 @@
 ---
 /**
- * TEMPORARY stubs (L2) so the header, menu and footer links resolve before the real
- * pages exist. L3/L4 delete a key from getStaticPaths (or this file) when they add the page.
- * Always noindex.
+ * TEMPORARY stub pages; the key list and rules live in src/components/site/stubs.ts.
+ * Always noindex, with `data-stub` on <main>.
  */
-import { LOCALES, localePath, type Locale, type PageKey } from '../../i18n/routes';
+import { LOCALES, localePath, type Locale } from '../../i18n/routes';
+import { STUB_KEYS, type StubKey } from '../../components/site/stubs';
 import Base from '../../layouts/Base.astro';
 import NotePending from '../../components/status/NotePending.astro';
 import { CHROME } from '../../components/site/strings';
-
-type StubKey = Extract<
-  PageKey,
-  'approach' | 'day' | 'parents' | 'enrol' | 'contact' | 'faq' | 'blog' | 'privacy' | 'cookies' | 'legal'
->;
 
 const TITLES: Record<StubKey, Record<Locale, string>> = {
   approach: { sk: CHROME.sk.nav.approach, cs: CHROME.cs.nav.approach, en: CHROME.en.nav.approach },
@@ -34,21 +29,8 @@ const SOON: Record<Locale, string> = {
 };
 
 export function getStaticPaths() {
-  // Remove a key here when its real page lands (getStaticPaths is hoisted: keep it self-contained).
-  const keys = [
-    'approach',
-    'day',
-    'parents',
-    'enrol',
-    'contact',
-    'faq',
-    'blog',
-    'privacy',
-    'cookies',
-    'legal',
-  ] as const;
   return LOCALES.flatMap((locale) =>
-    keys.map((key) => ({
+    STUB_KEYS.map((key) => ({
       params: { locale, stub: localePath(key, locale).slice(`/${locale}/`.length, -1) },
       props: { key },
     })),
@@ -60,7 +42,7 @@ const { key } = Astro.props as { key: StubKey };
 const title = TITLES[key][locale];
 ---
 
-<Base locale={locale} title={title} page={{ key, locale }} noindex>
+<Base locale={locale} title={title} page={{ key, locale }} noindex stub>
   <section class="section">
     <div class="container stack stack-l">
       <h1>{title}</h1>

@@ -203,7 +203,7 @@
   text-underline-offset: 0.35em;
 }
 
-.lang-switch a[aria-current='true'] {
+.lang-switch a[aria-current='page'] {
   color: var(--color-heading);
   text-decoration-line: underline;
   text-decoration-color: var(--color-accent-text);
@@ -225,7 +225,7 @@
   line-height: var(--leading-ui);
 }
 
-.lang-switch--full a[aria-current='true'] {
+.lang-switch--full a[aria-current='page'] {
   font-weight: var(--weight-bold);
 }
 

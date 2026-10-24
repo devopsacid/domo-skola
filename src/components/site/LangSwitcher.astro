@@ -3,6 +3,7 @@
  * Language switcher: plain links (no <select>, no JS). Each link carries lang and
  * hreflang; the compact variant shows SK/CS/EN with the full name for assistive tech.
  * Hrefs come from switcherHref() (equivalent page, or the locale home / blog index).
+ * The current language links to this very page, so it carries aria-current="page".
  */
 import { LOCALES, type Locale } from '../../i18n/routes';
 import { chrome } from './strings';
@@ -27,7 +28,7 @@ const t = chrome(locale);
             href={hrefs[l]}
             lang={l}
             hreflang={l}
-            aria-current={l === locale ? 'true' : undefined}
+            aria-current={l === locale ? 'page' : undefined}
           >
             {variant === 'compact' ? (
               <>

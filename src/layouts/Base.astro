@@ -6,6 +6,9 @@
  * SEO pass is L9 (seo-expert).
  */
 import '../styles/index.css';
+// Same files as the @font-face URLs in tokens.css: Vite emits them once, content-hashed.
+import frauncesUrl from '../assets/fonts/fraunces-roman.woff2?url';
+import atkinsonUrl from '../assets/fonts/atkinson-next-roman.woff2?url';
 import {
   LOCALES,
   hreflangAlternates,
@@ -19,6 +22,7 @@ import Header from '../components/site/Header.astro';
 import Footer from '../components/site/Footer.astro';
 import { chrome } from '../components/site/strings';
 import { getBrandName } from '../components/site/settings';
+import { THEME_COLOR } from '../components/site/theme';
 
 interface Props {
   locale: Locale;
@@ -31,9 +35,19 @@ interface Props {
   langHrefs?: Record<Locale, string>;
   /** Force noindex for this document regardless of PUBLIC_NOINDEX (e.g. submitted pages). */
   noindex?: boolean;
+  /** Temporary stub page: adds the stable `data-stub` marker on <main> (see components/site/stubs.ts). */
+  stub?: boolean;
 }
 
-const { locale, title, description, page, langHrefs: hrefOverride, noindex = false } = Astro.props;
+const {
+  locale,
+  title,
+  description,
+  page,
+  langHrefs: hrefOverride,
+  noindex = false,
+  stub = false,
+} = Astro.props;
 const t = chrome(locale);
 const brandName = await getBrandName();
 const site = (Astro.site?.toString() ?? '').replace(/\/+$/, '');
@@ -71,18 +85,18 @@ const canonical = page && site ? site + switcherHref(page, locale) : undefined;
     {canonical && <link rel="canonical" href={canonical} />}
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#f8f5ed" />
+    <meta name="theme-color" content={THEME_COLOR} />
     <meta name="color-scheme" content="light" />
     <link
       rel="preload"
-      href="/fonts/fraunces-roman.woff2"
+      href={frauncesUrl}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="/fonts/atkinson-next-roman.woff2"
+      href={atkinsonUrl}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
@@ -91,7 +105,7 @@ const canonical = page && site ? site + switcherHref(page, locale) : undefined;
   <body>
     <a class="skip-link" href="#main">{t.skipLink}</a>
     <Header locale={locale} brandName={brandName} langHrefs={langHrefs} current={page?.key} />
-    <main id="main" tabindex="-1">
+    <main id="main" tabindex="-1" data-stub={stub ? '' : undefined}>
       <slot />
     </main>
     <Footer locale={locale} brandName={brandName} langHrefs={langHrefs} />
