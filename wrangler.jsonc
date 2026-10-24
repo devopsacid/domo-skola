@@ -1,0 +1,54 @@
+// Cloudflare Pages config (docs/architecture.md section 3 and 9). NO real IDs live in this file.
+//
+// Placeholders (all prefixed REPLACE_): `tools/preflight.mjs --production` fails while any remains.
+//   database_id        : created in L11 with `wrangler d1 create ... --jurisdiction=eu` (permanent; ADR-0001 F5).
+//   ACCESS_TEAM_DOMAIN : Zero Trust team domain, e.g. myteam.cloudflareaccess.com.
+//   ACCESS_AUD         : Application Audience tag of the Access app covering /admin* and /api/admin*.
+//   SITE_URL, ALLOWED_ORIGINS : production origin, blocked on the owner's domain decision (plan section 6).
+//   RETENTION_* , AUDIT_RETENTION_DAYS : set after legal review; left out on purpose (no invented defaults).
+// Secrets (EMAIL_API_KEY, IP_HASH_SECRET, TURNSTILE_SECRET_KEY, GITHUB_OAUTH_CLIENT_SECRET) are never here:
+// use `wrangler pages secret put`. ACCESS_CERTS_URL is dev-only (.dev.vars) and must never appear here.
+// Pages environments do not inherit bindings or vars, so each is spelled out in full.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "domo-skola",
+  "compatibility_date": "2026-10-01",
+  "pages_build_output_dir": "dist",
+
+  "vars": {
+    "ENVIRONMENT": "development",
+    "SITE_URL": "http://localhost:8788",
+    "ALLOWED_ORIGINS": "http://localhost:8788"
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "domo-skola-local", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+  ],
+
+  "env": {
+    "preview": {
+      "vars": {
+        "ENVIRONMENT": "preview",
+        "SITE_URL": "REPLACE_WITH_PREVIEW_ORIGIN",
+        "ALLOWED_ORIGINS": "REPLACE_WITH_PREVIEW_ORIGIN",
+        "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_ACCESS_TEAM_DOMAIN",
+        "ACCESS_AUD": "REPLACE_WITH_ACCESS_AUD"
+      },
+      "d1_databases": [
+        { "binding": "DB", "database_name": "domo-skola-preview", "database_id": "REPLACE_WITH_PREVIEW_D1_ID", "migrations_dir": "migrations" }
+      ]
+    },
+    "production": {
+      "vars": {
+        "ENVIRONMENT": "production",
+        "SITE_URL": "REPLACE_WITH_PRODUCTION_ORIGIN",
+        "ALLOWED_ORIGINS": "REPLACE_WITH_PRODUCTION_ORIGIN",
+        "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_ACCESS_TEAM_DOMAIN",
+        "ACCESS_AUD": "REPLACE_WITH_ACCESS_AUD",
+        "EMAIL_PROVIDER": "REPLACE_WITH_brevo_OR_scaleway"
+      },
+      "d1_databases": [
+        { "binding": "DB", "database_name": "domo-skola", "database_id": "REPLACE_WITH_PRODUCTION_D1_ID", "migrations_dir": "migrations" }
+      ]
+    }
+  }
+}

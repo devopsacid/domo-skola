@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+  PNPM: pnpm@10.34.6
+
+jobs:
+  verify:
+    name: lint, typecheck, test, build, check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+      - name: Enable pnpm via corepack
+        run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - name: Build (astro build, then CSP headers)
+        run: pnpm build
+        env:
+          SITE_URL: https://ci.invalid
+          PUBLIC_NOINDEX: 'true'
+      - run: pnpm check
+        env:
+          SITE_URL: https://ci.invalid
+          PUBLIC_NOINDEX: 'true'
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  # Present but skipped until the e2e lane adds a Playwright config (plan L6/L10).
+  e2e:
+    name: e2e (skipped until playwright.config.ts exists)
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Detect e2e suite
+        id: detect
+        run: |
+          if [ -f playwright.config.ts ] || [ -f playwright.config.js ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No Playwright config yet, e2e skipped."; fi
+      - uses: actions/setup-node@v5
+        if: steps.detect.outputs.present == 'true'
+        with:
+          node-version-file: .nvmrc
+      - if: steps.detect.outputs.present == 'true'
+        run: corepack enable && pnpm install --frozen-lockfile
+      - if: steps.detect.outputs.present == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: steps.detect.outputs.present == 'true'
+        run: pnpm test:e2e
+
+  # Present but skipped until lighthouserc.json exists (L3 onwards).
+  lighthouse:
+    name: lighthouse (skipped until lighthouserc.json exists)
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Detect Lighthouse CI config
+        id: detect
+        run: |
+          if [ -f lighthouserc.json ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No lighthouserc.json yet, Lighthouse CI skipped."; fi
+      - uses: actions/setup-node@v5
+        if: steps.detect.outputs.present == 'true'
+        with:
+          node-version-file: .nvmrc
+      - if: steps.detect.outputs.present == 'true'
+        run: corepack enable && pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v5
+        if: steps.detect.outputs.present == 'true'
+        with:
+          name: dist
+          path: dist
+      - if: steps.detect.outputs.present == 'true'
+        run: pnpm exec lhci autorun

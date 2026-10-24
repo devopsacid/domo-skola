@@ -24,6 +24,7 @@ const placeholder: Record<Locale, string> = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{placeholder[locale]}</title>
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={alternates.find((a) => a.hreflang === locale)?.href} />
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
   </head>
   <body>
