@@ -52,7 +52,6 @@ function ErrorText({ m }: { m: FieldMeta }) {
 interface TextProps extends FieldMeta {
   value: string;
   onValue: (value: string) => void;
-  onBlur?: () => void;
   type?: 'text' | 'email' | 'tel';
   autoComplete?: string;
   inputMode?: 'text' | 'email' | 'tel';
@@ -80,7 +79,6 @@ export function TextInput(p: TextProps) {
         inputMode={p.inputMode}
         maxLength={p.maxLength}
         onInput={(e) => p.onValue((e.currentTarget as HTMLInputElement).value)}
-        onBlur={p.onBlur}
       />
       <ErrorText m={p} />
     </div>
@@ -90,7 +88,6 @@ export function TextInput(p: TextProps) {
 interface AreaProps extends FieldMeta {
   value: string;
   onValue: (value: string) => void;
-  onBlur?: () => void;
   maxLength?: number;
 }
 
@@ -113,7 +110,6 @@ export function TextArea(p: AreaProps) {
         aria-describedby={describedBy(p)}
         maxLength={p.maxLength}
         onInput={(e) => p.onValue((e.currentTarget as HTMLTextAreaElement).value)}
-        onBlur={p.onBlur}
       />
       <ErrorText m={p} />
     </div>
@@ -125,7 +121,6 @@ interface SelectProps extends FieldMeta {
   options: readonly Option[];
   placeholder: string;
   onValue: (value: string) => void;
-  onBlur?: () => void;
   autoComplete?: string;
 }
 
@@ -148,8 +143,7 @@ export function Select(p: SelectProps) {
           aria-describedby={describedBy(p)}
           autoComplete={p.autoComplete}
           onChange={(e) => p.onValue((e.currentTarget as HTMLSelectElement).value)}
-          onBlur={p.onBlur}
-        >
+          >
           <option value="">{p.placeholder}</option>
           {p.options.map((o) => (
             <option value={o.value} selected={o.value === p.value}>
