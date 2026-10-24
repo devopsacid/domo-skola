@@ -10,6 +10,8 @@ pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check
 
 - `pnpm check` runs links, hreflang, content status, CSP and inline guard, size budgets and cms-config.
 - `pnpm test:integration` is added once L5 exists, and `pnpm test:e2e` once L6 exists.
+- **E2E status (ADR-0001 A4.2):** `pnpm build && pnpm test:e2e` (forms projects, then admin serially) is required locally for lanes that touch islands, pages, server, Functions or headers. Whether it becomes a required CI job is an open decision; the architect recommends yes. **Devops task first:** the CI `e2e` job switches itself on now that `playwright.config.ts` exists, but it never builds or downloads `dist/`, so it fails. It must run `pnpm build` with the `verify` env, or download the `dist` artifact, before `pnpm test:e2e`.
+- **Devops task (ADR-0001 A4.3):** an `/admin/*` CSP with `! Content-Security-Policy` plus `require-trusted-types-for 'script'` in `config/headers.template`, with assertions in `tools/lib/headers.mjs` and `tools/check-dist.mjs`.
 - A lane is "done" only when the gate is green on the exact commit, code-reviewer has no blocking findings, and the lane-specific gate below passes.
 
 ## 2. Lanes

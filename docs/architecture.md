@@ -30,7 +30,7 @@ Only `/api/*` invokes Functions (`_routes.json`). Everything else is a static fi
 | `functions/` | Thin Pages Functions route wrappers only (see §5) | developer |
 | `src/pages/` | `[locale]/[...path].astro` driven by the route map; `[locale]/blog/[slug].astro`; `[locale]/404.astro`; `admin/index.astro` (noindex shell) | web-designer (layout), frontend-dev (routing) |
 | `src/layouts/`, `src/components/` | Astro design-system and section components | web-designer |
-| `src/islands/` | Preact: `ContactForm`, `EnrollmentForm`, `FaqSearch`, `AdminApp/`, and `ConsentBanner` (only if GA4) | frontend-dev |
+| `src/islands/` | Preact: `ContactForm`, `EnrollmentForm`, `FaqSearch`, `AdminApp/`, and `ConsentBanner` (only if GA4). Mounted by external `mount-*.ts` modules from build-time `data-island` markup, never with `client:*` (ADR-0001 A4.1) | frontend-dev |
 | `src/islands/ui/` | Preact form controls styled with design-system classes | frontend-dev, with styling from web-designer |
 | `src/styles/` | `tokens.css` (from `docs/design/`), `global.css` | web-designer |
 | `src/content/` + `src/content.config.ts` | CMS-edited content collections and settings (models in `docs/ia.md` §4) | developer (schemas), editors (content) |
@@ -60,12 +60,12 @@ Only `/api/*` invokes Functions (`_routes.json`). Everything else is a static fi
 ## 4. Data flow
 
 ### 4.1 Contact form (`/api/contact`)
-1. **Browser:** the `ContactForm` island validates with `src/shared/schemas/contact.ts` on blur and on submit. It shows field errors from error codes, linked through `aria-describedby`, plus an error summary that receives focus.
+1. **Browser:** the `ContactForm` island validates with `src/shared/schemas/contact.ts` on submit, and clears a field's error while the user types. There is no blur validation (`docs/design/system.md` §6.8). It shows field errors from error codes, linked through `aria-describedby`, plus an error summary that receives focus.
 2. **Submit:** a `POST` with JSON `{ locale, fields, hp, elapsedMs }` (contract in §4.5).
    - The button is disabled and `aria-busy` is set during the request.
    - Network errors keep the entered data and offer a retry.
    - On success the island shows an inline success state, focuses its heading, and fires `contact_submit`.
-   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`, which shows a generic localized message.
+   - **No JS:** the native `<form method="post">` sends urlencoded data, which the server decodes to the same shape before the schema parse (§4.5). The server answers 303 to `/<locale>/<contact-sent>/`, or on failure to `/<locale>/<contact>/?error=1`. **Known gap (ADR-0001 A4.5):** the static page cannot read the query, so no message appears yet. The decided fix is a redirect to `?error=1#form-error` plus a static notice shown by `:target`.
 3. **Function** (`src/server/handlers/contact.ts`) runs these steps in order:
    1. method, content type and size check
    2. Origin and `Sec-Fetch-Site` check (ADR-0001 D7)
@@ -291,7 +291,7 @@ Indexes:
 - When the status becomes `closed`, `closed_at = now` and `retain_until = now + RETENTION_DAYS_AFTER_CLOSE`.
 - When a `closed` record is reopened (any other status), `closed_at = NULL` and `retain_until = now + RETENTION_DAYS_INQUIRY` (or `RETENTION_DAYS_APPLICATION`). Other status changes leave `retain_until` alone.
 - `marketing_consents` rows are purged when past `retain_until`, withdrawn, orphaned by a record deletion, or linked to a record past its own `retain_until` (`src/server/db/retention.ts`; §4.6 item 10).
-- Deleting a submission is a hard delete. Notes, deliveries and the record's marketing consents are deleted with it, in the same batch, so an erasure leaves no email address behind (an unlinked consent would keep one).
+- Deleting a submission is a hard delete. Notes, deliveries and the record's marketing consents are deleted with it, in the same batch, so an erasure leaves no email address behind (an unlinked consent would keep one). The `ON DELETE SET NULL` foreign keys stay as a safety net, and the purge's "orphaned" rule catches any row they unlink.
 - The audit entry keeps only the ID and action.
 - `audit_log` rows older than `AUDIT_RETENTION_DAYS` are purged by the same retention action.
 - Expired `rate_limits` rows are deleted opportunistically on each write.
@@ -319,8 +319,10 @@ font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none';
 manifest-src 'self'; object-src 'none'; upgrade-insecure-requests
 ```
 
+`{{INLINE_SCRIPT_HASHES}}` is meant to be empty. Islands load from external modules (ADR-0001 A4.1). Today the only hashes are the two Astro runtime scripts on `/admin/`. They go away when `AdminApp` moves to a mount module, and the hash limit then drops to 0 (A4.4).
+
 **Other path classes:**
-- **`/admin/*`:** the same policy, plus `Referrer-Policy: no-referrer`, `X-Robots-Tag: noindex, nofollow` and `Cache-Control: no-store`. A Trusted Types trial runs in Phase 7.
+- **`/admin/*`:** `! Content-Security-Policy`, then the public policy plus `; require-trusted-types-for 'script'` (enforced, with no `trusted-types` directive because the app creates no policy; ADR-0001 A4.3). Also `Referrer-Policy: no-referrer`, `X-Robots-Tag: noindex, nofollow` and `Cache-Control: no-store`. **Pending devops:** `config/headers.template`, `tools/lib/headers.mjs` and `tools/check-dist.mjs` do not emit or assert this yet.
 - **`/cms/*`:** `! Content-Security-Policy`, then Sveltia's policy:
   ```
   script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com;
