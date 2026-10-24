@@ -1,5 +1,7 @@
 /** Site settings (src/content/settings/settings.json) for the chrome components. */
 import { getEntry } from 'astro:content';
+import { isStrictBuild } from '../status/mode';
+import { brandNameFor } from './brand';
 
 export async function getSettings() {
   const entry = await getEntry('settings', 'settings');
@@ -7,9 +9,7 @@ export async function getSettings() {
   return entry.data;
 }
 
-/** The brand name always comes from settings, never from code. */
+/** The brand name always comes from settings, never from code (rules: brand.ts). */
 export async function getBrandName(): Promise<string> {
-  const name = (await getSettings()).brandName.value;
-  if (!name) throw new Error('settings.brandName.value is empty');
-  return name;
+  return brandNameFor((await getSettings()).brandName, isStrictBuild());
 }
