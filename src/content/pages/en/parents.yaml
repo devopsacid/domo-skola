@@ -20,11 +20,11 @@ sections:
       - id: grades-and-ages
         title: Grades and ages
         body:
-          - The community is for children in grades 1 to 4 of primary school, roughly 6 to 10 years old. Children of different ages can learn together, but each works towards their own goals.
+          - The community is for children in grades 1 to 4 of primary school. Children of different ages can learn together, but each works towards their own goals.
       - id: getting-here
         title: Where children come from
         body:
-          - We welcome families from the areas around Banská Bystrica, Ružomberok and Liptovský Mikuláš. We are one community, not a network of branches in each town. We will publish where we meet once it is confirmed.
+          - We welcome families from the areas around Banská Bystrica, Ružomberok and Liptovský Mikuláš. We expect to meet in one place, not in branches in each town. We will publish where we meet once it is confirmed.
           - If you live further away, it is worth thinking about the journey in advance. If you would like to share driving with another family from your area, let us know when we first meet.
         facts:
           - label: Venue
@@ -77,7 +77,7 @@ sections:
         title: Communication with parents
         body:
           - We want to stay in regular touch, for example with short updates on what your child is working on and with personal conversations over their work. The exact form and frequency are still being worked out.
-          - If something is happening at home or in the group, it is better to talk about it early. There is also room for a quick word at drop-off and pick-up.
+          - If something is happening at home or in the group, it is better to talk about it early. We also want to leave room for a quick word at drop-off and pick-up.
       - id: getting-involved
         title: How you can get involved
         body:
@@ -105,7 +105,7 @@ sections:
     reviewNote: "Meals, outdoor time and fees stay pending until verified; fees render only when settings.fees is verified and visible."
     id: practical
     eyebrow: Practical details
-    title: Meals, time outdoors, fees and visiting
+    title: Meals, time outdoors, costs and visiting
     items:
       - id: meals-and-outdoors
         title: Meals and time outdoors
@@ -117,11 +117,11 @@ sections:
           - label: Time outdoors
             path: settings.operations.outdoorTime
       - id: fees
-        title: Tuition and fees
+        title: Costs
         facts:
-          - label: Fees
+          - label: Costs
             path: settings.fees
-            pending: Fee information will follow
+            pending: We will publish information about costs once it is confirmed
         link:
           to: contact
           label: Ask about costs
@@ -152,9 +152,9 @@ sections:
       - Applying to the community and enrolling at a school are two different things. The community is in Slovakia, so here we describe briefly and in general terms how this usually works under Slovak rules. This is not legal advice; always check the details with the school.
     items:
       - id: enrolled-at-a-school
-        title: A child is always enrolled at a school
+        title: A child has a school of enrolment
         body:
-          - In Slovakia, compulsory school attendance is fulfilled at a school that is part of the official school network. Even when a child learns elsewhere, they have a school where they are enrolled and which is responsible for assessing them.
+          - Under Slovak rules, compulsory school attendance is usually fulfilled at a school that is part of the official school network. Even when a child learns elsewhere, they have a school where they are enrolled and which is responsible for assessing them.
           - Parents enrol their child at a school, following the rules and dates set by the school and the municipality.
       - id: individual-education
         title: Individual education
@@ -183,10 +183,10 @@ sections:
         text: A school listed in the official network of schools. The child is enrolled there, fulfils compulsory school attendance there and receives school reports from it.
       - key: community_group
         title: Community learning group
-        text: A group of children and adults who learn together regularly. On its own it is not a school and does not issue school reports. Alongside it, the child must be enrolled at a school.
+        text: A group of children and adults who learn together regularly. On its own it is not a school and does not issue school reports. Under Slovak rules, the child is usually also enrolled at a school alongside it.
       - key: individual_education
         title: Individual (home) education
-        text: The child is educated outside classroom teaching, with the consent of the school where they are enrolled. The school checks what the child has learned, usually through an examination.
+        text: The child is educated outside classroom teaching, with the permission of the head of the school where they are enrolled. The school checks what the child has learned, usually through an examination.
     formsNote: This is a general description to help you find your way, not legal advice. The conditions are set by the regulations in force in Slovakia and by the school where the child is enrolled.
     ourModelTitle: How our community is organised
     ourModelPending: We will set out our legal model once it is confirmed. Until then we do not claim to be a school, to hold any accreditation, or that taking part in the community fulfils compulsory school attendance on its own.

@@ -4,7 +4,7 @@ category: legal
 order: 6
 featuredOnHome: false
 status: needs-review
-reviewNote: "Honesty answer (brief §2, §5.4). Rewrite only after settings.legalModel and any accreditation are verified."
+reviewNote: "Honesty answer (brief §2, §5.4). OWNER MUST CONFIRM that there is no Montessori accreditation and no Hejný certification before this is verified. Rewrite only after settings.legalModel and any accreditation are verified."
 dependsOnFacts: [settings.legalModel]
 question: "Jste škola? Máte akreditaci Montessori?"
 answer: |-

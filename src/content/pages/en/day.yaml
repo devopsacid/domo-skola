@@ -49,7 +49,7 @@ sections:
         text: At the end of the day the children look back at what went well, what surprised them and what they want to try next time.
   people:
     status: needs-review
-    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times)."
+    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times). Packing list and handover are intentions, not promises."
     id: who-is-with-the-children
     eyebrow: Who is with the children
     title: A guide, small groups and the right clothes
@@ -59,21 +59,21 @@ sections:
       - id: guide-during-the-day
         title: The guide during the day
         body:
-          - The guide does not stand at the front all day. In the morning they welcome the children; during independent work they move from one child to the next, observe and offer the next step. For guided work they sit down with a small group and introduce a new topic.
+          - The guide is not meant to stand at the front all day. In the morning they welcome the children; during independent work they move from one child to the next, observe and offer the next step. For guided work they sit down with a small group and introduce a new topic.
           - When a child gets stuck, the guide does not give the answer straight away. They ask what the child has already tried and help them find the next step themselves.
       - id: small-groups-during-the-day
         title: Small groups and time together
         body:
-          - Much of the work happens in small groups or pairs that change during the day. The morning circle, time outdoors and the closing review are shared, so the whole group comes together.
-          - The rules for how we treat each other and look after the materials are made together with the children, and we come back to them when needed.
+          - We want much of the work to happen in small groups or pairs that change during the day, and the morning circle, time outdoors and the closing review to be shared, so the whole group comes together.
+          - We want to make the rules for how we treat each other and look after the materials together with the children, and come back to them when needed.
       - id: outdoors-in-the-rain
         title: Outdoors, even in the rain
         body:
-          - We want to go out every day, as long as it is safe. It helps if your child has clothes that can get dirty, and a change of clothes. You will get a list of what to pack before the start.
+          - We want to go out every day, as long as it is safe. It helps if your child has clothes that can get dirty, and a change of clothes. We want to tell parents in advance what to pack.
       - id: drop-off-and-pick-up
         title: Drop-off and pick-up
         body:
-          - In the morning there is time for a short handover, when you can tell the guide how your child slept or what is on their mind. At pick-up you will hear if anything important happened during the day.
+          - In the morning we want time for a short handover, when you can tell the guide how your child slept or what is on their mind. At pick-up we want to tell you if anything important happened during the day.
   practical:
     status: needs-review
     id: practical-information

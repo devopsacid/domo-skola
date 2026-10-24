@@ -49,7 +49,7 @@ sections:
         text: Na konci dne se děti vrátí k tomu, co se jim povedlo, co je překvapilo a co chtějí zkusit příště.
   people:
     status: needs-review
-    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times)."
+    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times). Packing list and handover are intentions, not promises."
     id: kdo-je-s-detmi
     eyebrow: Kdo je s dětmi
     title: Průvodce, malé skupiny a dobré oblečení
@@ -59,21 +59,21 @@ sections:
       - id: pruvodce-behem-dne
         title: Průvodce během dne
         body:
-          - Průvodce nestojí celý den před tabulí. Ráno vítá děti, během samostatné práce chodí od jednoho k druhému, pozoruje a nabízí další krok. Při vedené práci si sedne k malé skupince a představí nové téma.
+          - Průvodce nemá stát celý den před tabulí. Ráno vítá děti, během samostatné práce chodí od jednoho k druhému, pozoruje a nabízí další krok. Při vedené práci si sedne k malé skupince a představí nové téma.
           - Když se dítě zasekne, neřekne mu hned odpověď. Zeptá se, co už zkoušelo, a pomůže mu najít další krok samo.
       - id: male-skupiny-behem-dne
         title: Malé skupiny a společné chvíle
         body:
-          - Hodně práce probíhá v malých skupinkách nebo ve dvojicích, které se během dne mění. Ranní kruh, čas venku a závěrečné shrnutí máme spolu, aby se potkala celá skupina.
-          - Pravidla, jak se k sobě chováme a jak se staráme o pomůcky, vytváříme společně s dětmi a vracíme se k nim, když je potřeba.
+          - Hodně práce chceme dělat v malých skupinkách nebo ve dvojicích, které se během dne mění. Ranní kruh, čas venku a závěrečné shrnutí chceme mít spolu, aby se potkala celá skupina.
+          - Pravidla, jak se k sobě chovat a jak se starat o pomůcky, chceme vytvářet společně s dětmi a vracet se k nim, když je potřeba.
       - id: venku-i-kdyz-prsi
         title: Venku, i když prší
         body:
-          - Ven chceme chodit každý den, pokud je to bezpečné. Pomůže, když má dítě oblečení, které se může ušpinit, a náhradní věci. Co přesně přibalit, dostanete před začátkem.
+          - Ven chceme chodit každý den, pokud je to bezpečné. Pomůže, když má dítě oblečení, které se může ušpinit, a náhradní věci. Co přesně přibalit, chceme rodičům říct předem.
       - id: prichod-a-odchod
         title: Příchod a odchod
         body:
-          - Ráno je čas na krátké předání, kdy můžete průvodci říct, jak se dítě vyspalo nebo co ho trápí. Při odchodu se dozvíte, pokud se během dne stalo něco důležitého.
+          - Ráno chceme mít čas na krátké předání, kdy můžete průvodci říct, jak se dítě vyspalo nebo co ho trápí. Při odchodu vám chceme říct, pokud se během dne stalo něco důležitého.
   practical:
     status: needs-review
     id: prakticke-informace

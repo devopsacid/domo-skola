@@ -45,7 +45,7 @@ sections:
         title: Time outdoors
         body:
           - We want to be outside every day, even when the sun is not shining, as long as it is safe. Nature is not just a place for breaks. You can measure, count, observe, draw and tell stories there.
-          - Movement helps children concentrate. After time outdoors, work at the table often goes better too.
+          - Movement helps many children concentrate. After time outdoors, work at the table often goes better too.
       - id: parents-as-partners
         title: Parents as partners
         body:
@@ -80,7 +80,7 @@ sections:
         title: Emotional development
         body:
           - Children learn better when they feel safe. So we also pay attention to how children name their feelings, cope with disappointment and reach agreement when they disagree.
-          - This might be a morning circle where everyone says how they are, or looking for a solution together when something goes wrong. We do not shout, shame or set children against each other.
+          - This might be a morning circle where everyone says how they are, or looking for a solution together when something goes wrong. We do not want to shout, shame or set children against each other.
       - id: individual-pace
         title: Individual pace
         body:
@@ -89,7 +89,7 @@ sections:
       - id: progress
         title: How progress is observed and assessed
         body:
-          - We want to follow progress continuously. We watch children at work, keep their work and talk with them about what is going well and what they want to work on. During the day children get spoken feedback rather than grades.
+          - We want to follow progress continuously. We watch children at work, keep their work and talk with them about what is going well and what they want to work on. During the day we want to give spoken feedback rather than grades.
           - We want to talk with parents about progress regularly and concretely, looking at the child's work together. The form and frequency of these conversations are still being worked out.
         pendingNote: How formal assessment will work, such as a school report or an examination, depends on the legal model and on the school where your child is enrolled. We are still confirming this part.
         dependsOnFacts: [settings.legalModel]
@@ -120,7 +120,7 @@ sections:
     caveat: Not every principle applies in the same way in every situation or to every child. We treat these approaches as inspiration rather than fixed rules, and adapt them to the children's age and needs.
   notClaimed:
     status: needs-review
-    reviewNote: "Honesty block (brief §2, §3, §5.4). Keep it until the facts it mentions are verified; then reword, never drop silently."
+    reviewNote: "Honesty block (brief §2, §3, §5.4). OWNER MUST CONFIRM there is no Montessori accreditation and no Hejný certification. Keep it until the facts it mentions are verified; then reword, never drop silently."
     id: what-we-do-not-claim
     eyebrow: Plainly
     title: What we do not claim

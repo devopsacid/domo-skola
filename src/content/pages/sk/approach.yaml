@@ -46,7 +46,7 @@ sections:
         title: Čas vonku
         body:
           - Vonku chceme byť každý deň, aj keď nesvieti slnko, pokiaľ je to bezpečné. Príroda nie je len miestom na prestávku. Dá sa v nej merať, počítať, pozorovať, kresliť aj rozprávať.
-          - Pohyb pomáha deťom sústrediť sa. Po čase vonku sa často lepšie pracuje aj pri stole.
+          - Pohyb pomáha mnohým deťom sústrediť sa. Po čase vonku sa často lepšie pracuje aj pri stole.
       - id: rodicia-ako-partneri
         title: Rodičia ako partneri
         body:
@@ -81,7 +81,7 @@ sections:
         title: Emocionálny vývin
         body:
           - Dieťa sa učí lepšie, keď sa cíti bezpečne. Preto sa venujeme aj tomu, ako deti pomenúvajú svoje pocity, ako zvládajú sklamanie a ako sa dohodnú, keď sa nezhodnú.
-          - Môže to byť napríklad ranný kruh, v ktorom každý povie, ako sa má, alebo spoločné hľadanie riešenia, keď sa niečo nepodarí. Nekričíme, nezahanbujeme a nestaviame deti proti sebe.
+          - Môže to byť napríklad ranný kruh, v ktorom každý povie, ako sa má, alebo spoločné hľadanie riešenia, keď sa niečo nepodarí. Nechceme kričať, zahanbovať ani stavať deti proti sebe.
       - id: vlastne-tempo
         title: Individuálne tempo
         body:
@@ -90,7 +90,7 @@ sections:
       - id: pokrok
         title: Ako sledujeme a hodnotíme pokrok
         body:
-          - Pokrok chceme sledovať priebežne. Pozorujeme dieťa pri práci, odkladáme jeho práce a rozprávame sa s ním o tom, čo sa mu darí a na čom chce pracovať. Počas dňa dostáva dieťa namiesto známok slovnú spätnú väzbu.
+          - Pokrok chceme sledovať priebežne. Pozorujeme dieťa pri práci, odkladáme jeho práce a rozprávame sa s ním o tom, čo sa mu darí a na čom chce pracovať. Počas dňa chceme deťom namiesto známok dávať slovnú spätnú väzbu.
           - S rodičmi sa o pokroku chceme rozprávať pravidelne a konkrétne, nad prácami dieťaťa. Formu a frekvenciu týchto rozhovorov ešte upresňujeme.
         pendingNote: Ako bude prebiehať formálne hodnotenie, napríklad vysvedčenie alebo preskúšanie, závisí od právneho modelu a od školy, v ktorej bude dieťa zapísané. Túto časť zatiaľ potvrdzujeme.
         dependsOnFacts: [settings.legalModel]
@@ -121,7 +121,7 @@ sections:
     caveat: Nie každý princíp sa uplatňuje rovnako v každej situácii a pri každom dieťati. Prístupy berieme ako inšpiráciu, nie ako pevné pravidlá, a prispôsobujeme ich veku a potrebám detí.
   notClaimed:
     status: needs-review
-    reviewNote: "Honesty block (brief §2, §3, §5.4). Keep it until the facts it mentions are verified; then reword, never drop silently."
+    reviewNote: "Honesty block (brief §2, §3, §5.4). OWNER MUST CONFIRM there is no Montessori accreditation and no Hejný certification. Keep it until the facts it mentions are verified; then reword, never drop silently."
     id: co-netvrdime
     eyebrow: Otvorene
     title: Čo netvrdíme

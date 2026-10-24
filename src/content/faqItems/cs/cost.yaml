@@ -6,6 +6,6 @@ featuredOnHome: true
 status: needs-review
 reviewNote: "No fee information until settings.fees is verified; owner to supply the wording."
 dependsOnFacts: [settings.fees]
-question: "Kolik stojí účast v komunitě?"
+question: "Jaké jsou náklady na účast v komunitě?"
 answer: |-
-  Výši příspěvku zveřejníme po potvrzení. Napište nám a rádi vám řekneme, jak o nákladech uvažujeme.
+  Informace o nákladech zveřejníme po potvrzení. Napište nám a rádi vám řekneme, jak o nich uvažujeme.

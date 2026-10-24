@@ -8,5 +8,5 @@ reviewNote: "Regional reach only, no branches implied; venue and travel details 
 dependsOnFacts: [settings.venue]
 question: "Mohou se přihlásit rodiny ze všech tří regionů?"
 answer: |-
-  Ano. Rádi přivítáme rodiny z okolí Banské Bystrice, Ružomberku i Liptovského Mikuláše. Jsme jedna komunita, ne pobočky v každém městě, proto je dobré myslet na dojíždění předem.
+  Ano. Rádi přivítáme rodiny z okolí Banské Bystrice, Ružomberku i Liptovského Mikuláše. Počítáme s jedním místem setkávání, ne s pobočkami v každém městě, proto je dobré myslet na dojíždění předem.
 pendingNote: "Přesné místo setkávání a možnosti dojíždění zatím ověřujeme."

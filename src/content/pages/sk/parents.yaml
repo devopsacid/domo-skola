@@ -21,11 +21,11 @@ sections:
       - id: rocniky-a-vek
         title: Ročníky a vek
         body:
-          - Komunita je určená deťom 1. až 4. ročníka základnej školy, teda približne vo veku 6 až 10 rokov. Deti rôzneho veku sa môžu učiť spolu, každé však pracuje na svojich cieľoch.
+          - Komunita je určená deťom 1. až 4. ročníka základnej školy. Deti rôzneho veku sa môžu učiť spolu, každé však pracuje na svojich cieľoch.
       - id: dostupnost
         title: Odkiaľ k nám deti chodia
         body:
-          - Radi privítame rodiny z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša. Sme jedna komunita, nie sieť pobočiek v každom meste. Kde sa budeme stretávať, zverejníme po potvrdení.
+          - Radi privítame rodiny z okolia Banskej Bystrice, Ružomberka a Liptovského Mikuláša. Predpokladáme jedno miesto stretávania, nie pobočky v každom meste. Kde sa budeme stretávať, zverejníme po potvrdení.
           - Ak bývate ďalej, oplatí sa myslieť na dochádzanie vopred. Ak by ste radi vozili deti spolu s inou rodinou z vášho okolia, povedzte nám to pri prvom stretnutí.
         facts:
           - label: Miesto
@@ -78,7 +78,7 @@ sections:
         title: Komunikácia s rodičmi
         body:
           - Chceme byť s vami v pravidelnom kontakte, napríklad krátkymi správami o tom, na čom dieťa pracuje, a osobnými rozhovormi nad jeho prácami. Konkrétnu formu a frekvenciu ešte upresňujeme.
-          - Ak sa niečo deje doma alebo v skupine, je lepšie povedať si to skôr. Na krátky rozhovor je priestor aj pri príchode a odchode.
+          - Ak sa niečo deje doma alebo v skupine, je lepšie povedať si to skôr. Na krátky rozhovor chceme mať priestor aj pri príchode a odchode.
       - id: zapojenie
         title: Ako sa môžete zapojiť
         body:
@@ -106,7 +106,7 @@ sections:
     reviewNote: "Meals, outdoor time and fees stay pending until their settings facts are verified; fees render only when settings.fees is verified and visible."
     id: prakticky
     eyebrow: Prakticky
-    title: Strava, pobyt vonku, poplatky a návšteva
+    title: Strava, pobyt vonku, náklady a návšteva
     items:
       - id: strava-a-vonku
         title: Strava a pobyt vonku
@@ -118,11 +118,11 @@ sections:
           - label: Čas vonku
             path: settings.operations.outdoorTime
       - id: poplatky
-        title: Školné a poplatky
+        title: Náklady
         facts:
-          - label: Poplatky
+          - label: Náklady
             path: settings.fees
-            pending: Informácie o poplatkoch doplníme
+            pending: Informácie o nákladoch zverejníme po potvrdení
         link:
           to: contact
           label: Opýtajte sa na náklady
@@ -153,9 +153,9 @@ sections:
       - Prihláška do komunity a zápis do školy sú dve rôzne veci. Tu stručne a všeobecne vysvetľujeme, ako to na Slovensku zvyčajne funguje. Nejde o právne poradenstvo, podrobnosti vždy overte v škole.
     items:
       - id: zapis-v-skole
-        title: Dieťa je vždy zapísané v škole
+        title: Dieťa má svoju školu
         body:
-          - Povinná školská dochádzka sa na Slovensku plní v škole, ktorá je zaradená do siete škôl. Aj keď sa dieťa učí inde, má svoju školu, v ktorej je zapísané a ktorá je zodpovedná za jeho hodnotenie.
+          - Podľa slovenských pravidiel sa povinná školská dochádzka zvyčajne plní v škole, ktorá je zaradená do siete škôl. Aj keď sa dieťa učí inde, má svoju školu, v ktorej je zapísané a ktorá je zodpovedná za jeho hodnotenie.
           - Zápis do školy robia rodičia, podľa pravidiel a termínov, ktoré určuje škola a obec.
       - id: individualne-vzdelavanie
         title: Individuálne vzdelávanie
@@ -184,10 +184,10 @@ sections:
         text: Škola zaradená do siete škôl. Dieťa je v nej zapísané, plní v nej povinnú školskú dochádzku a dostáva od nej vysvedčenie.
       - key: community_group
         title: Komunitná vzdelávacia skupina
-        text: Skupina detí a dospelých, ktorí sa spolu pravidelne učia. Sama osebe nie je školou a nevydáva vysvedčenia. Dieťa musí byť popri nej zapísané v niektorej škole.
+        text: Skupina detí a dospelých, ktorí sa spolu pravidelne učia. Sama osebe nie je školou a nevydáva vysvedčenia. Podľa slovenských pravidiel je dieťa popri nej zvyčajne zapísané v niektorej škole.
       - key: individual_education
         title: Individuálne (domáce) vzdelávanie
-        text: Dieťa sa vzdeláva mimo vyučovania v triede, so súhlasom školy, v ktorej je zapísané. Škola overuje, čo sa naučilo, spravidla formou preskúšania.
+        text: Dieťa sa vzdeláva mimo vyučovania v triede, s povolením riaditeľa školy, v ktorej je zapísané. Škola overuje, čo sa naučilo, spravidla formou preskúšania.
     formsNote: Ide o všeobecný popis na lepšiu orientáciu, nie o právne poradenstvo. Podmienky určujú platné predpisy a škola, v ktorej je dieťa zapísané.
     ourModelTitle: Ako je usporiadaná naša komunita
     ourModelPending: Právny model upresníme. Kým nebude potvrdený, netvrdíme, že sme škola, že máme akreditáciu, ani že účasť v komunite sama osebe plní povinnú školskú dochádzku.

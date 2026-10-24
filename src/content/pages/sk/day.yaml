@@ -50,7 +50,7 @@ sections:
         text: Na konci dňa sa deti vrátia k tomu, čo sa im podarilo, čo ich prekvapilo a čo chcú skúsiť nabudúce.
   people:
     status: needs-review
-    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times)."
+    reviewNote: "Intended practice (owner to confirm): guide role, small groups, outdoor clothing, handover. No numbers (group size, ratio, times). Packing list and handover are intentions, not promises."
     id: kto-je-s-detmi
     eyebrow: Kto je s deťmi
     title: Sprievodca, malé skupiny a dobré oblečenie
@@ -60,21 +60,21 @@ sections:
       - id: sprievodca-v-dni
         title: Sprievodca počas dňa
         body:
-          - Sprievodca nestojí celý deň pred tabuľou. Ráno víta deti, počas samostatnej práce chodí od jedného k druhému, pozoruje a ponúka ďalší krok. Pri vedenej práci si sadne k malej skupinke a predstaví novú tému.
+          - Sprievodca nemá stáť celý deň pred tabuľou. Ráno víta deti, počas samostatnej práce chodí od jedného k druhému, pozoruje a ponúka ďalší krok. Pri vedenej práci si sadne k malej skupinke a predstaví novú tému.
           - Keď dieťa uviazne, nepovie mu hneď odpoveď. Spýta sa, čo už skúšalo, a pomôže mu nájsť ďalší krok samo.
       - id: male-skupiny-v-dni
         title: Malé skupiny a spoločné chvíle
         body:
-          - Veľa práce prebieha v malých skupinkách alebo vo dvojiciach, ktoré sa počas dňa menia. Ranný kruh, čas vonku a záverečné zhrnutie máme spolu, aby sa celá skupina stretla.
-          - Pravidlá, ako sa k sebe správame a ako sa staráme o pomôcky, vytvárame spolu s deťmi a vraciame sa k nim, keď treba.
+          - Veľa práce chceme robiť v malých skupinkách alebo vo dvojiciach, ktoré sa počas dňa menia. Ranný kruh, čas vonku a záverečné zhrnutie chceme mať spolu, aby sa celá skupina stretla.
+          - Pravidlá, ako sa k sebe správať a ako sa starať o pomôcky, chceme vytvárať spolu s deťmi a vracať sa k nim, keď treba.
       - id: vonku-za-kazdeho-pocasia
         title: Vonku aj keď prší
         body:
-          - Von chceme chodiť každý deň, pokiaľ je to bezpečné. Pomôže, keď má dieťa oblečenie, ktoré sa môže zašpiniť, a náhradné veci. Čo presne pribaliť, dostanete pred začiatkom.
+          - Von chceme chodiť každý deň, pokiaľ je to bezpečné. Pomôže, keď má dieťa oblečenie, ktoré sa môže zašpiniť, a náhradné veci. Čo presne pribaliť, chceme rodičom povedať vopred.
       - id: prichod-a-odchod
         title: Príchod a odchod
         body:
-          - Ráno je čas na krátke odovzdanie, keď môžete sprievodcovi povedať, ako sa dieťa vyspalo alebo čo ho trápi. Pri odchode sa dozviete, ak sa počas dňa stalo niečo dôležité.
+          - Ráno chceme mať čas na krátke odovzdanie, keď môžete sprievodcovi povedať, ako sa dieťa vyspalo alebo čo ho trápi. Pri odchode vám chceme povedať, ak sa počas dňa stalo niečo dôležité.
   practical:
     status: needs-review
     id: prakticke-informacie
@@ -99,7 +99,7 @@ sections:
           label: Opýtajte sa nás
   cta:
     status: needs-review
-    title: Prídite sa pozrieť, ako deň naozaj plynie
+    title: Príďte sa pozrieť, ako deň naozaj plynie
     text: Pri návšteve uvidíte prostredie aj pomôcky a môžete sa opýtať na všetko, čo vás zaujíma.
     ctaPrimary: Prihlásiť dieťa
     ctaSecondary: Dohodnúť si stretnutie

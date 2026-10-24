@@ -52,6 +52,7 @@ sections:
         title: Technické údaje
         body:
           - Při návštěvě stránek se zpracovávají technické údaje potřebné k jejich doručení a k ochraně formulářů před zneužitím, například IP adresa. Podrobnosti doplníme po právní kontrole.
+          - "Formuláře chráníme před spamem. Mají skryté pole, které lidé nevyplňují: pokud je vyplněné, zprávu neuložíme. Měří se také doba vyplnění a počet odkazů v textu; příliš rychle vyplněný formulář nebo hodně odkazů označí záznam jako podezřelý. K omezení počtu odeslání se používá jednosměrný otisk (hash) IP adresy. Tento popis čeká na právní kontrolu."
       - id: marketing
         if: marketingEnabled
         title: Novinky (jen se souhlasem)
@@ -85,7 +86,7 @@ sections:
       - id: lhuty
         title: Doby uchování
         body:
-          - Po uplynutí doby údaje vymažeme.
+          - Po uplynutí doby se mají údaje vymazat. Postup výmazu doplníme po právní kontrole.
         facts:
           - label: Zprávy z kontaktního formuláře
             path: settings.privacy.retentionDays.inquiry
@@ -104,7 +105,7 @@ sections:
     id: kdo-ma-pristup
     title: Kdo má k údajům přístup
     intro:
-      - K údajům mají přístup jen pověření lidé z komunity. Technické služby, například hosting a odesílání e-mailů, nám poskytují zpracovatelé.
+      - Přístup k údajům chceme omezit na pověřené lidi z komunity, kteří je potřebují k vyřízení vaší zprávy nebo přihlášky. Jak jsou přístupy nastavené, doplníme po právní kontrole. Technické služby, například hosting a odesílání e-mailů, nám poskytují zpracovatelé.
     items:
       - id: zpracovatele
         title: Zpracovatelé
