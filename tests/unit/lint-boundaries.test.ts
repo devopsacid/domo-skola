@@ -19,7 +19,11 @@ const bad: [string, string, string][] = [
   ['shared re-export', 'src/shared/a.ts', "export * from '../i18n/routes';"],
   ['functions import islands', 'functions/api/x.ts', "import x from '../../src/islands/F';"],
   ['functions import npm', 'functions/api/x.ts', "import x from 'zod';"],
-  ['functions dynamic import', 'functions/api/x.ts', "const m = await import('../../src/i18n/routes');"],
+  [
+    'functions dynamic import',
+    'functions/api/x.ts',
+    "const m = await import('../../src/i18n/routes');",
+  ],
   ['server imports components', 'src/server/h.ts', "import x from '../components/A.astro';"],
   ['server imports layouts', 'src/server/h.ts', "import x from '../layouts/L.astro';"],
   ['server imports pages dynamically', 'src/server/h.ts', "await import('../pages/x');"],
@@ -31,8 +35,16 @@ const good: [string, string, string][] = [
   ['shared imports zod/mini', 'src/shared/a.ts', "import * as z from 'zod/mini';"],
   ['shared imports zod', 'src/shared/a.ts', "import { z } from 'zod';"],
   ['shared imports sibling', 'src/shared/schemas/a.ts', "import { X } from '../enums';"],
-  ['functions import server and shared', 'functions/api/x.ts', "import a from '../../src/server/h'; import b from '../../src/shared/enums';"],
-  ['functions import workers types', 'functions/api/x.ts', "import type { PagesFunction } from '@cloudflare/workers-types';"],
+  [
+    'functions import server and shared',
+    'functions/api/x.ts',
+    "import a from '../../src/server/h'; import b from '../../src/shared/enums';",
+  ],
+  [
+    'functions import workers types',
+    'functions/api/x.ts',
+    "import type { PagesFunction } from '@cloudflare/workers-types';",
+  ],
   ['server imports shared', 'src/server/h.ts', "import b from '../shared/enums';"],
   ['islands import shared', 'src/islands/F.ts', "import b from '../shared/enums';"],
 ];
