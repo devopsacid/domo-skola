@@ -44,12 +44,19 @@ export default defineConfig({
       use: { baseURL: PROXY_URL, browserName: 'chromium', viewport: { width: 1280, height: 900 } },
     },
   ],
-  webServer: [
-    {
-      command: 'node tests/e2e/admin/stack.mjs',
-      url: `${PROXY_URL}/admin/`,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
-    },
-  ],
+  // E2E_STACK (set by `pnpm test:e2e`) starts only the stack the run needs: `forms` (globalSetup) or `admin`
+  // (webServer). Unset, a plain `playwright test` starts both. The stacks use distinct ports.
+  webServer:
+    process.env.E2E_STACK === 'forms'
+      ? []
+      : [
+          {
+            command: 'node tests/e2e/admin/stack.mjs',
+            url: `${PROXY_URL}/admin/`,
+            reuseExistingServer: !process.env.CI,
+            timeout: 120_000,
+            // SIGTERM lets stack.mjs stop wrangler and the mocks; the default SIGKILL would orphan them.
+            gracefulShutdown: { signal: 'SIGTERM', timeout: 15_000 },
+          },
+        ],
 });

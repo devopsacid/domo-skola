@@ -12,7 +12,20 @@ import { BASE_URL, MAIL_PORT, MAIL_URL, PORT } from './env';
 
 const WRANGLER = 'node_modules/.bin/wrangler';
 
+/** SIGTERM, then wait until wrangler (and with it workerd) has really exited and freed its port. */
+async function stopChild(child: ChildProcess) {
+  if (child.exitCode !== null || child.signalCode !== null) return;
+  const exited = new Promise<void>((r) => child.once('exit', () => r()));
+  child.kill('SIGTERM');
+  const killer = setTimeout(() => child.kill('SIGKILL'), 10_000);
+  await exited;
+  clearTimeout(killer);
+}
+
 export default async function globalSetup() {
+  // `pnpm test:e2e` runs the admin project in its own Playwright run (E2E_STACK=admin): it has its own stack
+  // (tests/e2e/admin/stack.mjs), so the forms stack must not be started, and cannot collide with the last run.
+  if (process.env.E2E_STACK === 'admin') return;
   if (!existsSync('dist/_headers')) {
     execFileSync('corepack', ['pnpm@10.34.6', 'build'], {
       stdio: 'inherit',
@@ -78,7 +91,8 @@ export default async function globalSetup() {
       /* not up yet */
     }
     if (Date.now() > deadline) {
-      child.kill('SIGTERM');
+      await stopChild(child);
+      await mail.close();
       throw new Error(`wrangler pages dev did not start:\n${log.slice(-2000)}`);
     }
     await new Promise((r) => setTimeout(r, 500));
@@ -86,8 +100,7 @@ export default async function globalSetup() {
 
   return async () => {
     if (process.env.DEBUG_WRANGLER) console.log(log.slice(-4000));
-    child.kill('SIGTERM');
-    await new Promise((r) => setTimeout(r, 500));
+    await stopChild(child);
     await mail.close();
     rmSync(persist, { recursive: true, force: true });
   };
