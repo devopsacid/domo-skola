@@ -14,6 +14,8 @@ pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check
 
 ## 2. Lanes
 
+> Note: L0 runs on Node 22 and pnpm 10.34.6 on the dev machine, not Node 24 and pnpm 12; see ADR-0001 D15.
+
 | Lane | Phase | Agent | Scope | Depends on | Lane gate |
 |---|---|---|---|---|---|
 | **L0 Scaffold** | 2 | developer | `package.json` (Node 24, pnpm 12 via corepack, pinned deps), `astro.config.mjs`, `src/i18n/routes.ts` with the full route map, `src/content.config.ts` (all models with `status`/`Fact`), `src/shared/{enums,errors,api-types}.ts`, Vitest setup, ESLint import rules, `seed/` skeleton | — | Standard gate; unit tests for route-map completeness and enum ↔ SQL parity (stubbed) |
