@@ -19,6 +19,7 @@ export const FIELD_ERROR_CODES = [
   'school_year_invalid',
   'privacy_ack_required',
   'consent_version_required',
+  'consent_version_stale',
 ] as const;
 export type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
 export const isFieldErrorCode = (v: string): v is FieldErrorCode =>
@@ -38,6 +39,9 @@ export const LIMITS = {
 } as const;
 
 /** Heuristic thresholds (ADR-0001 D6). */
+/** Checkbox fields; the no-JS decoder turns `on` into `true` only for these. */
+export const CHECKBOX_FIELDS = ['privacy_ack', 'marketing_consent'] as const;
+
 export const MIN_FILL_MS = 3000;
 export const MAX_URLS = 3;
 
@@ -51,25 +55,28 @@ export const MAX_URLS = 3;
 const CONTROL = new RegExp('[\\u0000-\\u001F\\u007F-\\u009F]', 'g');
 const CONTROL_EXCEPT_NEWLINE = new RegExp('[\\u0000-\\u0009\\u000B-\\u001F\\u007F-\\u009F]', 'g');
 /* eslint-enable no-control-regex */
-const INVISIBLE = new RegExp('[\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u2069\\uFEFF]', 'g');
+const INVISIBLE = new RegExp(
+  '[\\p{Cf}\\u00AD\\u034F\\u061C\\u115F\\u1160\\u3164\\u180B-\\u180E\\uFE00-\\uFE0F\\u{E0000}-\\u{E007F}]',
+  'gu',
+);
 
 export function normalizeLine(value: string): string {
   return value
+    .replace(INVISIBLE, '')
     .normalize('NFC')
     .replace(/[\t\r\n]+/g, ' ')
     .replace(CONTROL, '')
-    .replace(INVISIBLE, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
 export function normalizeText(value: string): string {
   return value
+    .replace(INVISIBLE, '')
     .normalize('NFC')
     .replace(/\r\n?/g, '\n')
     .replace(/\t/g, ' ')
     .replace(CONTROL_EXCEPT_NEWLINE, '')
-    .replace(INVISIBLE, '')
     .trim();
 }
 
@@ -195,8 +202,7 @@ export function gradeField() {
 }
 
 export function schoolYearField() {
-  return z.string({ error: typeError }).check(
-    z.minLength(1, 'required'),
+  return lineField(20, { required: true }).check(
     z.refine(
       (v) => {
         const m = /^(\d{4})\/(\d{4})$/.exec(v);
@@ -223,14 +229,17 @@ export function consentVersionField() {
   return lineField(LIMITS.consentVersion, { required: false });
 }
 
-/** Cross-field rule: marketing consent needs the version of the text the user saw. */
+/**
+ * Cross-field rule: marketing consent needs the version of the text the user saw.
+ * The error is keyed on the visible `marketing_consent` control, never on the hidden version field.
+ */
 export function consentVersionRule() {
   return z.refine(
     (input: unknown) => {
       const o = input as { marketing_consent?: boolean; marketing_consent_text_version?: string };
       return !o.marketing_consent || !!o.marketing_consent_text_version;
     },
-    { error: 'consent_version_required', path: ['marketing_consent_text_version'] },
+    { error: 'consent_version_required', path: ['marketing_consent'] },
   );
 }
 
@@ -240,29 +249,36 @@ export function envelope<F extends z.ZodMiniType>(fields: F) {
   return z.object({
     locale: z.enum(LOCALES, { error: optionError }),
     fields,
-    hp: z.optional(z.string({ error: 'invalid_type' })),
-    renderedAt: z.number({ error: typeError }).check(z.gte(0, 'invalid_type')),
+    /** Honeypot: any shape is accepted; the handler treats any non-empty value as a hit. */
+    hp: z.optional(z.unknown()),
+    /** Milliseconds from mount to submit, measured by the island with performance.now(). */
+    elapsedMs: z.optional(
+      z.number({ error: 'invalid_type' }).check(z.int('invalid_type'), z.gte(0, 'invalid_type')),
+    ),
   });
 }
 
 // ---- validation result ---------------------------------------------------
 
-export type FieldErrors = Record<string, string>;
+export type FieldErrors = Record<string, FieldErrorCode>;
 export type ValidationResult<T> = { ok: true; data: T } | { ok: false; fields: FieldErrors };
 
 /** First issue code per field. A leading `fields.` is dropped so keys match input names. */
 export function fieldErrors(error: {
   issues: readonly { path: PropertyKey[]; message: string }[];
 }): FieldErrors {
-  const out: FieldErrors = {};
+  const entries = new Map<string, FieldErrorCode>();
   for (const issue of error.issues) {
     let path = issue.path.map(String);
     if (path[0] === 'fields' && path.length > 1) path = path.slice(1);
     const key = path.join('.') || '_form';
     // Anything that is not a documented code (a default Zod message) degrades to `invalid_type`.
-    if (!(key in out)) out[key] = isFieldErrorCode(issue.message) ? issue.message : 'invalid_type';
+    if (!entries.has(key)) {
+      entries.set(key, isFieldErrorCode(issue.message) ? issue.message : 'invalid_type');
+    }
   }
-  return out;
+  // fromEntries defines own properties, so a key such as `__proto__` cannot reach the prototype.
+  return Object.fromEntries(entries);
 }
 
 export function validate<S extends z.ZodMiniType>(
@@ -275,14 +291,17 @@ export function validate<S extends z.ZodMiniType>(
 
 // ---- spam heuristics (pure; handlers decide what to do) -------------------
 
-export function isHoneypotHit(hp: string | undefined): boolean {
-  return typeof hp === 'string' && hp.length > 0;
+/** Any value other than absent, null or an empty string is a hit; never a validation error. */
+export function isHoneypotHit(hp: unknown): boolean {
+  return !(hp === undefined || hp === null || hp === '');
 }
 
-/** True when the form was filled faster than `MIN_FILL_MS`, or the timestamp is in the future. */
-export function isTooFast(renderedAt: number, now: number, minMs: number = MIN_FILL_MS): boolean {
-  if (renderedAt === 0) return false;
-  return now - renderedAt < minMs;
+/**
+ * True only when the island reported a fill time below the minimum. Absent means unknown
+ * (the no-JS form cannot measure time), which is not suspicious by itself (ADR-0001 D6 item 5).
+ */
+export function isTooFast(elapsedMs: number | undefined, minMs: number = MIN_FILL_MS): boolean {
+  return elapsedMs !== undefined && elapsedMs < minMs;
 }
 
 export function countUrls(text: string): number {

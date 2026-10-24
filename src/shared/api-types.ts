@@ -3,7 +3,7 @@
  * Field sets are inferred from src/shared/schemas/.
  */
 import type { ApplicationStatus, InquiryStatus, Locale, Region } from './enums';
-import type { ErrorCode } from './errors';
+import type { FieldErrorCode } from './schemas/common';
 import type { ApplicationFieldsData } from './schemas/application';
 import type { ContactFieldsData } from './schemas/contact';
 
@@ -12,41 +12,42 @@ export interface ApiOk<T = Record<string, never>> {
   data?: T;
 }
 
-/** Generic error envelope; see the specific shapes below for what each status carries. */
-export interface ApiError {
-  ok: false;
-  error: ErrorCode;
-  /** Field name -> validation error code (only with `validation`). Codes, never messages. */
-  fields?: Record<string, string>;
-  /** Seconds to wait (only with `rate_limited`; mirrors the Retry-After header). */
-  retry_after?: number;
-}
-
 /** 400 */
-export interface ApiBadRequest extends ApiError {
+export interface ApiBadRequest {
+  ok: false;
   error: 'bad_request';
 }
 /** 403 */
-export interface ApiOriginError extends ApiError {
+export interface ApiOriginError {
+  ok: false;
   error: 'origin';
 }
 /** 409, enrolment only: applications are not being accepted. */
-export interface ApiClosed extends ApiError {
+export interface ApiClosed {
+  ok: false;
   error: 'closed';
 }
-/** 422 with a field -> code map. Field names match the `fields` keys of the request. */
-export interface ApiValidationError extends ApiError {
+/** 422 with a field -> code map. Field names match the `fields` keys of the request. Codes, never messages. */
+export interface ApiValidationError {
+  ok: false;
   error: 'validation';
-  fields: Record<string, string>;
+  fields: Record<string, FieldErrorCode>;
 }
-/** 429 */
-export interface ApiRateLimited extends ApiError {
+/** 429; `retry_after` (seconds) mirrors the Retry-After header. */
+export interface ApiRateLimited {
+  ok: false;
   error: 'rate_limited';
+  retry_after?: number;
 }
 /** 500: no detail, no stack, no field map. */
-export interface ApiServerError extends ApiError {
+export interface ApiServerError {
+  ok: false;
   error: 'server';
 }
+
+/** Every error body, discriminated by `error` (and by `ok: false`). */
+export type ApiError =
+  ApiBadRequest | ApiOriginError | ApiClosed | ApiValidationError | ApiRateLimited | ApiServerError;
 
 export type ApiResponse<T = Record<string, never>> = ApiOk<T> | ApiError;
 
@@ -69,10 +70,10 @@ export type ApplicationResponse =
   | ApiRateLimited
   | ApiServerError;
 
-export const isApiError = (r: { ok: boolean }): r is ApiError => r.ok === false;
-export const isValidationError = (r: { ok: boolean; error?: string }): r is ApiValidationError =>
+export const isApiError = <T>(r: ApiResponse<T>): r is ApiError => r.ok === false;
+export const isValidationError = <T>(r: ApiResponse<T>): r is ApiValidationError =>
   r.ok === false && r.error === 'validation';
-export const isRateLimited = (r: { ok: boolean; error?: string }): r is ApiRateLimited =>
+export const isRateLimited = <T>(r: ApiResponse<T>): r is ApiRateLimited =>
   r.ok === false && r.error === 'rate_limited';
 
 /** Field sets are derived from the Zod schemas so the contract cannot drift. */
@@ -84,15 +85,15 @@ export interface ContactRequest {
   fields: ContactFields;
   /** Honeypot; must be empty. */
   hp: string;
-  /** Epoch ms when the form was rendered (timing heuristic). */
-  renderedAt: number;
+  /** Ms from mount to submit, from performance.now() (timing heuristic; ADR-0001 D6 item 5). */
+  elapsedMs: number;
 }
 
 export interface ApplicationRequest {
   locale: Locale;
   fields: ApplicationFields;
   hp: string;
-  renderedAt: number;
+  elapsedMs: number;
 }
 
 export interface AdminMe {
