@@ -9,6 +9,7 @@ import {
   emailField,
   fieldErrors,
   gradeField,
+  CHECKBOX_FIELDS,
   isHoneypotHit,
   isTooFast,
   lineField,
@@ -20,6 +21,8 @@ import {
   textField,
   tickField,
 } from '../../../src/shared/schemas/common';
+import { applicationFieldsSchema } from '../../../src/shared/schemas/application';
+import { contactFieldsSchema } from '../../../src/shared/schemas/contact';
 
 const codeOf = (schema: z.ZodMiniType, input: unknown) => {
   const r = schema.safeParse(input);
@@ -160,21 +163,16 @@ describe('gradeField', () => {
 
 describe('schoolYearField', () => {
   const f = schoolYearField();
-  it('accepts consecutive years in YYYY/YYYY', () => {
+  it('accepts consecutive years in YYYY/YYYY, trimming first', () => {
     expect(f.safeParse('2026/2027').success).toBe(true);
+    expect(f.safeParse(' 2026/2027 ')).toMatchObject({ success: true, data: '2026/2027' });
   });
-  it.each([
-    '2026/2028',
-    '2026-2027',
-    '26/27',
-    '2026/27',
-    '2027/2026',
-    '1999/2000',
-    '2026/2027 ',
-    'x',
-  ])('rejects %j', (bad) => {
-    expect(codeOf(f, bad)).toBe('school_year_invalid');
-  });
+  it.each(['2026/2028', '2026-2027', '26/27', '2026/27', '2027/2026', '1999/2000', 'x'])(
+    'rejects %j',
+    (bad) => {
+      expect(codeOf(f, bad)).toBe('school_year_invalid');
+    },
+  );
   it('reports required', () => {
     expect(codeOf(f, undefined)).toBe('required');
     expect(codeOf(f, '')).toBe('required');
@@ -208,23 +206,88 @@ describe('fieldErrors', () => {
 });
 
 describe('spam heuristics', () => {
-  it('isHoneypotHit is true for any non-empty value', () => {
+  it('isHoneypotHit is true for any value that is not absent or empty', () => {
+    expect(isHoneypotHit(null)).toBe(false);
+    expect(isHoneypotHit(5)).toBe(true);
+    expect(isHoneypotHit({})).toBe(true);
+    expect(isHoneypotHit(0)).toBe(true);
     expect(isHoneypotHit('')).toBe(false);
     expect(isHoneypotHit(undefined)).toBe(false);
     expect(isHoneypotHit(' ')).toBe(true);
     expect(isHoneypotHit('http://x')).toBe(true);
   });
-  it('isTooFast flags fills under the minimum, future and missing timestamps', () => {
-    const now = 1_000_000;
+  it('isTooFast is true only for a defined elapsedMs below the minimum', () => {
     expect(MIN_FILL_MS).toBe(3000);
-    expect(isTooFast(now - MIN_FILL_MS, now)).toBe(false);
-    expect(isTooFast(now - MIN_FILL_MS + 1, now)).toBe(true);
-    expect(isTooFast(now + 10, now)).toBe(true);
-    expect(isTooFast(0, now)).toBe(false);
+    expect(isTooFast(MIN_FILL_MS)).toBe(false);
+    expect(isTooFast(MIN_FILL_MS - 1)).toBe(true);
+    expect(isTooFast(0)).toBe(true);
+    expect(isTooFast(undefined)).toBe(false);
+    expect(isTooFast(500, 100)).toBe(false);
+    expect(isTooFast(50, 100)).toBe(true);
   });
   it('countUrls counts http(s) and www links', () => {
     expect(MAX_URLS).toBe(3);
     expect(countUrls('see https://a.sk and http://b.sk, www.c.sk')).toBe(3);
     expect(countUrls('no links here')).toBe(0);
+  });
+});
+
+describe('invisible characters', () => {
+  const cases: [string, string][] = [
+    ['soft hyphen', '\u00AD'],
+    ['combining grapheme joiner', '\u034F'],
+    ['arabic letter mark', '\u061C'],
+    ['hangul choseong filler', '\u115F'],
+    ['hangul jungseong filler', '\u1160'],
+    ['hangul filler', '\u3164'],
+    ['mongolian free variation selectors', '\u180B\u180C\u180D\u180E'],
+    ['variation selectors', '\uFE00\uFE0F'],
+    ['tag characters', '\u{E0001}\u{E0041}\u{E007F}'],
+    ['zero width space and BOM', '\u200B\uFEFF'],
+    ['bidi override', '\u202E'],
+  ];
+  it.each(cases)('%s is stripped and a name made only of it is required', (_n, ch) => {
+    expect(normalizeLine(`a${ch}b`)).toBe('ab');
+    expect(normalizeText(`a${ch}b`)).toBe('ab');
+    expect(codeOf(lineField(10, { required: true }), ch)).toBe('required');
+    expect(codeOf(emailField(), ch)).toBe('required');
+  });
+  it('strips before NFC so a hidden character cannot block composition', () => {
+    expect(normalizeLine('e\u00AD\u0301')).toBe('\u00e9');
+    expect(normalizeText('e\u034F\u0301')).toBe('\u00e9');
+  });
+});
+
+describe('checkbox fields', () => {
+  it('CHECKBOX_FIELDS lists exactly the checkbox keys of both field schemas', () => {
+    const keys = (shape: Record<string, z.ZodMiniType>) =>
+      Object.entries(shape)
+        .filter(([, f]) => f.safeParse(true).success)
+        .map(([k]) => k);
+    const all = new Set([
+      ...keys(contactFieldsSchema.shape),
+      ...keys(applicationFieldsSchema.shape),
+    ]);
+    expect([...all].sort()).toEqual([...CHECKBOX_FIELDS].sort());
+    expect(CHECKBOX_FIELDS).toEqual(['privacy_ack', 'marketing_consent']);
+  });
+});
+
+describe('error codes and fieldErrors hardening', () => {
+  it('includes the consent codes', () => {
+    expect(FIELD_ERROR_CODES).toContain('consent_version_required');
+    expect(FIELD_ERROR_CODES).toContain('consent_version_stale');
+  });
+  it('keeps hostile keys as own properties', () => {
+    const out = fieldErrors({
+      issues: [
+        { path: ['__proto__'], message: 'required' },
+        { path: ['constructor'], message: 'too_long' },
+        { path: ['constructor'], message: 'required' },
+      ],
+    });
+    expect(Object.hasOwn(out, '__proto__')).toBe(true);
+    expect(out.constructor).toBe('too_long');
+    expect(Object.getPrototypeOf(out)).toBe(Object.prototype);
   });
 });

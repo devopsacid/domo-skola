@@ -24,7 +24,7 @@ const req = (over: Record<string, unknown> = {}, top: Record<string, unknown> = 
   locale: 'sk',
   fields: { ...valid, ...over },
   hp: '',
-  renderedAt: 1_700_000_000_000,
+  elapsedMs: 12_000,
   ...top,
 });
 const codes = (over: Record<string, unknown>) => {
@@ -99,7 +99,7 @@ describe('application full submission', () => {
   it('requires privacy acknowledgement; marketing consent is independent and versioned', () => {
     expect(codes({ privacy_ack: false })).toEqual({ privacy_ack: 'privacy_ack_required' });
     expect(codes({ marketing_consent: true })).toEqual({
-      marketing_consent_text_version: 'consent_version_required',
+      marketing_consent: 'consent_version_required',
     });
     expect(codes({ marketing_consent: false })).toEqual({});
   });

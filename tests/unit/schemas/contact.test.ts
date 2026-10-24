@@ -17,7 +17,7 @@ const req = (over: Record<string, unknown> = {}, top: Record<string, unknown> = 
   locale: 'sk',
   fields: { ...valid, ...over },
   hp: '',
-  renderedAt: 1_700_000_000_000,
+  elapsedMs: 12_000,
   ...top,
 });
 const codes = (over: Record<string, unknown>, top: Record<string, unknown> = {}) => {
@@ -70,7 +70,7 @@ describe('contact request', () => {
   it('marketing consent is separate and optional; false is fine, true needs a text version', () => {
     expect(codes({ marketing_consent: false })).toEqual({});
     expect(codes({ marketing_consent: true })).toEqual({
-      marketing_consent_text_version: 'consent_version_required',
+      marketing_consent: 'consent_version_required',
     });
     expect(codes({ marketing_consent: true, marketing_consent_text_version: 'v1' })).toEqual({});
     expect(codes({ marketing_consent: 'yes' })).toEqual({ marketing_consent: 'invalid_type' });
@@ -80,12 +80,16 @@ describe('contact request', () => {
       codes({ privacy_ack: false, marketing_consent: true, marketing_consent_text_version: 'v1' }),
     ).toEqual({ privacy_ack: 'privacy_ack_required' });
   });
-  it('validates the envelope: locale, honeypot string, renderedAt number', () => {
+  it('validates the envelope: locale, optional integer elapsedMs; hp accepts anything', () => {
     expect(codes({}, { locale: 'de' })).toEqual({ locale: 'invalid_option' });
     expect(codes({}, { locale: undefined })).toEqual({ locale: 'required' });
-    expect(codes({}, { hp: 5 })).toEqual({ hp: 'invalid_type' });
-    expect(codes({}, { renderedAt: 'x' })).toEqual({ renderedAt: 'invalid_type' });
-    expect(codes({}, { renderedAt: -1 })).toEqual({ renderedAt: 'invalid_type' });
+    expect(codes({}, { hp: 5 })).toEqual({});
+    expect(codes({}, { hp: { a: 1 } })).toEqual({});
+    expect(codes({}, { elapsedMs: 'x' })).toEqual({ elapsedMs: 'invalid_type' });
+    expect(codes({}, { elapsedMs: -1 })).toEqual({ elapsedMs: 'invalid_type' });
+    expect(codes({}, { elapsedMs: 1.5 })).toEqual({ elapsedMs: 'invalid_type' });
+    expect(codes({}, { elapsedMs: undefined })).toEqual({});
+    expect(codes({}, { elapsedMs: 0 })).toEqual({});
   });
   it('a filled honeypot still parses (the handler decides), and hp may be omitted', () => {
     expect(validateContact(req({}, { hp: 'bot' })).ok).toBe(true);
