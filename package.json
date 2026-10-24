@@ -20,7 +20,8 @@
     "dev:access": "node tools/dev-access-proxy/index.mjs",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:seed:admins": "wrangler d1 execute DB --local --file tools/dev-access-proxy/seed-admins.sql",
-    "dev:api": "wrangler pages dev dist"
+    "dev:api": "wrangler pages dev dist",
+    "test:e2e": "playwright test"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -28,13 +29,17 @@
     ]
   },
   "dependencies": {
+    "@astrojs/preact": "6.0.6",
     "astro": "7.3.8",
     "jose": "6.2.12",
+    "preact": "10.29.8",
     "zod": "4.6.5"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.0",
     "@types/node": "22.20.5",
     "eslint": "10.12.0",
     "eslint-plugin-astro": "3.2.1",
